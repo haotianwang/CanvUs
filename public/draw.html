@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+		<script type="text/javascript" src="draw.js"></script>
+</head>
+
+<center>
+<div id="canvas-message" class="message" style = "color:#000000">
+	Hi, this is a HTML canvas object:
+</div><br>
+
+<div id="canvas-instruction-message" class="message" style = "color:#000000">
+	Move cursor over to "draw" on canvas<br> 
+	Remove cursor to clear canvas
+</div><br>
+
+<canvas id="myCanvas" width="1000" height="700"
+	style="border:1px solid #000000; background-color:#FFFFFF; position:relative;
+	"onmousemove="drawLine(event)" onmouseout="clearCanvas()">
+</canvas> 
+
+<div id="canvasControl-box">
+    <form>
+        <input id="clear-button" type="submit" value="Clear">
+    </form>
+</div>
+
+<div id="canvas-coord-message" class="message" style = "color:#000000"></div>
+
+</center>
+<script type="text/javascript">
+	var canvas = document.getElementById('myCanvas');
+
+	canvas.addEventListener('mousedown', function() { 
+		console.log("mousedown")
+	}, false);
+
+	canvas.addEventListener('mouseup', function() { 
+		console.log("mouseup")
+	}, false);
+
+	$('#clear-button').click(function() {
+		clearCanvas();
+	})
+</script>
+</html>
