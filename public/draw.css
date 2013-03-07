@@ -1,0 +1,19 @@
+#canvas-message{
+	color:#000000
+}
+
+#canvas-instruction-message{
+	color:#000000
+}
+
+#myCanvas{
+	border:1px solid #000000;
+	background-color:#FFFFFF;
+	position: relative;
+}
+
+#canvas-coord-message{
+	color:#000000
+
+}
+
