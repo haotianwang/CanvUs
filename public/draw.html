@@ -15,8 +15,7 @@
 </div><br>
 
 <canvas id="myCanvas" width="1000" height="700"
-	style="border:1px solid #000000; background-color:#FFFFFF; position:relative;
-	"onmousemove="drawLine(event)" onmouseout="clearCanvas()">
+	style="border:1px solid #000000; background-color:#FFFFFF; position:relative;">
 </canvas> 
 
 <div id="canvasControl-box">
@@ -29,18 +28,6 @@
 
 </center>
 <script type="text/javascript">
-	var canvas = document.getElementById('myCanvas');
-
-	canvas.addEventListener('mousedown', function() { 
-		console.log("mousedown")
-	}, false);
-
-	canvas.addEventListener('mouseup', function() { 
-		console.log("mouseup")
-	}, false);
-
-	$('#clear-button').click(function() {
-		clearCanvas();
-	})
+	initialize();
 </script>
 </html>
