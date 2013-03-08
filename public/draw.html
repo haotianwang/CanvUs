@@ -1,33 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-		<script type="text/javascript" src="draw.js"></script>
-		<link rel="stylesheet" type="text/css" href="draw.css"/>
+<script type="text/javascript" src="tools.js"></script>
+<link rel="stylesheet" type="text/css" href="draw.css"/>
 </head>
 
-<center>
+
 <div id="canvas-message" class="message">
-	Hi, this is a HTML canvas object:
+Hi, this is a HTML canvas object:
 </div><br>
 
 <div id="canvas-instruction-message" class="message">
-	Move cursor over to "draw" on canvas<br> 
-	Remove cursor to clear canvas
+Move cursor over to "draw" on canvas<br>
+Remove cursor to clear canvas
 </div><br>
 
-<canvas id="myCanvas" width="1000" height="700">
-</canvas> 
+<div id="canvasContainer">
+	<canvas id="myCanvas" width="1000" height="700">
+	</canvas>
+</div>
 
 <div id="canvasControl-box">
     <form>
         <input id="clear-button" type="submit" value="Clear">
+        <input id="pencil-button" type="submit" value="Pencil">
+        <input id="rectangle-button" type="submit" value="Rectangle">
+        <input id="circle-button" type="submit" value="Circle">
+        <input id="black-button" type="submit" value="Black">
+        <input id="red-button" type="submit" value="Red">
+        <input id="blue-button" type="submit" value="Blue">
+        <input id="color-box" type="text" value="Color: #000000">
+        <input id="line-thickness-box" type="text" value="Line Thickness">
+        <input id="buggy-circle-button" type="submit" value="Buggy Circle">
     </form>
 </div>
 
 <div id="canvas-coord-message" class="message"></div>
 
-</center>
 <script type="text/javascript">
-	initialize();
+initialize();
 </script>
 </html>
