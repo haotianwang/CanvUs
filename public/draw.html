@@ -2,41 +2,55 @@
 <html>
 <head>
 <script type="text/javascript" src="tools.js"></script>
+<script type="text/javascript" src="jscolor/jscolor.js"></script>
+<script type="text/javascript" src="base64.js"></script>
+<script type="text/javascript" src="canvas2Image.js"></script>
 <link rel="stylesheet" type="text/css" href="draw.css"/>
 </head>
 
-
+<center>
 <div id="canvas-message" class="message">
-Hi, this is a HTML canvas object:
+Hi, welcome to CanvUs v.1.0.0
 </div><br>
 
 <div id="canvas-instruction-message" class="message">
-Move cursor over to "draw" on canvas<br>
-Remove cursor to clear canvas
+Click the buttons below to select your tool and some preselected colors.<br>
+Click on the Color Selector and select the color to draw with.<br>
+Type into Line Thickness and hit enter to select the Line Thickness.<br>
+Sorry, no buggy Rectangle (it's not currently possible)
 </div><br>
 
 <div id="canvasContainer">
-	<canvas id="myCanvas" width="1000" height="700">
-	</canvas>
+    <canvas id="myCanvas" width="700" height="700">
+    </canvas>
 </div>
 
 <div id="canvasControl-box">
     <form>
         <input id="clear-button" type="submit" value="Clear">
         <input id="pencil-button" type="submit" value="Pencil">
+        <input id="line-button" type="submit" value="Line">
         <input id="rectangle-button" type="submit" value="Rectangle">
         <input id="circle-button" type="submit" value="Circle">
         <input id="black-button" type="submit" value="Black">
         <input id="red-button" type="submit" value="Red">
         <input id="blue-button" type="submit" value="Blue">
-        <input id="color-box" type="text" value="Color: #000000">
+        <br>
+        <!-- Deprecated by Color selector
+            <input id="color-box" type="text" value="Color: #000000"> 
+        -->
+        Color selector: <input id="color-selector" class="color {hash: true}" value="000000">
         <input id="line-thickness-box" type="text" value="Line Thickness">
+        <input id="buggy-line-button" type="submit" value="Buggy Line">
         <input id="buggy-circle-button" type="submit" value="Buggy Circle">
+        <br>
+        <input id="download-png-button" type="submit" value="Download as PNG">
+        <input id="debug-button" type="submit" value="Debug Off">
     </form>
 </div>
 
-<div id="canvas-coord-message" class="message"></div>
-
+<div id="canvas-message2" class="message"></div>
+</center>
 <script type="text/javascript">
 initialize();
 </script>
