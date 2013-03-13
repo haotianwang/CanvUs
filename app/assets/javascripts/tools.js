@@ -83,6 +83,14 @@ function initialize() {
         var tool = this;
         var oldx = 0, oldy = 0;
 
+		this.drawLine = function (startx, starty, endx, endy, color) {
+			dispCtx.strokeStyle = color;
+			dispCtx.beginPath();
+			dispCtx.moveTo(startx, starty);
+			dispCtx.lineTo(endx, endy);
+			dispCtx.stroke();
+		}
+
         this.mousedown = function (event) {
             if(mouseDown) {
                 tool.mouseup(event);
@@ -122,6 +130,15 @@ function initialize() {
     //======================== Rectangle ============================
     tools.rectangle = function () {
         var tool = this;
+
+		this.drawRectangle = function (startx, starty, endx, endy, color) {
+			var x = Math.min(startx, endx);
+			var y = Math.min(starty, endy);
+			var w = Math.abs(startx - endx);
+			var h = Math.abs(starty - endy);
+			dispCtx.strokeStyle = color;
+			dispCtx.strokeRect(x,y,w,h);
+		}
 
         this.mousedown = function (event) {
             if(mouseDown) {
@@ -167,6 +184,17 @@ function initialize() {
     //======================== Circle ============================
     tools.circle = function () {
         var tool = this;
+
+		this.drawCircle = function (startx, starty, endx, endy, color) {
+			var midX = (startx + endx) / 2
+            var midY = (starty + endy) / 2
+            var radius = Math.sqrt(Math.pow(endx - midX,2) + Math.pow(endy - midY,2));
+
+			dispCtx.strokeStyle = color;
+			dispCtx.beginPath();
+            dispCtx.arc(midX, midY, radius, 0, Math.PI * 2, false);
+            dispCtx.stroke();
+		}
 
         this.mousedown = function (event) {
             if(mouseDown) {

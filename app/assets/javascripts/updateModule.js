@@ -2,9 +2,13 @@
 The UpdateModule class will incorporate all of the functionality of the Update Module.
 After instantiating the class with new UpdateModule(), the function names directly map
 to the functionality that the Update Module must have.
-- UpdateModule.sendAction(action)
+- UpdateModule.sendAction(DrawActionType, startx, starty, endx, endy)
+	- DrawActionTypes supported (string): "rect", "circle", "line", "clear"
+	- "clear" DrawActionType ignores other arguments
+	- "line" DrawActionType also covers the "pencil" tool, since the pencil just draws a bunch of lines
 - UpdateModule.handleGetAction(data)
 - updateModule.getInitImg()
+
 */
 
 
