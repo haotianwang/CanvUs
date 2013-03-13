@@ -21,7 +21,8 @@ buggyLine = false,
 buggyLineButton,
 dlPngButton,
 debug = false,
-currentTool = 'pencil'; //defaults tool to pencil tool
+currentTool = 'pencil',
+updateModule; //defaults tool to pencil tool
 
 var browser,
 //need canvas position for non-FF browsers
@@ -29,6 +30,8 @@ canvTop = 0, //offset for X
 canvLeft = 0; //offset for Y
 
 function initialize() {
+	/*********************** get a new updateModule *****************/
+	updateModule = instantiateUpdateModule();
 
     /*********************** Tools Declarations *********************/
 
@@ -40,6 +43,8 @@ function initialize() {
         this.mousedown = function (event) {
             drawCtx.moveTo(event.relx, event.rely)
             mouseDown = true;
+			prevX = event.relx;
+			prevY = event.rely;
         };
 
         // This function is called every time you move the mouse. 
@@ -48,10 +53,13 @@ function initialize() {
             if (mouseDown) {
                 if(debug) console.log("calling " + currentTool+ ":" + event.type + " with mousedown, drawing at " +event.relx + " " + event.rely);
                 drawCtx.lineTo(event.relx, event.rely);
-                prevX = event.relx;
-                prevY = event.rely;
                 drawCtx.stroke();
                 canvasUpdate();
+
+				// send action to server
+				updateModule.sendAction("line", prevX, prevY, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+				prevX = event.relx;
+                prevY = event.rely;
             }
         };
 
@@ -62,6 +70,7 @@ function initialize() {
                 //if(event.rely < 100) event.rely = 0;
                 tool.mousemove(event);
                 mouseDown = false;
+				drawCtx.beginPath();
             }
         };
 
@@ -83,8 +92,10 @@ function initialize() {
         var tool = this;
         var oldx = 0, oldy = 0;
 
-		this.drawLine = function (startx, starty, endx, endy, color) {
+		this.drawLine = function (startx, starty, endx, endy, color, lineWidth) {
 			dispCtx.strokeStyle = color;
+			dispCtx.lineWidth = lineWidth;
+
 			dispCtx.beginPath();
 			dispCtx.moveTo(startx, starty);
 			dispCtx.lineTo(endx, endy);
@@ -112,6 +123,7 @@ function initialize() {
             drawCtx.lineTo(event.relx, event.rely);
             drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
             drawCtx.stroke();
+			
         };
 
         this.mouseup = function (event) {
@@ -119,6 +131,9 @@ function initialize() {
                 tool.mousemove(event);
                 mouseDown = false;
                 canvasUpdate();
+
+				// send action to server
+				updateModule.sendAction("line", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             }
         };
 
@@ -131,12 +146,14 @@ function initialize() {
     tools.rectangle = function () {
         var tool = this;
 
-		this.drawRectangle = function (startx, starty, endx, endy, color) {
+		this.drawRectangle = function (startx, starty, endx, endy, color, lineWidth) {
 			var x = Math.min(startx, endx);
 			var y = Math.min(starty, endy);
 			var w = Math.abs(startx - endx);
 			var h = Math.abs(starty - endy);
 			dispCtx.strokeStyle = color;
+			dispCtx.lineWidth = lineWidth;
+
 			dispCtx.strokeRect(x,y,w,h);
 		}
 
@@ -173,6 +190,9 @@ function initialize() {
                 tool.mousemove(event);
                 mouseDown = false;
                 canvasUpdate();
+				
+				//send the action to server
+				updateModule.sendAction("rectangle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             }
         };
 
@@ -185,12 +205,14 @@ function initialize() {
     tools.circle = function () {
         var tool = this;
 
-		this.drawCircle = function (startx, starty, endx, endy, color) {
+		this.drawCircle = function (startx, starty, endx, endy, color, lineWidth) {
 			var midX = (startx + endx) / 2
             var midY = (starty + endy) / 2
             var radius = Math.sqrt(Math.pow(endx - midX,2) + Math.pow(endy - midY,2));
 
 			dispCtx.strokeStyle = color;
+			dispCtx.lineWidth = lineWidth;
+			
 			dispCtx.beginPath();
             dispCtx.arc(midX, midY, radius, 0, Math.PI * 2, false);
             dispCtx.stroke();
@@ -231,6 +253,8 @@ function initialize() {
                 tool.mousemove(event);
                 mouseDown = false;
                 canvasUpdate();
+
+				updateModule.sendAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             }
         };
 
@@ -239,7 +263,11 @@ function initialize() {
         }
     };
 
-
+    //======================== Clear ============================
+	tools.clear = function () {
+        clearCanvas(dispCtx); 
+        clearCanvas(drawCtx);
+	};
 
     dispCanvas = document.getElementById('myCanvas');
     dispCtx = dispCanvas.getContext("2d");
@@ -340,6 +368,11 @@ function initialize() {
         context.clearRect(0,0,dispCanvas.width, dispCanvas.height)
     }
 
+	function clear() {
+		clearCanvas(dispCtx); 
+        clearCanvas(drawCtx);
+	}
+
     function handleEvent(event) {
         //console.log(event.type);
         //get the x and y offset in terms of the canvas, two ways
@@ -381,10 +414,14 @@ function initialize() {
     };
 
     clrButton.onclick = function() { 
-        clearCanvas(dispCtx); 
-        clearCanvas(drawCtx); 
+		clear();
+
+		// send the clear to server, everything else can be filler values
+		updateModule.sendAction("clear", 0,0,0,0,0,0);
+
         return false;
     };
+
 
     pencilButton.onclick = function() {
         currentTool = "pencil";

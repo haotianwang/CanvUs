@@ -2,7 +2,7 @@
 The UpdateModule class will incorporate all of the functionality of the Update Module.
 After instantiating the class with new UpdateModule(), the function names directly map
 to the functionality that the Update Module must have.
-- UpdateModule.sendAction(DrawActionType, startx, starty, endx, endy)
+- UpdateModule.sendAction(DrawActionType, startx, starty, endx, endy, color, strokeWidth)
 	- DrawActionTypes supported (string): "rect", "circle", "line", "clear"
 	- "clear" DrawActionType ignores other arguments
 	- "line" DrawActionType also covers the "pencil" tool, since the pencil just draws a bunch of lines
@@ -11,13 +11,14 @@ to the functionality that the Update Module must have.
 
 */
 
-
+/*
 $(document).ready(function() { 
 	var updateModule = instantiateUpdateModule();
 	updateModule.getInitImg();
 	updateModule.sendAction("action testing testing 123");
 	console.log(document.domain + document.port);
 });
+*/
 
 function instantiateUpdateModule() {
 	var module = new UpdateModule();
@@ -30,15 +31,51 @@ function UpdateModule() {
     this.url = document.URL;
 	this.dispatcher = new WebSocketRails("localhost:3000/websocket");
 
-    this.sendAction = function (action) {
-		console.log("sending action...");
-        this.dispatcher.trigger('socket.send_action', action);
+    this.sendAction = function (drawActionType, startx, starty, endx, endy, color, strokeWidth) {
+		myJson = {"action": drawActionType, 
+					"startx": startx, 
+					"starty": starty, 
+					"endx": endx, 
+					"endy": endy,
+					"color": color,
+					"strokeWidth": strokeWidth }
+		console.log("sending action..." + JSON.stringify(myJson));
+        this.dispatcher.trigger('socket.send_action', JSON.stringify(myJson));
     };
 
     this.handleGetAction = function (data) {
 		console.log("got action! it's: " + data);
 		this.callStubFunction("drawingModule.draw("+data+")");
+		myJson = JSON.parse(data);
+		this.invokeDrawingModule(myJson.action, myJson.startx, myJson.starty, myJson.endx, myJson.endy, myJson.color, myJson.strokeWidth);
     };
+
+	this.invokeDrawingModule = function (action, startx, starty, endx, endy, color, strokeWidth) {
+		startx = startx + 5;
+		starty = starty + 5;
+		endx = endx + 5;
+		endy = endy + 5;
+
+		switch(action) {
+			case "line":
+				autoDraw = new tools.line();
+				autoDraw.drawLine(startx, starty, endx, endy, color, strokeWidth);
+				break;
+			case "clear":			
+				tools.clear();
+  				break;
+			case "rectangle":
+				autoDraw = new tools.rectangle();
+				autoDraw.drawRectangle(startx, starty, endx, endy, color, strokeWidth);
+				break;
+			case "circle":
+				autoDraw = new tools.circle();
+				autoDraw.drawCircle(startx, starty, endx, endy, color, strokeWidth);
+				break;
+			default:
+  				console.log("invokeDrawingModule failed due to unknown action: " + action);
+		}
+	};
 
     this.getInitImg = function () {
 		console.log("getting initial image...");

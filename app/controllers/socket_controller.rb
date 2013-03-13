@@ -3,7 +3,7 @@ class SocketController < WebsocketRails::BaseController
 	end
 	
 	def get_action_handler
-		send_message :get_action, "got to the get action method of controller", :namespace => 'socket'
+		send_message :get_action, message, :namespace => 'socket'
 	end
 
 	def send_init_img
