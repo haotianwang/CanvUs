@@ -1,3 +1,13 @@
+/*
+The UpdateModule class will incorporate all of the functionality of the Update Module.
+After instantiating the class with new UpdateModule(), the function names directly map
+to the functionality that the Update Module must have.
+- UpdateModule.sendAction(action)
+- UpdateModule.handleGetAction(data)
+- updateModule.getInitImg()
+*/
+
+
 $(document).ready(function() { 
 	var updateModule = instantiateUpdateModule();
 	updateModule.getInitImg();
