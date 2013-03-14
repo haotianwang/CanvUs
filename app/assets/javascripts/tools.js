@@ -130,7 +130,7 @@ function initialize() {
             if (mouseDown) {
                 tool.mousemove(event);
                 mouseDown = false;
-                canvasUpdate();
+                //canvasUpdate();
 
 				// send action to server
 				updateModule.sendAction("line", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
@@ -189,10 +189,11 @@ function initialize() {
             if (mouseDown) {
                 tool.mousemove(event);
                 mouseDown = false;
-                canvasUpdate();
-				
+                //canvasUpdate();
+				clearCtx(drawCtx);
+                drawRect(tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
 				//send the action to server
-				updateModule.sendAction("rectangle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+				//updateModule.sendAction("rectangle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             }
         };
 
@@ -215,7 +216,7 @@ function initialize() {
 			
 			dispCtx.beginPath();
             dispCtx.arc(midX, midY, radius, 0, Math.PI * 2, false);
-            dispCtx.stroke();
+            //dispCtx.stroke();
 		}
 
         this.mousedown = function (event) {
@@ -245,7 +246,6 @@ function initialize() {
             if(!buggyCircle) drawCtx.beginPath();
             drawCtx.arc(midX, midY, radius, 0, Math.PI * 2, false);
             drawCtx.stroke();
-            //drawCtx.strokeRect(x, y, w, h);
         };
 
         this.mouseup = function (event) {
