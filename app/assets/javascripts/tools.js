@@ -190,7 +190,7 @@ function initialize() {
                 tool.mousemove(event);
                 mouseDown = false;
                 //canvasUpdate();
-				clearCtx(drawCtx);
+				clearCanvas(drawCtx);
                 drawRect(tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
 				//send the action to server
 				//updateModule.sendAction("rectangle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
