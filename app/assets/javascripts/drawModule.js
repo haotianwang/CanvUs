@@ -1,4 +1,4 @@
-function drawRect(startx, starty, endx, endy, color, linewidth) {
+function drawRect(startx, starty, endx, endy, color, lineWidth) {
 	console.log("in drawModule.drawRect()");
 	//do some preparation (store client state)
 	clientColor = dispCtx.strokeStyle;
