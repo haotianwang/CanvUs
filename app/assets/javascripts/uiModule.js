@@ -157,10 +157,10 @@ function initialize() {
             //if not buggyRectangle, then draw it on the draw canvas (not permanent)
             if(!buggyRectangle) {
                 clearCanvas(drawCtx);
-                drawRect(drawCtx, x, y, w, h, drawCtx.strokeStyle, drawCtx.lineWidth);
+                drawRect(drawCtx, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             //if buggyRect, then draw it on the disp canvas (permanent) and send to server
             } else {
-                drawRect(dispCtx, x, y, w, h, drawCtx.strokeStyle, drawCtx.lineWidth);
+                drawRect(dispCtx, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
                 updateModule.sendAction("rectangle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             } 
         };
