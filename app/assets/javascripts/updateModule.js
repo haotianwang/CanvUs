@@ -33,7 +33,7 @@ function UpdateModule() {
 	this.dispatcher = new WebSocketRails(this.url);
 
     this.sendAction = function (drawActionType, startx, starty, endx, endy, color, strokeWidth) {
-		myJson = {"action": drawActionType, 
+		var myJson = {"action": drawActionType, 
 					"startx": startx, 
 					"starty": starty, 
 					"endx": endx, 
@@ -81,6 +81,16 @@ function UpdateModule() {
     };
 
 	this.getInitImgHandler = function (data) {
+		var myJson = JSON.parse(data);
+		if (myJson.bitmap != "") {
+			
+		}
+		var actions = myJson.actions.split(", ");
+		for (var i = 0; i < actions.length; i++) {
+			var thisAction = JSON.parse(actions[i]);
+			this.invokeDrawingModule(thisAction.action, thisAction.startx, thisAction.starty, thisAction.endx, thisAction.endy, thisAction.color, thisAction.strokeWidth);
+		}
+
 		this.callStubFunction("drawingModule.drawBitMap(someBitMap)");
 		this.callStubFunction("drawingModule.drawActions(Array Actions)");
 	};
