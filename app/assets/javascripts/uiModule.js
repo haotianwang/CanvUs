@@ -107,9 +107,11 @@ function initialize() {
                 return;
             }
 
-            if(!buggyLine) drawCtx.beginPath();
+            //if(!buggyLine) drawCtx.beginPath();
+            drawCtx.beginPath();
             drawCtx.moveTo(tool.x0, tool.y0);
             drawCtx.lineTo(event.relx, event.rely);
+            if(buggyLine) drawLine(dispCtx,tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
             drawCtx.stroke();
 			
@@ -328,16 +330,6 @@ function initialize() {
         //get the x and y offset in terms of the canvas, two ways
         // to support multiple browsers (offset doesn't work with firefox)
         if(browser == "chrome" || browser == "safari") { //for Chrome/Opera
-            //we cant use event.x and event.y because in chrome (at least), x and y
-            // are part of the event obj and is == offsetX and offsetY... and can't
-            // be modified (I learned the hardway)
-            /* 
-            console.log("event.x " + event.x + " event.y " + event.y);
-            event.x = event.offsetX - canvLeft;
-            event.y = event.offsetY - canvTop;
-            console.log("in here" + event.x + " " + event.y);
-            */
-
             //was using event.x and event.y, but event.x and event.y works if you don't scroll down
             // because they refer to where in the visible browser window you clicked.
             event.relx = event.offsetX;
@@ -432,15 +424,6 @@ function initialize() {
         tool.changeColor('#FF0000');
         return false;
     };
-
-    /* //deprecated by colorSelector
-    colorBox.onkeydown = function (event) {
-        if(event.keyCode == 13) { //only check if key press is enter
-            tool.changeColor(colorBox.value);
-            colorBox.value = "Color: #000000";
-            return false; //return false on enter (else canvas cleared)
-        }
-    };*/
 
     colorSelector.onchange= function (event) {
         console.log("in here" + colorSelector.value)
