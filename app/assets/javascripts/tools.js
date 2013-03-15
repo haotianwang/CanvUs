@@ -21,8 +21,8 @@ buggyLine = false,
 buggyLineButton,
 dlPngButton,
 debug = false,
-currentTool = 'pencil',
-updateModule; //defaults tool to pencil tool
+currentTool = 'pencil', //defaults tool to pencil tool
+updateModule; 
 
 var browser,
 //need canvas position for non-FF browsers
@@ -92,6 +92,7 @@ function initialize() {
         var tool = this;
         var oldx = 0, oldy = 0;
 
+        /*
 		this.drawLine = function (startx, starty, endx, endy, color, lineWidth) {
 			dispCtx.strokeStyle = color;
 			dispCtx.lineWidth = lineWidth;
@@ -101,6 +102,7 @@ function initialize() {
 			dispCtx.lineTo(endx, endy);
 			dispCtx.stroke();
 		}
+        */
 
         this.mousedown = function (event) {
             if(mouseDown) {
@@ -360,10 +362,6 @@ function initialize() {
     function canvasUpdate() {
         dispCtx.drawImage(drawCanvas,0,0);
         clearCanvas(drawCtx);
-    }
-
-    function clearCanvas(context) {
-        context.clearRect(0,0,dispCanvas.width, dispCanvas.height)
     }
 
 	function clear() {

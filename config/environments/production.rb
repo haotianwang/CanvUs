@@ -8,9 +8,8 @@ CanvUs::Application.configure do
   config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
 
-  # Enable Rails's static asset server (Apache or nginx will already do this)
-  # Andy changed this so we can get png and gif files served up for color palatte
-  config.serve_static_assets = true
+  # disable Rails's static asset server (Apache or nginx will already do this)
+  config.serve_static_assets = false
 
   # Compress JavaScripts and CSS
   config.assets.compress = true
@@ -47,7 +46,7 @@ CanvUs::Application.configure do
   # config.action_controller.asset_host = "http://assets.example.com"
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-   config.assets.precompile += %w( updateModule.js tools.js drawModule.js jscolor/jscolor.js jscolor/arrow.gif jscolor/cross.gif jscolor/hs.png jscolor/hv.png base64.js canvas2Image.js draw.css )
+   config.assets.precompile += %w( updateModule.js tools.js drawModule.js uiModule.js jscolor/jscolor.js base64.js canvas2Image.js draw.css )
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false

@@ -34,3 +34,7 @@ function drawLine(context, startx, starty, endx, endy, color, lineWidth) {
 	context.lineTo(endx, endy);
 	context.stroke();
 }
+
+function clearCanvas(context) {
+    context.clearRect(0,0,dispCanvas.width, dispCanvas.height)
+}
