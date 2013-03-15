@@ -1,3 +1,5 @@
+CanvUs README
+
 Running the application:
 1. installing postgresql. skip to 2 if this is already done
 
@@ -20,6 +22,9 @@ local   all         postgres                          md5 sameuser
 5. Start PostgreSQL: sudo service postgresql start
 
 6. Clone files from the git repo and navigate to CanvUs/
+    url: https://github.com/haotianwang/CanvUs.git 
+    branch: canvusfirstrelease
+    tag: v1.0.0
 
 7. run: rake db:create and rake db:migrate
 
