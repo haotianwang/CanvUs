@@ -16,10 +16,11 @@ test:
   username: postgres
   password: password
   
-Production:  
+production:  
   adapter: postgresql
   encoding: unicode
   database: production
   pool: 5
+  host: localhost
   username: postgres
   password: password
