@@ -28,8 +28,9 @@ function instantiateUpdateModule() {
 }
 
 function UpdateModule() {
-    this.url = document.URL;
-	this.dispatcher = new WebSocketRails("localhost:3000/websocket");
+    this.url = document.URL.split( '/' )[2] + "/websocket";
+	console.log("socket at " + this.url);
+	this.dispatcher = new WebSocketRails(this.url);
 
     this.sendAction = function (drawActionType, startx, starty, endx, endy, color, strokeWidth) {
 		myJson = {"action": drawActionType, 
@@ -58,19 +59,16 @@ function UpdateModule() {
 
 		switch(action) {
 			case "line":
-				autoDraw = new tools.line();
-				autoDraw.drawLine(startx, starty, endx, endy, color, strokeWidth);
+				drawLine(dispCtx, startx, starty, endx, endy, color, strokeWidth);
 				break;
 			case "clear":			
-				tools.clear();
+				clearCanvas(dispCtx);
   				break;
 			case "rectangle":
-				autoDraw = new tools.rectangle();
-				autoDraw.drawRectangle(startx, starty, endx, endy, color, strokeWidth);
+				drawRectangle(dispCtx, startx, starty, endx, endy, color, strokeWidth);
 				break;
 			case "circle":
-				autoDraw = new tools.circle();
-				autoDraw.drawCircle(startx, starty, endx, endy, color, strokeWidth);
+				drawCircle(dispCtx, startx, starty, endx, endy, color, strokeWidth);
 				break;
 			default:
   				console.log("invokeDrawingModule failed due to unknown action: " + action);

@@ -21,8 +21,8 @@ buggyLine = false,
 buggyLineButton,
 dlPngButton,
 debug = false,
-currentTool = 'pencil',
-updateModule; //defaults tool to pencil tool
+currentTool = 'pencil', //defaults tool to pencil tool
+updateModule; 
 
 var browser,
 //need canvas position for non-FF browsers
@@ -54,10 +54,12 @@ function initialize() {
                 if(debug) console.log("calling " + currentTool+ ":" + event.type + " with mousedown, drawing at " +event.relx + " " + event.rely);
                 drawCtx.lineTo(event.relx, event.rely);
                 drawCtx.stroke();
-                canvasUpdate();
+                //canvasUpdate();
+                clearCanvas(drawCtx);
+                drawLine(dispCtx, prevX, prevY, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
 
 				// send action to server
-				updateModule.sendAction("line", prevX, prevY, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+				//updateModule.sendAction("line", prevX, prevY, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
 				prevX = event.relx;
                 prevY = event.rely;
             }
@@ -66,8 +68,6 @@ function initialize() {
         // This is called when you release the mouse button.
         this.mouseup = function (event) {
             if (mouseDown) {
-                //if(event.relx < 100) event.relx = 0;
-                //if(event.rely < 100) event.rely = 0;
                 tool.mousemove(event);
                 mouseDown = false;
 				drawCtx.beginPath();
@@ -92,6 +92,7 @@ function initialize() {
         var tool = this;
         var oldx = 0, oldy = 0;
 
+        /*
 		this.drawLine = function (startx, starty, endx, endy, color, lineWidth) {
 			dispCtx.strokeStyle = color;
 			dispCtx.lineWidth = lineWidth;
@@ -101,6 +102,7 @@ function initialize() {
 			dispCtx.lineTo(endx, endy);
 			dispCtx.stroke();
 		}
+        */
 
         this.mousedown = function (event) {
             if(mouseDown) {
@@ -130,10 +132,11 @@ function initialize() {
             if (mouseDown) {
                 tool.mousemove(event);
                 mouseDown = false;
-                canvasUpdate();
-
-				// send action to server
-				updateModule.sendAction("line", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                //canvasUpdate();
+                drawLine(dispCtx,tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+				clearCanvas(drawCtx);
+                // send action to server
+				//updateModule.sendAction("line", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             }
         };
 
@@ -146,7 +149,8 @@ function initialize() {
     tools.rectangle = function () {
         var tool = this;
 
-		this.drawRectangle = function (startx, starty, endx, endy, color, lineWidth) {
+		/*
+        this.drawRectangle = function (startx, starty, endx, endy, color, lineWidth) {
 			var x = Math.min(startx, endx);
 			var y = Math.min(starty, endy);
 			var w = Math.abs(startx - endx);
@@ -155,7 +159,7 @@ function initialize() {
 			dispCtx.lineWidth = lineWidth;
 
 			dispCtx.strokeRect(x,y,w,h);
-		}
+		}*/
 
         this.mousedown = function (event) {
             if(mouseDown) {
@@ -189,10 +193,10 @@ function initialize() {
             if (mouseDown) {
                 tool.mousemove(event);
                 mouseDown = false;
-                canvasUpdate();
-				
-				//send the action to server
-				updateModule.sendAction("rectangle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                drawRect(dispCtx, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+				clearCanvas(drawCtx);
+                //send the action to server
+				//updateModule.sendAction("rectangle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             }
         };
 
@@ -205,7 +209,8 @@ function initialize() {
     tools.circle = function () {
         var tool = this;
 
-		this.drawCircle = function (startx, starty, endx, endy, color, lineWidth) {
+		/*
+        this.drawCircle = function (startx, starty, endx, endy, color, lineWidth) {
 			var midX = (startx + endx) / 2
             var midY = (starty + endy) / 2
             var radius = Math.sqrt(Math.pow(endx - midX,2) + Math.pow(endy - midY,2));
@@ -215,8 +220,9 @@ function initialize() {
 			
 			dispCtx.beginPath();
             dispCtx.arc(midX, midY, radius, 0, Math.PI * 2, false);
-            dispCtx.stroke();
+            //dispCtx.stroke();
 		}
+        */
 
         this.mousedown = function (event) {
             if(mouseDown) {
@@ -245,16 +251,15 @@ function initialize() {
             if(!buggyCircle) drawCtx.beginPath();
             drawCtx.arc(midX, midY, radius, 0, Math.PI * 2, false);
             drawCtx.stroke();
-            //drawCtx.strokeRect(x, y, w, h);
         };
 
         this.mouseup = function (event) {
             if (mouseDown) {
                 tool.mousemove(event);
                 mouseDown = false;
-                canvasUpdate();
-
-				updateModule.sendAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                drawCircle(dispCtx, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+				clearCanvas(drawCtx);
+                //updateModule.sendAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             }
         };
 
@@ -355,17 +360,8 @@ function initialize() {
 
     //This function draws the "drawing" layer onto the background layer
     function canvasUpdate() {
-        /*if(browser == "chrome") {
-            var img = new Image();
-            img.src = drawCanvas.toDataURL();
-            dispCtx.drawImage(img,0,0)
-        } else */
-            dispCtx.drawImage(drawCanvas,0,0);
+        dispCtx.drawImage(drawCanvas,0,0);
         clearCanvas(drawCtx);
-    }
-
-    function clearCanvas(context) {
-        context.clearRect(0,0,dispCanvas.width, dispCanvas.height)
     }
 
 	function clear() {
