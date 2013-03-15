@@ -54,10 +54,12 @@ function initialize() {
                 if(debug) console.log("calling " + currentTool+ ":" + event.type + " with mousedown, drawing at " +event.relx + " " + event.rely);
                 drawCtx.lineTo(event.relx, event.rely);
                 drawCtx.stroke();
-                canvasUpdate();
+                //canvasUpdate();
+                clearCanvas(drawCtx);
+                drawLine(dispCtx, prevX, prevY, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
 
 				// send action to server
-				updateModule.sendAction("line", prevX, prevY, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+				//updateModule.sendAction("line", prevX, prevY, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
 				prevX = event.relx;
                 prevY = event.rely;
             }
@@ -66,8 +68,6 @@ function initialize() {
         // This is called when you release the mouse button.
         this.mouseup = function (event) {
             if (mouseDown) {
-                //if(event.relx < 100) event.relx = 0;
-                //if(event.rely < 100) event.rely = 0;
                 tool.mousemove(event);
                 mouseDown = false;
 				drawCtx.beginPath();
@@ -134,7 +134,7 @@ function initialize() {
                 drawLine(dispCtx,tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
 				clearCanvas(drawCtx);
                 // send action to server
-				updateModule.sendAction("line", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+				//updateModule.sendAction("line", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             }
         };
 
