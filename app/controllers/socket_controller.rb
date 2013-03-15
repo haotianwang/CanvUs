@@ -11,16 +11,16 @@ class SocketController < WebsocketRails::BaseController
   # have been done since the canvas state was last saved. Afterwards, broadcasts the action to all connected
   # clients.
   def get_action_handler
-    Action.storeAction(message['action'], message['canvasID'])
+    Action.storeAction(message, 0)
     controller_store[:action_count] += 1
-    broadcast_message :get_action, message['action'], :namespace => 'socket'
+    broadcast_message :get_action, message, :namespace => 'socket'
   end
 
   # Retrieves the most recent canvas state stored in the database as well as any actions that have been done
   # since that canvas state was stored to send to a newly connected client.
   def send_init_img
-    bitmap = Bitmap.getBitmap(message['canvasID'])
-    actions = Action.getActions(message['canvasID'])
+    bitmap = Bitmap.getBitmap(0)
+    actions = Action.getActions(0)
     send_message :get_init_img, {bitmap: bitmap, actions: actions}.to_json, :namespace => 'socket'
   end
 end
