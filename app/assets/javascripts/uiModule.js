@@ -17,6 +17,8 @@ colorBox,
 colorSelector,
 buggyCircle = false,
 buggyCircleButton,
+buggyRectangle = false,
+buggyRectangleButton,
 buggyLine = false,
 buggyLineButton,
 dlPngButton,
@@ -107,14 +109,14 @@ function initialize() {
                 return;
             }
 
-            //if(!buggyLine) drawCtx.beginPath();
-            drawCtx.beginPath();
-            drawCtx.moveTo(tool.x0, tool.y0);
-            drawCtx.lineTo(event.relx, event.rely);
-            if(buggyLine) drawLine(dispCtx,tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
-            drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-            drawCtx.stroke();
-			
+            //if not buggyLine, then draw it on the draw canvas (not permanent)
+            if(!buggyLine) {
+                drawLine(drawCtx,tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+			//if buggyLine, then draw it on the disp canvas (permanent) and send to server
+            } else {
+                drawLine(dispCtx,tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                updateModule.sendAction("line", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+            } 
         };
 
         this.mouseup = function (event) {
@@ -151,18 +153,14 @@ function initialize() {
             if (!mouseDown) {
                 return;
             }
-            var x = Math.min(event.relx,  tool.x0),
-            y = Math.min(event.rely,  tool.y0),
-            w = Math.abs(event.relx - tool.x0),
-            h = Math.abs(event.rely - tool.y0);
-
-            drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-
-            if (!w || !h) {
-                return;
-            }
-
-            drawCtx.strokeRect(x, y, w, h);
+            //if not buggyRectangle, then draw it on the draw canvas (not permanent)
+            if(!buggyRectangle) {
+                drawRect(drawCtx, x, y, w, h, drawCtx.strokeStyle, drawCtx.lineWidth);
+            //if buggyRect, then draw it on the disp canvas (permanent) and send to server
+            } else {
+                drawRect(dispCtx, x, y, w, h, drawCtx.strokeStyle, drawCtx.lineWidth);
+                updateModule.sendAction("rectangle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+            } 
         };
 
         this.mouseup = function (event) {
@@ -201,17 +199,14 @@ function initialize() {
             if (!mouseDown) {
                 return;
             }
-
-            midX = (tool.x0 + event.relx) / 2
-            midY = (tool.y0 + event.rely) / 2
-
-            radius = Math.sqrt(Math.pow(event.relx - midX,2) + Math.pow(event.rely - midY,2));
-
-            drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-
-            if(!buggyCircle) drawCtx.beginPath();
-            drawCtx.arc(midX, midY, radius, 0, Math.PI * 2, false);
-            drawCtx.stroke();
+            //if not buggyCircle, then draw it on the draw canvas (not permanent)
+            if(!buggyCircle) {
+                drawCircle(drawCtx, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+            //if buggyCircle, then draw it on the disp canvas (permanent) and send to server
+            } else{
+                drawCircle(dispCtx, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                updateModule.sendAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+            }
         };
 
         this.mouseup = function (event) {
@@ -249,6 +244,7 @@ function initialize() {
     rectangleButton = document.getElementById("rectangle-button");
     circleButton = document.getElementById("circle-button");
     buggyCircleButton = document.getElementById("buggy-circle-button");
+    buggyRectangleButton = document.getElementById("buggy-rectangle-button");
     buggyLineButton = document.getElementById("buggy-line-button");
     debugButton = document.getElementById("debug-button");
     dlPngButton = document.getElementById("download-png-button");
@@ -381,6 +377,7 @@ function initialize() {
 
     rectangleButton.onclick = function() {
         currentTool = "rectangle";
+        buggyRectangle = false;
         tool = new tools[currentTool]();
         return false;
     };
@@ -393,7 +390,7 @@ function initialize() {
     };
 
     buggyLineButton.onclick = function() {
-        //lets you play with the buggy circle
+        //lets you play with the buggy line
         drawCtx.beginPath();
         buggyLine = true;
         currentTool = "line";
@@ -406,6 +403,15 @@ function initialize() {
         drawCtx.beginPath();
         buggyCircle = true;
         currentTool = "circle";
+        tool = new tools[currentTool]();
+        return false;
+    }
+
+    buggyRectangleButton.onclick = function() {
+        //lets you play with the buggy rectangle
+        drawCtx.beginPath();
+        buggyRectangle = true;
+        currentTool = "rectangle";
         tool = new tools[currentTool]();
         return false;
     }
