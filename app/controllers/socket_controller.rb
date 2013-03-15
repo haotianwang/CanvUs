@@ -1,19 +1,26 @@
-class SocketsController < WebsocketRails::BaseController
-	
+require 'json'
+
+class SocketController < WebsocketRails::BaseController
+
+  # Initializes action_count to 0, which will be incremented each time an action is received from a client.
   def initialize_session
     controller_store[:action_count] = 0
-	end
-	
-	def get_action_handler
+  end
+  
+  # Stores an action in the database and increments the action count, which will keep track of how many actions
+  # have been done since the canvas state was last saved. Afterwards, broadcasts the action to all connected
+  # clients.
+  def get_action_handler
     Action.storeAction(message['action'], message['canvasID'])
     controller_store[:action_count] += 1
-		broadcast_message :get_action, message['action'], :namespace => 'socket'
-	end
+    broadcast_message :get_action, message['action'], :namespace => 'socket'
+  end
 
-	def send_init_img
+  # Retrieves the most recent canvas state stored in the database as well as any actions that have been done
+  # since that canvas state was stored to send to a newly connected client.
+  def send_init_img
     bitmap = Bitmap.getBitmap(message['canvasID'])
     actions = Action.getActions(message['canvasID'])
-		broadcast_message :get_init_img, {user: message['user'], bitmap: bitmap, actions: actions}, :namespace => 'socket'
-	end
-  # Why use WebSockets for send_init_img? We can just use a regular HTTP request.
+    send_message :get_init_img, {bitmap: bitmap, actions: actions}.to_json, :namespace => 'socket'
+  end
 end
