@@ -28,8 +28,9 @@ function instantiateUpdateModule() {
 }
 
 function UpdateModule() {
-    this.url = document.URL;
-	this.dispatcher = new WebSocketRails("localhost:3000/websocket");
+    this.url = document.URL.split( '/' )[2] + "/websocket";
+	console.log("socket at " + this.url);
+	this.dispatcher = new WebSocketRails(this.url);
 
     this.sendAction = function (drawActionType, startx, starty, endx, endy, color, strokeWidth) {
 		myJson = {"action": drawActionType, 
