@@ -355,8 +355,8 @@ function initialize() {
     };
 
     clrButton.onclick = function() { 
-		clear();
-
+		clearCanvas(dispCtx);
+        clearCanvas(drawCtx);
 		// send the clear to server, everything else can be filler values
 		updateModule.sendAction("clear", 0,0,0,0,0,0);
 
