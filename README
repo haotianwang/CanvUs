@@ -1,0 +1,28 @@
+Running the application:
+1. installing postgresql. skip to 2 if this is already done
+
+a. run in the terminal: sudo apt-get install postgresql
+
+b. edit the file: /etc/postgresql/<version>/main/postgresql.conf
+
+c. uncomment the line:  #listen_addresses = 'localhost'
+
+2. run in the terminal: sudo -u postgres psql template1
+
+3. run in the terminal: ALTER USER postgres with encrypted password 'password';
+
+4. edit the file: /etc/postgresql/<version>/main/pg_hba.conf
+by changing  the line:
+local   all         postgres                          <something here>
+to:
+local   all         postgres                          md5 sameuser
+
+5. Start PostgreSQL: sudo service postgresql start
+
+6. Clone files from the git repo and navigate to CanvUs/
+
+7. run: rake db:create and rake db:migrate
+
+8. run: rails server
+
+9. open a browser and go to http://localhost:3000/draw
