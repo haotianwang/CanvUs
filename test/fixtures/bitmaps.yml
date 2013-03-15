@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  canvas_id: 1
+  bitmap: MyText
+
+two:
+  canvas_id: 1
+  bitmap: MyText

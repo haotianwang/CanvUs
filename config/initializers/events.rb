@@ -30,7 +30,7 @@ end
 
 WebsocketRails::EventMap.describe do
 	namespace :socket do
-		subscribe :send_action, 'socket#get_action_handler'
-		subscribe :send_init_img, 'socket#send_init_img'
+		subscribe :send_action, 'sockets#get_action_handler'
+		subscribe :send_init_img, 'sockets#send_init_img'
 	end
 end
