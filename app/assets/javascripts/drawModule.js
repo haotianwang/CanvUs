@@ -1,34 +1,36 @@
-function drawRect(startx, starty, endx, endy, color, lineWidth) {
-	console.log("in drawModule.drawRect()");
-	//do some preparation (store client state)
-	clientColor = dispCtx.strokeStyle;
-	clientLineWidth = dispCtx.lineWidth;
 
+//** WARNING ** These methods do not store th old state of the context, so 
+// if you change the strokeStyle and lineWidth, they do NOT get restored
+function drawRect(context, startx, starty, endx, endy, color, lineWidth) {
 	//draw the other clients' rectangle
 	var x = Math.min(startx, endx);
 	var y = Math.min(starty, endy);
 	var w = Math.abs(startx - endx);
 	var h = Math.abs(starty - endy);
-	dispCtx.strokeStyle = color;
-	dispCtx.lineWidth = lineWidth;
-	dispCtx.strokeRect(x,y,w,h);
-
-	//restore client state
-	dispCtx.strokeStyle = clientColor;
-	dispCtx.lineWidth = clientLineWidth;
+	context.strokeStyle = color;
+	context.lineWidth = lineWidth;
+	context.strokeRect(x,y,w,h);
 }
 
-function drawCircle(startx, starty, endx, endy, color, lineWidth) {
-	//do some preparation (finish "stroke" and store client state)
-
+function drawCircle(context, startx, starty, endx, endy, color, lineWidth) {
 	var midX = (startx + endx) / 2
     var midY = (starty + endy) / 2
     var radius = Math.sqrt(Math.pow(endx - midX,2) + Math.pow(endy - midY,2));
 
-	dispCtx.strokeStyle = color;
-	dispCtx.lineWidth = lineWidth;
+	context.strokeStyle = color;
+	context.lineWidth = lineWidth;
 	
-	dispCtx.beginPath();
-    dispCtx.arc(midX, midY, radius, 0, Math.PI * 2, false);
-    dispCtx.stroke();
+	context.beginPath();
+    context.arc(midX, midY, radius, 0, Math.PI * 2, false);
+    context.stroke();
+}
+
+function drawLine(context, startx, starty, endx, endy, color, lineWidth) {
+	context.strokeStyle = color;
+	context.lineWidth = lineWidth;
+
+	context.beginPath();
+	context.moveTo(startx, starty);
+	context.lineTo(endx, endy);
+	context.stroke();
 }

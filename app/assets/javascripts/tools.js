@@ -131,8 +131,9 @@ function initialize() {
                 tool.mousemove(event);
                 mouseDown = false;
                 //canvasUpdate();
-
-				// send action to server
+                drawLine(dispCtx,tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+				clearCanvas(drawCtx);
+                // send action to server
 				updateModule.sendAction("line", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             }
         };
@@ -146,7 +147,8 @@ function initialize() {
     tools.rectangle = function () {
         var tool = this;
 
-		this.drawRectangle = function (startx, starty, endx, endy, color, lineWidth) {
+		/*
+        this.drawRectangle = function (startx, starty, endx, endy, color, lineWidth) {
 			var x = Math.min(startx, endx);
 			var y = Math.min(starty, endy);
 			var w = Math.abs(startx - endx);
@@ -155,7 +157,7 @@ function initialize() {
 			dispCtx.lineWidth = lineWidth;
 
 			dispCtx.strokeRect(x,y,w,h);
-		}
+		}*/
 
         this.mousedown = function (event) {
             if(mouseDown) {
@@ -189,10 +191,9 @@ function initialize() {
             if (mouseDown) {
                 tool.mousemove(event);
                 mouseDown = false;
-                //canvasUpdate();
+                drawRect(dispCtx, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
 				clearCanvas(drawCtx);
-                drawRect(tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
-				//send the action to server
+                //send the action to server
 				//updateModule.sendAction("rectangle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             }
         };
@@ -206,7 +207,8 @@ function initialize() {
     tools.circle = function () {
         var tool = this;
 
-		this.drawCircle = function (startx, starty, endx, endy, color, lineWidth) {
+		/*
+        this.drawCircle = function (startx, starty, endx, endy, color, lineWidth) {
 			var midX = (startx + endx) / 2
             var midY = (starty + endy) / 2
             var radius = Math.sqrt(Math.pow(endx - midX,2) + Math.pow(endy - midY,2));
@@ -218,6 +220,7 @@ function initialize() {
             dispCtx.arc(midX, midY, radius, 0, Math.PI * 2, false);
             //dispCtx.stroke();
 		}
+        */
 
         this.mousedown = function (event) {
             if(mouseDown) {
@@ -252,9 +255,9 @@ function initialize() {
             if (mouseDown) {
                 tool.mousemove(event);
                 mouseDown = false;
-                canvasUpdate();
-
-				updateModule.sendAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                drawCircle(dispCtx, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+				clearCanvas(drawCtx);
+                //updateModule.sendAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             }
         };
 
@@ -355,12 +358,7 @@ function initialize() {
 
     //This function draws the "drawing" layer onto the background layer
     function canvasUpdate() {
-        /*if(browser == "chrome") {
-            var img = new Image();
-            img.src = drawCanvas.toDataURL();
-            dispCtx.drawImage(img,0,0)
-        } else */
-            dispCtx.drawImage(drawCanvas,0,0);
+        dispCtx.drawImage(drawCanvas,0,0);
         clearCanvas(drawCtx);
     }
 
