@@ -59,19 +59,16 @@ function UpdateModule() {
 
 		switch(action) {
 			case "line":
-				autoDraw = new tools.line();
-				autoDraw.drawLine(startx, starty, endx, endy, color, strokeWidth);
+				drawLine(dispCtx, startx, starty, endx, endy, color, strokeWidth);
 				break;
 			case "clear":			
-				tools.clear();
+				clearCanvas(dispCtx);
   				break;
 			case "rectangle":
-				autoDraw = new tools.rectangle();
-				autoDraw.drawRectangle(startx, starty, endx, endy, color, strokeWidth);
+				drawRectangle(dispCtx, startx, starty, endx, endy, color, strokeWidth);
 				break;
 			case "circle":
-				autoDraw = new tools.circle();
-				autoDraw.drawCircle(startx, starty, endx, endy, color, strokeWidth);
+				drawCircle(dispCtx, startx, starty, endx, endy, color, strokeWidth);
 				break;
 			default:
   				console.log("invokeDrawingModule failed due to unknown action: " + action);

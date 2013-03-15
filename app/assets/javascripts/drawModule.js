@@ -1,7 +1,7 @@
 
 //** WARNING ** These methods do not store th old state of the context, so 
 // if you change the strokeStyle and lineWidth, they do NOT get restored
-function drawRect(context, startx, starty, endx, endy, color, lineWidth) {
+function drawRectangle(context, startx, starty, endx, endy, color, lineWidth) {
 	//draw the other clients' rectangle
 	var x = Math.min(startx, endx);
 	var y = Math.min(starty, endy);
