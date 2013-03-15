@@ -111,6 +111,7 @@ function initialize() {
 
             //if not buggyLine, then draw it on the draw canvas (not permanent)
             if(!buggyLine) {
+                clearCanvas(drawCtx);
                 drawLine(drawCtx,tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
 			//if buggyLine, then draw it on the disp canvas (permanent) and send to server
             } else {
@@ -155,6 +156,7 @@ function initialize() {
             }
             //if not buggyRectangle, then draw it on the draw canvas (not permanent)
             if(!buggyRectangle) {
+                clearCanvas(drawCtx);
                 drawRect(drawCtx, x, y, w, h, drawCtx.strokeStyle, drawCtx.lineWidth);
             //if buggyRect, then draw it on the disp canvas (permanent) and send to server
             } else {
@@ -201,6 +203,7 @@ function initialize() {
             }
             //if not buggyCircle, then draw it on the draw canvas (not permanent)
             if(!buggyCircle) {
+                clearCanvas(drawCtx);
                 drawCircle(drawCtx, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             //if buggyCircle, then draw it on the disp canvas (permanent) and send to server
             } else{
