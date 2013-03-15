@@ -1,6 +1,8 @@
 class Bitmap < ActiveRecord::Base
   attr_accessible :bitmap, :canvas_id
 
+  validates :canvas_id, presence: true
+
   # Stores the bitmap representing a particular canvas's state.
   def self.storeBitmap(bitmap, canvasID)
     newBitmap = Bitmap.new(bitmap: bitmap, canvas_id: canvasID)
