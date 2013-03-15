@@ -19,8 +19,12 @@ class SocketController < WebsocketRails::BaseController
   # Retrieves the most recent canvas state stored in the database as well as any actions that have been done
   # since that canvas state was stored to send to a newly connected client.
   def send_init_img
+	#puts "send_init_img called"
     bitmap = Bitmap.getBitmap(0)
     actions = Action.getActions(0)
-    send_message :get_init_img, {bitmap: bitmap, actions: actions}.to_json, :namespace => 'socket'
+	#puts "done send_init_img"
+	return_message = {bitmap: bitmap, actions: actions}.to_json
+	#puts return_message
+    send_message :get_init_img, return_message, :namespace => 'socket'
   end
 end

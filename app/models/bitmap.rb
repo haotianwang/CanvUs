@@ -10,9 +10,9 @@ class Bitmap < ActiveRecord::Base
   # Gets the most recently stored bitmap for a particular canvas.
   def self.getBitmap(canvasID)
     latestBitmap = Bitmap.connection.execute("SELECT B.bitmap
-                                              FROM Bitmap B
+                                              FROM Bitmaps B
                                               WHERE B.canvas_id = #{canvasID}
-                                              ORDER BY DESC
+                                              ORDER BY B.created_at DESC
                                               LIMIT 1")
     if latestBitmap.count == 0 # If no bitmap has been stored for a particular
       return ''                # canvas, then return an empty string.

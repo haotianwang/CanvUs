@@ -52,10 +52,10 @@ function UpdateModule() {
     };
 
 	this.invokeDrawingModule = function (action, startx, starty, endx, endy, color, strokeWidth) {
-		startx = startx + 5;
-		starty = starty + 5;
-		endx = endx + 5;
-		endy = endy + 5;
+		//startx = startx + 5;
+		//starty = starty + 5;
+		//endx = endx + 5;
+		//endy = endy + 5;
 
 		switch(action) {
 			case "line":
@@ -81,15 +81,21 @@ function UpdateModule() {
     };
 
 	this.getInitImgHandler = function (data) {
+		console.log("got image, raw data is " + data);
 		var myJson = JSON.parse(data);
+		console.log("got image. it's: " + JSON.stringify(myJson));
 		if (myJson.bitmap != "") {
 			
 		}
-		var actions = myJson.actions.split(", ");
-		for (var i = 0; i < actions.length; i++) {
-			var thisAction = JSON.parse(actions[i]);
-			this.invokeDrawingModule(thisAction.action, thisAction.startx, thisAction.starty, thisAction.endx, thisAction.endy, thisAction.color, thisAction.strokeWidth);
+		if (myJson.actions != "") {
+			var actions = myJson.actions.split(", ");
+			for (var i = 0; i < actions.length; i++) {
+				var thisAction = JSON.parse(actions[i]);
+				console.log(JSON.stringify(thisAction));
+				this.invokeDrawingModule(thisAction.action, thisAction.startx, thisAction.starty, thisAction.endx, thisAction.endy, thisAction.color, thisAction.strokeWidth);
+			}
 		}
+			
 
 		this.callStubFunction("drawingModule.drawBitMap(someBitMap)");
 		this.callStubFunction("drawingModule.drawActions(Array Actions)");
