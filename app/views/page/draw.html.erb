@@ -6,6 +6,15 @@
 <%= javascript_include_tag "canvas2Image" %>
 <%= stylesheet_link_tag "draw" %>
 
+<head>
+    <!-- Bootstrap -->
+    
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.min.css">
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+</head>
+
 <center>
 <div id="canvas-message" class="message">
 Hi, welcome to CanvUs v.1.0.0
@@ -21,26 +30,65 @@ Choose your weapon and draw away!
 </div>
 
 <div id="canvasControl-box">
-    <form>
-        <input id="clear-button" type="submit" value="Clear">
-        <input id="pencil-button" type="submit" value="Pencil">
-        <input id="line-button" type="submit" value="Line">
-        <input id="rectangle-button" type="submit" value="Rectangle">
-        <input id="circle-button" type="submit" value="Circle">
-        <input id="black-button" type="submit" value="Black">
-        <input id="red-button" type="submit" value="Red">
-        <input id="blue-button" type="submit" value="Blue">
+    <form> 
+        <!--
+        <a href="#" class="btn" input id="pencil-button" type="submit" value="Pencil">Pencil</a>
+        <a href="#" class="btn" input id="line-button" type="submit" value="Line">Line</a>
+        <a href="#" class="btn" input id="rectangle-button" type="submit" value="Rectangle">Rectangle</a>
+        <a href="#" class="btn" input id="circle-button" type="submit" value="Circle">Circle</a>
         <br>
+        -->
         <!-- Deprecated by Color selector
             <input id="color-box" type="text" value="Color: #000000"> 
         -->
-        Color selector: <input id="color-selector" class="color {hash: true}" value="000000">
-        <input id="line-thickness-box" type="text" value="Line Thickness">
-        <input id="buggy-line-button" type="submit" value="Buggy Line">
-        <input id="buggy-circle-button" type="submit" value="Buggy Circle">
-        <input id="buggy-rectangle-button" type="submit" value="Buggy Rectangle">
-        <br>
-        <input id="download-png-button" type="submit" value="Download as PNG">
+        
+        
+        <div class="btn-toolbar">
+            <div class="btn-group">
+                <a class="btn" input id="line-button" type="submit" value="Line"href="#"><i><img src="glyphicons_097_vector_path_line.png" class="icon-line"></i></a><br>
+                <a class="btn" 
+        <a href="#" class="btn" input id="pencil-button" type="submit" value="Pencil" href="#"><i class="icon-pencil"></i></a><br>
+                <a class="btn" input id="rectangle-button" type="submit" value="Rectangle" href="#"><i><img src="glyphicons_094_vector_path_square.png" class="icon-square"></i></a><br>
+                <a class="btn" input id="circle-button" type="submit" value="Circle" href="#"><i><img src="glyphicons_095_vector_path_circle.png" class="icon-circle"></i></a><br>
+                <a class="btn" id="line-thickness-box" type="submit" value="Buggy Line" href="#">Buggy Line</a><br>
+                <a class="btn" id="buggy-circle-button" type="submit" value="Buggy Circle" href="#">Buggy Circle</a><br>
+                <a class="btn" id="buggy-rectangle-button" type="submit" value="Buggy Rectangle" href="#">Buggy Rectangle</a><br>
+
+            </div>
+        </div>
+        <a href="#" class="btn btn-danger" input id="clear-button" type="submit" value="Clear">Clear</a>
+        <br><br>
+        <a href="#" class="btn btn-large btn-success" id="download-png-button" type="submit" value="Download as PNG">Save Image</a>
+        <div>
+            <br>
+            <br>
+            <br>
+            <br>
+        </div>
+        Color selector: <input id="color-selector" class="color {hash: true}" value="000000"><br>
+        <div>
+            <br>
+           
+
+        </div>
+        <div class="input-prepend input-append">
+            <input class="span2" id="appendedPrependedDropdownButton" type="text">
+            <div class="btn-group">
+                <button class="btn dropdown-toggle" data-toggle="dropdown">
+                    Thickness
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#">1pt</a></li>
+                    <li><a href="#">2pt</a></li>
+                    <li><a href="#">4pt</a></li>
+                    <li><a href="#">8pt</a></li>
+                    <li><a href="#">16pt</a></li>
+                    <li><a href="#">32pt</a></li>
+                    <li><a href="#">64pt</a></li>
+                </ul>
+            </div>
+        </div><br>
         <input id="debug-button" type="submit" value="Debug Off">
     </form>
 </div>
