@@ -23,6 +23,10 @@ end
 gem 'jquery-rails'
 gem 'websocket-rails', '0.4.2'
 
+group :development, :test do
+  gem 'qunit-rails'
+end
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 

@@ -20,17 +20,17 @@ $(document).ready(function() {
 });
 */
 
-function instantiateUpdateModule() {
-	var module = new UpdateModule();
+function instantiateUpdateModule(socketClass) {
+	var module = new UpdateModule(socketClass);
 	module.dispatcher.bind('socket.get_init_img', function(data){module.getInitImgHandler(data)});
 	module.dispatcher.bind('socket.get_action', function(data){module.handleGetAction(data)});
 	return module;
 }
 
-function UpdateModule() {
+function UpdateModule(socketClass) {
     this.url = document.URL.split( '/' )[2] + "/websocket";
 	console.log("socket at " + this.url);
-	this.dispatcher = new WebSocketRails(this.url);
+	this.dispatcher = new socketClass(this.url);
 
     this.sendAction = function (drawActionType, startx, starty, endx, endy, color, strokeWidth) {
 		var myJson = {"action": drawActionType, 
@@ -46,16 +46,11 @@ function UpdateModule() {
 
     this.handleGetAction = function (data) {
 		console.log("got action! it's: " + data);
-		this.callStubFunction("drawingModule.draw("+data+")");
 		myJson = JSON.parse(data);
 		this.invokeDrawingModule(myJson.action, myJson.startx, myJson.starty, myJson.endx, myJson.endy, myJson.color, myJson.strokeWidth);
     };
 
 	this.invokeDrawingModule = function (action, startx, starty, endx, endy, color, strokeWidth) {
-		//startx = startx + 5;
-		//starty = starty + 5;
-		//endx = endx + 5;
-		//endy = endy + 5;
 
 		switch(action) {
 			case "line":
@@ -95,13 +90,5 @@ function UpdateModule() {
 				this.invokeDrawingModule(thisAction.action, thisAction.startx, thisAction.starty, thisAction.endx, thisAction.endy, thisAction.color, thisAction.strokeWidth);
 			}
 		}
-			
-
-		this.callStubFunction("drawingModule.drawBitMap(someBitMap)");
-		this.callStubFunction("drawingModule.drawActions(Array Actions)");
 	};
-
-	this.callStubFunction = function (functionName) {
-		console.log("function called! " + functionName);
-	}
 }
