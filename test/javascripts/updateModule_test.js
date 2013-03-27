@@ -1,7 +1,7 @@
 //= require updateModule
 //= require sinon-1.6.0.js
 
-module( "module A", {
+module( "updateModule tests", {
 	setup: function() {
         this.WebSocketRailsAPI = {   
                                     trigger: function (arg1, arg2) {},
