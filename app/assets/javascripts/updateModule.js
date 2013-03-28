@@ -17,6 +17,7 @@ function instantiateUpdateModule(socketClass) {
     module.setSocketClass(socketClass);
     module.setDrawAPI(getDrawAPI());
     module.setContext(dispCtx);
+    module.setCanvas(dispCanvas);
 
     module.initialize();
     return module;
@@ -27,6 +28,7 @@ function UpdateModule() {
     this.dispatcher = null;
     this.DrawAPI = null;
     this.context = null;
+    this.canvas = null;
 
     this.initialize = function() {
         this.url = document.URL.split( '/' )[2] + "/websocket";
@@ -39,6 +41,10 @@ function UpdateModule() {
 
     this.setContext = function (context) {
         this.context = context;
+    }
+
+    this.setCanvas = function (canvas) {
+        this.canvas = canvas;
     }
 
     this.setSocketClass = function(socketClass) {
@@ -97,7 +103,7 @@ function UpdateModule() {
         var myJson = JSON.parse(data);
         console.log("got image. it's: " + JSON.stringify(myJson));
         if (myJson.bitmap != "") {
-            this.DrawAPI.drawBitmap(this.context, myJson.bitmap);
+            this.DrawAPI.drawBitmap(this.canvas, myJson.bitmap);
         }
         if (myJson.actions != "") {
             var actions = myJson.actions.split(", ");
@@ -128,7 +134,7 @@ function getDrawAPI() {
             drawCircle(dispCtx, startx, starty, endx, endy, color, strokeWidth); 
         },
 
-        drawBitmap: function(dispCtx, bitmap) {
+        drawBitmap: function(canvas, bitmap) {
             drawBitmap(dispCtx, bitmap);
         }
     }
