@@ -16,6 +16,8 @@ function instantiateUpdateModule(socketClass) {
     var module = new UpdateModule();
     module.setSocketClass(socketClass);
     module.setDrawAPI(getDrawAPI());
+    module.setContext(dispCtx);
+
     module.initialize();
     return module;
 }
@@ -24,6 +26,7 @@ function UpdateModule() {
     this.socketClass = null;
     this.dispatcher = null;
     this.DrawAPI = null;
+    this.context = null;
 
     this.initialize = function() {
         this.url = document.URL.split( '/' )[2] + "/websocket";
@@ -32,6 +35,10 @@ function UpdateModule() {
         var module = this;
         this.dispatcher.bind('socket.get_init_img', function(data) {module.getInitImgHandler(data)});
         this.dispatcher.bind('socket.get_action', function(data) {module.handleGetAction(data)});
+    }
+
+    this.setContext = function (context) {
+        this.context = context;
     }
 
     this.setSocketClass = function(socketClass) {
@@ -90,14 +97,14 @@ function UpdateModule() {
         var myJson = JSON.parse(data);
         console.log("got image. it's: " + JSON.stringify(myJson));
         if (myJson.bitmap != "") {
-            this.DrawAPI.drawBitmap(dispCtx, myJson.bitmap);
+            this.DrawAPI.drawBitmap(this.context, myJson.bitmap);
         }
         if (myJson.actions != "") {
             var actions = myJson.actions.split(", ");
             for (var i = 0; i < actions.length; i++) {
                 var thisAction = JSON.parse(actions[i]);
                 console.log(JSON.stringify(thisAction));
-                this.invokeDrawingModule(dispCtx, thisAction.action, thisAction.startx, thisAction.starty, thisAction.endx, thisAction.endy, thisAction.color, thisAction.strokeWidth);
+                this.invokeDrawingModule(this.context, thisAction.action, thisAction.startx, thisAction.starty, thisAction.endx, thisAction.endy, thisAction.color, thisAction.strokeWidth);
             }
         }
     };
