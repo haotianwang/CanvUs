@@ -126,7 +126,7 @@ test('updateModule.invokeDrawingModule all draw methods', function() {
 
         ok(this.fakeDrawModuleMock.verify(), "verified that getting a " + actions[i] + " action invokes the " + actionMethods[i] + " DrawAPI method");
         ok(spy.callCount == 1, "invokeDrawingModule called once, as expected");
-        ok(spy.calledWith(actions[i]), "invokeDrawingModule called with \"" + actions[i] + "\" as action, as expected");
+        ok(spy.calledWith(sinon.match.any, actions[i]), "invokeDrawingModule called with \"" + actions[i] + "\" as action, as expected");
 
         if (i < actions.length-1){
             this.teardown();
@@ -136,8 +136,9 @@ test('updateModule.invokeDrawingModule all draw methods', function() {
 
 test('updateModule.getInitImg', function() {
     // make sure the method sends the correct event: socket.send_init_img
-    this.WebSocketRailsMock.expects("trigger").withArgs("socket.send_init_img", "").exactly(1);
-    this.testUpdateModule.getInitImg();
+    var canvasID = 0;
+    this.WebSocketRailsMock.expects("trigger").withArgs("socket.send_init_img", canvasID+"").exactly(1);
+    this.testUpdateModule.getInitImg(canvasID);
 
     ok(this.WebSocketRailsMock.verify(), "getInitImg sent the expected socket.send_init_img event to web socket");
 });

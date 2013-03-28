@@ -57,32 +57,32 @@ function UpdateModule() {
     this.handleGetAction = function (data) {
         console.log("got action! it's: " + data);
         myJson = JSON.parse(data);
-        this.invokeDrawingModule(myJson.action, myJson.startx, myJson.starty, myJson.endx, myJson.endy, myJson.color, myJson.strokeWidth);
+        this.invokeDrawingModule(dispCtx, myJson.action, myJson.startx, myJson.starty, myJson.endx, myJson.endy, myJson.color, myJson.strokeWidth);
     };
 
-    this.invokeDrawingModule = function (action, startx, starty, endx, endy, color, strokeWidth) {
+    this.invokeDrawingModule = function (context, action, startx, starty, endx, endy, color, strokeWidth) {
 
         switch(action) {
             case "line":
-                this.DrawAPI.drawLine(dispCtx, startx, starty, endx, endy, color, strokeWidth);
+                this.DrawAPI.drawLine(context, startx, starty, endx, endy, color, strokeWidth);
                 break;
             case "clear":           
-                this.DrawAPI.clearCanvas(dispCtx);
+                this.DrawAPI.clearCanvas(context);
                 break;
             case "rectangle":
-                this.DrawAPI.drawRectangle(dispCtx, startx, starty, endx, endy, color, strokeWidth);
+                this.DrawAPI.drawRectangle(context, startx, starty, endx, endy, color, strokeWidth);
                 break;
             case "circle":
-                this.DrawAPI.drawCircle(dispCtx, startx, starty, endx, endy, color, strokeWidth);
+                this.DrawAPI.drawCircle(context, startx, starty, endx, endy, color, strokeWidth);
                 break;
             default:
                 console.log("invokeDrawingModule failed due to unknown action: " + action);
         }
     };
 
-    this.getInitImg = function () {
+    this.getInitImg = function (canvasID) {
         console.log("getting initial image...");
-        this.dispatcher.trigger('socket.send_init_img', "");
+        this.dispatcher.trigger('socket.send_init_img', ""+canvasID);
     };
 
     this.getInitImgHandler = function (data) {
@@ -97,7 +97,7 @@ function UpdateModule() {
             for (var i = 0; i < actions.length; i++) {
                 var thisAction = JSON.parse(actions[i]);
                 console.log(JSON.stringify(thisAction));
-                this.invokeDrawingModule(thisAction.action, thisAction.startx, thisAction.starty, thisAction.endx, thisAction.endy, thisAction.color, thisAction.strokeWidth);
+                this.invokeDrawingModule(dispCtx, thisAction.action, thisAction.startx, thisAction.starty, thisAction.endx, thisAction.endy, thisAction.color, thisAction.strokeWidth);
             }
         }
     };
