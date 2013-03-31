@@ -34,6 +34,7 @@ canvLeft = 0; //offset for Y
 function initialize() {
 	/*********************** get a new updateModule *****************/
 	updateModule = instantiateUpdateModule(WebSocketRails);
+    updateModule.initialize();
 
     /*********************** Tools Declarations *********************/
 

@@ -42,6 +42,7 @@ module( "updateModule tests", {
 
         this.testUpdateModule = instantiateUpdateModule(this.WebSocketRailsConstructor);
         this.testUpdateModule.setDrawAPI(this.fakeDrawModule);
+        this.testUpdateModule.initialize();
 	},
     
 	teardown: function() {
@@ -67,6 +68,7 @@ test('instantiateUpdateModule', function() {
 
     // initialize, just to make sure it works
     var testUpdateModule = instantiateUpdateModule(this.WebSocketRailsConstructor);
+    testUpdateModule.initialize();
     ok(testUpdateModule != null, "initialization worked as expected");
 
     this.WebSocketRailsMock.verify();
@@ -87,10 +89,13 @@ test('updateModule.sendAction', function() {
     for (var i = 0; i < args.length; i++) {
         expectedAction[args[i]] = args[i];
     }
-    expectedAction = JSON.stringify(expectedAction);
+    var msg = {};
+    msg["message"] = expectedAction;
+    msg["canvasID"] = this.testUpdateModule.canvasID;
+    msg["userCookie"] = this.testUpdateModule.userCookie;
 
     // expect trigger to be called once (for the send action) with the right type of event, and the expected action string
-    this.WebSocketRailsMock.expects("trigger").withArgs("socket.send_action", expectedAction).exactly(1);
+    this.WebSocketRailsMock.expects("trigger").withArgs("socket.send_action", JSON.stringify(msg)).exactly(1);
 
     this.testUpdateModule.sendAction(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
 

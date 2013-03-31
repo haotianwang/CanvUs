@@ -18,8 +18,7 @@ function instantiateUpdateModule(socketClass) {
     module.setDrawAPI(getDrawAPI());
     module.setContext(dispCtx);
     module.setCanvas(dispCanvas);
-
-    module.initialize();
+    
     return module;
 }
 
@@ -29,6 +28,8 @@ function UpdateModule() {
     this.DrawAPI = null;
     this.context = null;
     this.canvas = null;
+    this.userCookie = null;
+    this.canvasID = null;
 
     this.initialize = function() {
         this.url = document.URL.split( '/' )[2] + "/websocket";
@@ -37,6 +38,14 @@ function UpdateModule() {
         var module = this;
         this.dispatcher.bind('socket.get_init_img', function(data) {module.getInitImgHandler(data)});
         this.dispatcher.bind('socket.get_action', function(data) {module.handleGetAction(data)});
+    }
+
+    this.setUserCookie = function (userCookie) {
+        this.userCookie = userCookie;
+    }
+
+    this.setCanvasID = function (canvasID) {
+        this.canvasId = canvasID;
     }
 
     this.setContext = function (context) {
@@ -56,15 +65,18 @@ function UpdateModule() {
     }
 
     this.sendAction = function (drawActionType, startx, starty, endx, endy, color, strokeWidth) {
-        var myJson = {"action": drawActionType, 
+        var myActionJson = {"action": drawActionType, 
                     "startx": startx, 
                     "starty": starty, 
                     "endx": endx, 
                     "endy": endy,
                     "color": color,
                     "strokeWidth": strokeWidth }
-        console.log("sending action..." + JSON.stringify(myJson));
-        this.dispatcher.trigger('socket.send_action', JSON.stringify(myJson));
+        var myMsgJson = { "message": myActionJson };
+        myMsgJson["canvasID"] = this.canvasID;
+        myMsgJson["userCookie"] = this.userCookie;
+        console.log("sending action..." + JSON.stringify(myMsgJson));
+        this.dispatcher.trigger('socket.send_action', JSON.stringify(myMsgJson));
     };
 
     this.handleGetAction = function (data) {
