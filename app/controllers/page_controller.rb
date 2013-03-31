@@ -7,4 +7,13 @@ class PageController < ApplicationController
 	def draw
 		render "draw"
 	end
+
+	def canvus
+		render "canvus"
+	end
+
+	def draw2
+		render "draw2"
+	end
+
 end
