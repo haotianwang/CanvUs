@@ -253,6 +253,8 @@ function initialize() {
     debugButton = document.getElementById("debug-button");
     dlPngButton = document.getElementById("download-png-button");
 
+    //set the default context to the dispCtx for the updateModule
+    updateModule.setContext(dispCtx);
 
     //Create the "drawCanvas" - the canvas which we draw on, and then copy
     // onto dispCanvas
