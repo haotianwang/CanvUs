@@ -97,7 +97,7 @@ function UpdateModule() {
     this.handleGetAction = function (data) {
         console.log("got action! it's: " + data);
         myJson = JSON.parse(data);
-        this.invokeDrawingModule(dispCtx, myJson.action, myJson.startx, myJson.starty, myJson.endx, myJson.endy, myJson.color, myJson.strokeWidth);
+        this.invokeDrawingModule(this.context, myJson.action, myJson.startx, myJson.starty, myJson.endx, myJson.endy, myJson.color, myJson.strokeWidth);
     };
 
     this.invokeDrawingModule = function (context, action, startx, starty, endx, endy, color, strokeWidth) {
@@ -144,20 +144,20 @@ function UpdateModule() {
 
 function getDrawAPI() {
     API = {
-        drawLine: function(dispCtx, startx, starty, endx, endy, color, strokeWidth) { 
-            drawLine(dispCtx, startx, starty, endx, endy, color, strokeWidth); 
+        drawLine: function(context, startx, starty, endx, endy, color, strokeWidth) { 
+            drawLine(context, startx, starty, endx, endy, color, strokeWidth); 
         },
             
-        clearCanvas: function(dispCtx) { 
-            clearCanvas(dispCtx); 
+        clearCanvas: function(context) { 
+            clearCanvas(context); 
         },
 
-        drawRectangle: function(dispCtx, startx, starty, endx, endy, color, strokeWidth) { 
-            drawRectangle(dispCtx, startx, starty, endx, endy, color, strokeWidth); 
+        drawRectangle: function(context, startx, starty, endx, endy, color, strokeWidth) { 
+            drawRectangle(context, startx, starty, endx, endy, color, strokeWidth); 
         },
 
-        drawCircle: function(dispCtx, startx, starty, endx, endy, color, strokeWidth) { 
-            drawCircle(dispCtx, startx, starty, endx, endy, color, strokeWidth); 
+        drawCircle: function(context, startx, starty, endx, endy, color, strokeWidth) { 
+            drawCircle(context, startx, starty, endx, endy, color, strokeWidth); 
         },
 
         drawBitmap: function(canvas, bitmap) {
