@@ -59,7 +59,7 @@ function UpdateModule() {
     }
 
     this.setCanvasID = function (canvasID) {
-        this.canvasId = canvasID;
+        this.canvasID = canvasID;
     }
 
     this.setContext = function (context) {
