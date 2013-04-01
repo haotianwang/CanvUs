@@ -31,7 +31,7 @@ class ActionTest < ActiveSupport::TestCase
   # be returned.
   def testGetActionsNoBitmap
     numActions = Action.where('canvas_id = 1').count
-    numActionsGot = Action.getActions(1).split(', ').count
+    numActionsGot = Action.getActions(1, DateTime.new(1992, 4, 11)).split(', ').count
     assert_equal(numActions, numActionsGot, "Incorrect number of actions retrieved")
   end
 
@@ -41,7 +41,7 @@ class ActionTest < ActiveSupport::TestCase
   def testGetActionsWithBitmap
     Bitmap.create(bitmap: 'bitmap', canvas_id: 0)
     Action.create(action: 'action_5', canvas_id: 0)
-    numActionsGot = Action.getActions(0).split(', ').count
+    numActionsGot = Action.getActions(0, Bitmap.last[:created_at]).split(', ').count
     assert_equal(1, numActionsGot, "Incorrect number of actions retrieved")
     Bitmap.last.destroy
     Action.last.destroy

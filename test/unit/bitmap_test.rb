@@ -38,14 +38,14 @@ class BitmapTest < ActiveSupport::TestCase
   # which represents a blank canvas.
   def testGetBitmapFailure
     bitmapGot = Bitmap.getBitmap(3)
-    assert_equal('', bitmapGot, "Bitmap incorrectly retrieved")
+    assert(bitmapGot.empty?, "Bitmap incorrectly retrieved")
   end
 
   # Tests that getBitmap will return only the latest bitmap for a particular canvas_id.
   def testGetBitmap
     Bitmap.create(bitmap: 'bitmap_3', canvas_id: 0)
     bitmapGot = Bitmap.getBitmap(0)
-    assert_equal('bitmap_3', bitmapGot, "Bitmap incorrectly retrieved")
+    assert_equal('bitmap_3', bitmapGot[0][:bitmap], "Bitmap incorrectly retrieved")
     Bitmap.last.destroy
   end
 
