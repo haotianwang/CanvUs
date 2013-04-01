@@ -9,7 +9,15 @@ the function names directly map to the functionality that the Update Module must
 - updateModule.getInitImg()
 
 INITIALIZATION:
-    instantiateUpdateModule(socketClass);
+    module = instantiateUpdateModule(socketClass);
+    ...optional...
+    module.setDrawAPI(api);
+    module.setContext(context);
+    module.setCanvas(id);
+    module.setCanvasID(int);
+    module.setUserCookie(cookie);
+    ...
+    module.initialize();
 */
 
 function instantiateUpdateModule(socketClass) {
@@ -18,7 +26,9 @@ function instantiateUpdateModule(socketClass) {
     module.setDrawAPI(getDrawAPI());
     module.setContext(dispCtx);
     module.setCanvas(dispCanvas);
-    
+    module.setCanvasID(-1);
+    module.setUserCookie(-1);
+
     return module;
 }
 
@@ -30,14 +40,18 @@ function UpdateModule() {
     this.canvas = null;
     this.userCookie = null;
     this.canvasID = null;
+    this.channel = null;
 
     this.initialize = function() {
         this.url = document.URL.split( '/' )[2] + "/websocket";
         console.log("socket at " + this.url);
         this.dispatcher = new this.socketClass(this.url);
+        this.channel = this.dispatcher.subscribe(this.canvasID+'');
+
         var module = this;
+
         this.dispatcher.bind('socket.get_init_img', function(data) {module.getInitImgHandler(data)});
-        this.dispatcher.bind('socket.get_action', function(data) {module.handleGetAction(data)});
+        this.channel.bind('socket.get_action', function(data) {module.handleGetAction(data)});
     }
 
     this.setUserCookie = function (userCookie) {
@@ -65,7 +79,8 @@ function UpdateModule() {
     }
 
     this.sendAction = function (drawActionType, startx, starty, endx, endy, color, strokeWidth) {
-        var myActionJson = {"action": drawActionType, 
+        var myActionJson = {
+                    "action": drawActionType, 
                     "startx": startx, 
                     "starty": starty, 
                     "endx": endx, 
@@ -86,7 +101,6 @@ function UpdateModule() {
     };
 
     this.invokeDrawingModule = function (context, action, startx, starty, endx, endy, color, strokeWidth) {
-
         switch(action) {
             case "line":
                 this.DrawAPI.drawLine(context, startx, starty, endx, endy, color, strokeWidth);
@@ -147,7 +161,7 @@ function getDrawAPI() {
         },
 
         drawBitmap: function(canvas, bitmap) {
-            drawBitmap(dispCtx, bitmap);
+            drawBitmap(canvas, bitmap);
         }
     }
     return API;
