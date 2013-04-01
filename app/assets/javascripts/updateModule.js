@@ -87,7 +87,7 @@ function UpdateModule() {
                     "endy": endy,
                     "color": color,
                     "strokeWidth": strokeWidth }
-        var myMsgJson = { "message": myActionJson };
+        var myMsgJson = { "message": JSON.stringify(myActionJson) };
         myMsgJson["canvasID"] = this.canvasID;
         myMsgJson["userCookie"] = this.userCookie;
         console.log("sending action..." + JSON.stringify(myMsgJson));
@@ -121,7 +121,7 @@ function UpdateModule() {
 
     this.getInitImg = function (canvasID) {
         console.log("getting initial image...");
-        this.dispatcher.trigger('socket.send_init_img', ""+canvasID);
+        this.dispatcher.trigger('socket.send_init_img', ""+this.canvasID);
     };
 
     this.getInitImgHandler = function (data) {
