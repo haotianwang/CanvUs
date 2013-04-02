@@ -47,6 +47,26 @@ class ActionTest < ActiveSupport::TestCase
     Action.last.destroy
   end
 
+  # Tests the deletion of actions
+  def testDeleteActions
+    numActionsGot = Action.getActions(0).split(', ').count
+    endTime = DateTime.new(2011,1,1)
+
+    a = Action.new(action: 'action_6', canvas_id: 0)
+    a.created_at = DateTime.new(2009,2,2)
+    a.save
+
+    b = Action.new(action: 'action_7', canvas_id: 0)
+    b.created_at = DateTime.new(2010,2,2)
+    b.save
+
+    Action.deleteActions(0, endTime)
+    newNumActionsGot = Action.getActions(0).split(', ').count
+    assert_equal(newNumActionsGot, numActionsGot, "Incorrect number of actions deleted")
+    Bitmap.last.destroy
+    Action.last.destroy
+  end
+
   # Empties the test databases once again.
   def teardown
     Action.destroy_all

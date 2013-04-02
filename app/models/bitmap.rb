@@ -22,4 +22,11 @@ class Bitmap < ActiveRecord::Base
       return latestBitmap[0]['bitmap'] # Since the query returns a list of
     end                                # of hashes, return the bitmap field
   end                                  # of the one entry in the query result.
+
+  # Deletes the oldest bitmap with a given canvas id. Used for
+  # garbage collection.
+  def self.deleteBitmap(canvasID)
+    Bitmap.where("canvas_id = ?", canvasID).order("created_at ASC").first.destroy
+    end
+  end
 end
