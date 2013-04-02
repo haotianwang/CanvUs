@@ -20,14 +20,14 @@ INITIALIZATION:
     module.initialize();
 */
 
+function getURLParameter(name) {
+  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+}
+
 function instantiateUpdateModule(socketClass) {
     var module = new UpdateModule();
     module.setSocketClass(socketClass);
-    module.setDrawAPI(getDrawAPI());
-    module.setContext(dispCtx);
-    module.setCanvas(dispCanvas);
-    module.setCanvasID(-1);
-    module.setUserCookie(-1);
+    module.resetDefaults();
 
     return module;
 }
@@ -41,6 +41,22 @@ function UpdateModule() {
     this.userCookie = null;
     this.canvasID = null;
     this.channel = null;
+    this.lastActionTime = null;
+    this.actionsLimit = 100;
+    this.actionsCount = 0;
+
+    this.resetDefaults = function() {
+        this.setDrawAPI(getDrawAPI());
+        this.setContext(dispCtx);
+        this.setCanvas(dispCanvas);
+
+        this.setCanvasID(-1);
+        canvasID = getURLParameter("canvId");
+        if (canvasID != null) {
+            this.setCanvasID(canvasID);
+        }
+        this.setUserCookie(-1);
+    }
 
     this.initialize = function() {
         this.url = document.URL.split( '/' )[2] + "/websocket";
@@ -52,6 +68,11 @@ function UpdateModule() {
 
         this.dispatcher.bind('socket.get_init_img', function(data) {module.getInitImgHandler(data)});
         this.channel.bind('socket.get_action', function(data) {module.handleGetAction(data)});
+        this.channel.bind('socket.sent_bitmap', function(data) {module.handleSentBitmap()});
+    }
+
+    this.setActionsLimit = function(limit) {
+        this.actionsLimit = limit;
     }
 
     this.setUserCookie = function (userCookie) {
@@ -91,13 +112,29 @@ function UpdateModule() {
         myMsgJson["canvasID"] = this.canvasID;
         myMsgJson["userCookie"] = this.userCookie;
         console.log("sending action..." + JSON.stringify(myMsgJson));
+
         this.dispatcher.trigger('socket.send_action', JSON.stringify(myMsgJson));
-    };
+    }
+
+    this.sendBitmap = function () {
+        bitmap = this.canvas.toDataURL("image/png").toString();
+        myMsgJson = { "bitmap": bitmap };
+        myMsgJson["canvasID"] = this.canvasID;
+        myMsgJson["timestamp"] = this.lastActionTime;
+        this.dispatcher.trigger('socket.send_bitmap', JSON.stringify(myMsgJson));
+        console.log("just sent updated bitmap!");
+    }
 
     this.handleGetAction = function (data) {
         console.log("got action! it's: " + data);
         myJson = JSON.parse(data);
         this.invokeDrawingModule(this.context, myJson.action, myJson.startx, myJson.starty, myJson.endx, myJson.endy, myJson.color, myJson.strokeWidth);
+        this.lastActionTime = myJson.timestamp;
+        this.actionsCount = this.actionsCount + 1;
+        if (this.actionsCount >= this.actionsLimit) {
+            this.actionsCount = 0;
+            this.sendBitmap();
+        }
     };
 
     this.invokeDrawingModule = function (context, action, startx, starty, endx, endy, color, strokeWidth) {
@@ -105,7 +142,7 @@ function UpdateModule() {
             case "line":
                 this.DrawAPI.drawLine(context, startx, starty, endx, endy, color, strokeWidth);
                 break;
-            case "clear":           
+            case "clear":
                 this.DrawAPI.clearCanvas(context);
                 break;
             case "rectangle":
@@ -121,7 +158,7 @@ function UpdateModule() {
 
     this.getInitImg = function (canvasID) {
         console.log("getting initial image...");
-        this.dispatcher.trigger('socket.send_init_img', ""+this.canvasID);
+        this.dispatcher.trigger('socket.send_init_img', "" + canvasID);
     };
 
     this.getInitImgHandler = function (data) {
@@ -140,6 +177,11 @@ function UpdateModule() {
             }
         }
     };
+
+    this.handleSentBitmap = function () {
+        this.actionsCount = 0;
+        console.log("server says bitmap has been sent already");
+    }
 }
 
 function getDrawAPI() {
