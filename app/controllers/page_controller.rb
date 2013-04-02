@@ -16,4 +16,10 @@ class PageController < ApplicationController
 		render "draw2"
 	end
 
+	def canvases
+		canvasIDs = Canvas.getCanvasIDs()
+		canvasJSON = {canvases: canvasIDs}.to_json
+		render :json => canvasJSON
+	end
+
 end

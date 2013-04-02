@@ -3,4 +3,5 @@ CanvUs::Application.routes.draw do
 	match 'draw' => 'page#draw'
 	match 'draw2' => 'page#draw2'
 	match 'canvus' => 'page#canvus'
+	match 'canvases' => 'page#canvases'
 end
