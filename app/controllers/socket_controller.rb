@@ -17,6 +17,8 @@ class SocketController < WebsocketRails::BaseController
     timestamp = Action.storeAction(action, canvas_id)
     if controller_store[canvas_id].nil?
       controller_store[canvas_id] = 1
+      bitmap_id = Bitmap.storeBitmap('', timestamp, canvas_id)
+      Canvas.createCanvas(bitmap_id)
     else
       controller_store[canvas_id] += 1
       #if controller_store[canvas_id] >= REDRAW_THRESHOLD
