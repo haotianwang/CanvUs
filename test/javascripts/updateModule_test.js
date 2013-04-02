@@ -94,7 +94,7 @@ test('instantiateUpdateModule', function() {
     // there should be 1 bind for every type of client-server API action
     // there should be 1 subscription to the channel
     this.WebSocketRailsMock.expects("subscribe").exactly(1).returns(fakeChannel);
-    this.WebSocketRailsChannelMock.expects("bind").exactly(1);
+    this.WebSocketRailsChannelMock.expects("bind").exactly(2);
 
     // the WebSocketRails itself should have only 1 bind for getInitImg
     this.WebSocketRailsMock.expects("bind").exactly(1);

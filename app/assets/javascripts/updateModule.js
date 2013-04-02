@@ -51,7 +51,7 @@ function UpdateModule() {
         this.setCanvas(dispCanvas);
 
         this.setCanvasID(-1);
-        canvasID = getURLParameter("canvasID");
+        canvasID = getURLParameter("canvId");
         if (canvasID != null) {
             this.setCanvasID(canvasID);
         }
@@ -112,6 +112,7 @@ function UpdateModule() {
         myMsgJson["canvasID"] = this.canvasID;
         myMsgJson["userCookie"] = this.userCookie;
         console.log("sending action..." + JSON.stringify(myMsgJson));
+
         this.dispatcher.trigger('socket.send_action', JSON.stringify(myMsgJson));
     }
 
@@ -121,6 +122,7 @@ function UpdateModule() {
         myMsgJson["canvasID"] = this.canvasID;
         myMsgJson["timestamp"] = this.lastActionTime;
         this.dispatcher.trigger('socket.send_bitmap', JSON.stringify(myMsgJson));
+        console.log("just sent updated bitmap!");
     }
 
     this.handleGetAction = function (data) {
@@ -178,6 +180,7 @@ function UpdateModule() {
 
     this.handleSentBitmap = function () {
         this.actionsCount = 0;
+        console.log("server says bitmap has been sent already");
     }
 }
 
