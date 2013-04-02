@@ -3,7 +3,12 @@ class Canvas < ActiveRecord::Base
 
   validates :bitmap_id, :user_username, :active, presence: true
 
-  has_one :bitmap, :user
+  has_one :bitmap
+  #has_one :user
+
+  def self.createCanvas(bitmapID)
+    Canvas.create(bitmap_id: bitmapID, user_username: 'mylittlelucas888', active: true)
+  end
 
   def self.setBitmap(canvasID, bitmapID)
     canvas = Canvas.where("id = ?", canvasID).first

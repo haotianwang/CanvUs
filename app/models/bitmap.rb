@@ -3,9 +3,12 @@ class Bitmap < ActiveRecord::Base
 
   validates :canvas_id, presence: true
 
+  belongs_to :canvas
+
   # Stores the bitmap representing a particular canvas's state.
-  def self.storeBitmap(bitmap, canvasID)
-    Bitmap.create(bitmap: bitmap, canvas_id: canvasID)
+  def self.storeBitmap(bitmap, latestActionTimeStamp, canvasID)
+    newBitmap = Bitmap.create(bitmap: bitmap, latest_action_timestamp: latestActionTimeStamp, canvas_id: canvasID)
+    return newBitmap[:id]
   end
 
   # Gets the most recently stored bitmap for a particular canvas.
