@@ -9,7 +9,15 @@ the function names directly map to the functionality that the Update Module must
 - updateModule.getInitImg()
 
 INITIALIZATION:
-    instantiateUpdateModule(socketClass);
+    module = instantiateUpdateModule(socketClass);
+    ...optional...
+    module.setDrawAPI(api);
+    module.setContext(context);
+    module.setCanvas(id);
+    module.setCanvasID(int);
+    module.setUserCookie(cookie);
+    ...
+    module.initialize();
 */
 
 function instantiateUpdateModule(socketClass) {
@@ -18,7 +26,9 @@ function instantiateUpdateModule(socketClass) {
     module.setDrawAPI(getDrawAPI());
     module.setContext(dispCtx);
     module.setCanvas(dispCanvas);
-    
+    module.setCanvasID(-1);
+    module.setUserCookie(-1);
+
     return module;
 }
 
@@ -30,14 +40,18 @@ function UpdateModule() {
     this.canvas = null;
     this.userCookie = null;
     this.canvasID = null;
+    this.channel = null;
 
     this.initialize = function() {
         this.url = document.URL.split( '/' )[2] + "/websocket";
         console.log("socket at " + this.url);
         this.dispatcher = new this.socketClass(this.url);
+        this.channel = this.dispatcher.subscribe(this.canvasID+'');
+
         var module = this;
+
         this.dispatcher.bind('socket.get_init_img', function(data) {module.getInitImgHandler(data)});
-        this.dispatcher.bind('socket.get_action', function(data) {module.handleGetAction(data)});
+        this.channel.bind('socket.get_action', function(data) {module.handleGetAction(data)});
     }
 
     this.setUserCookie = function (userCookie) {
@@ -45,7 +59,7 @@ function UpdateModule() {
     }
 
     this.setCanvasID = function (canvasID) {
-        this.canvasId = canvasID;
+        this.canvasID = canvasID;
     }
 
     this.setContext = function (context) {
@@ -65,14 +79,15 @@ function UpdateModule() {
     }
 
     this.sendAction = function (drawActionType, startx, starty, endx, endy, color, strokeWidth) {
-        var myActionJson = {"action": drawActionType, 
+        var myActionJson = {
+                    "action": drawActionType, 
                     "startx": startx, 
                     "starty": starty, 
                     "endx": endx, 
                     "endy": endy,
                     "color": color,
                     "strokeWidth": strokeWidth }
-        var myMsgJson = { "message": myActionJson };
+        var myMsgJson = { "message": JSON.stringify(myActionJson) };
         myMsgJson["canvasID"] = this.canvasID;
         myMsgJson["userCookie"] = this.userCookie;
         console.log("sending action..." + JSON.stringify(myMsgJson));
@@ -82,11 +97,10 @@ function UpdateModule() {
     this.handleGetAction = function (data) {
         console.log("got action! it's: " + data);
         myJson = JSON.parse(data);
-        this.invokeDrawingModule(dispCtx, myJson.action, myJson.startx, myJson.starty, myJson.endx, myJson.endy, myJson.color, myJson.strokeWidth);
+        this.invokeDrawingModule(this.context, myJson.action, myJson.startx, myJson.starty, myJson.endx, myJson.endy, myJson.color, myJson.strokeWidth);
     };
 
     this.invokeDrawingModule = function (context, action, startx, starty, endx, endy, color, strokeWidth) {
-
         switch(action) {
             case "line":
                 this.DrawAPI.drawLine(context, startx, starty, endx, endy, color, strokeWidth);
@@ -107,7 +121,7 @@ function UpdateModule() {
 
     this.getInitImg = function (canvasID) {
         console.log("getting initial image...");
-        this.dispatcher.trigger('socket.send_init_img', ""+canvasID);
+        this.dispatcher.trigger('socket.send_init_img', ""+this.canvasID);
     };
 
     this.getInitImgHandler = function (data) {
@@ -130,24 +144,24 @@ function UpdateModule() {
 
 function getDrawAPI() {
     API = {
-        drawLine: function(dispCtx, startx, starty, endx, endy, color, strokeWidth) { 
-            drawLine(dispCtx, startx, starty, endx, endy, color, strokeWidth); 
+        drawLine: function(context, startx, starty, endx, endy, color, strokeWidth) { 
+            drawLine(context, startx, starty, endx, endy, color, strokeWidth); 
         },
             
-        clearCanvas: function(dispCtx) { 
-            clearCanvas(dispCtx); 
+        clearCanvas: function(context) { 
+            clearCanvas(context); 
         },
 
-        drawRectangle: function(dispCtx, startx, starty, endx, endy, color, strokeWidth) { 
-            drawRectangle(dispCtx, startx, starty, endx, endy, color, strokeWidth); 
+        drawRectangle: function(context, startx, starty, endx, endy, color, strokeWidth) { 
+            drawRectangle(context, startx, starty, endx, endy, color, strokeWidth); 
         },
 
-        drawCircle: function(dispCtx, startx, starty, endx, endy, color, strokeWidth) { 
-            drawCircle(dispCtx, startx, starty, endx, endy, color, strokeWidth); 
+        drawCircle: function(context, startx, starty, endx, endy, color, strokeWidth) { 
+            drawCircle(context, startx, starty, endx, endy, color, strokeWidth); 
         },
 
         drawBitmap: function(canvas, bitmap) {
-            drawBitmap(dispCtx, bitmap);
+            drawBitmap(canvas, bitmap);
         }
     }
     return API;

@@ -2,14 +2,27 @@
 //= require sinon-1.6.0.js
 //= require uiModule
 
+function WebSocketRailsAPIClass() {
+    this.channel = null;
+    this.trigger = function (arg1, arg2) {}
+    this.bind = function (arg1, arg2) {}
+    this.subscribe = function(arg1) { return this.channel; }
+    this.setChannel = function(arg1) {this.channel = arg1;}
+}
+
 // returns [api, mock, constructor]
 function mockWebSocketRails() {
-    WebSocketRailsAPI = {   
-                                trigger: function (arg1, arg2) {},
-                                bind: function (arg1, arg2) {} 
-                             };
+
+    channelAPI = {
+                    bind: function (arg1, arg2) {},
+                    trigger: function (arg1, arg2) {}
+                };
+
+    WebSocketRailsAPI = new WebSocketRailsAPIClass();
+    WebSocketRailsAPI.setChannel(channelAPI);
                                 
     mock = sinon.mock(WebSocketRailsAPI);
+    mock.expects("subscribe").atLeast(0).returns(channelAPI);
 
     fakeWebSocketRailsConstructor = sinon.stub();
 	fakeWebSocketRailsConstructor.returns(WebSocketRailsAPI);
@@ -31,15 +44,22 @@ function createStubAction(actionType) {
 
 module( "updateModule tests", {
 	setup: function() {
+        // create the this.references for the Web Socket Rails API
         var mockedWebSocketRailsPackage = mockWebSocketRails();
         this.WebSocketRailsAPI = mockedWebSocketRailsPackage[0];
         this.WebSocketRailsMock = mockedWebSocketRailsPackage[1];
         this.WebSocketRailsConstructor = mockedWebSocketRailsPackage[2];
 
+        // modify the channel created by WebSocketRails.subscribe
+        this.WebSocketRailsChannel = this.WebSocketRailsAPI.subscribe("");
+        this.WebSocketRailsChannelMock = sinon.mock(this.WebSocketRailsChannel);
+
+        // create the this.references for the Drawing Module API
         var mockedDrawModulePackage = mockDrawModule();
         this.fakeDrawModule= mockedDrawModulePackage[0];
         this.fakeDrawModuleMock = mockedDrawModulePackage[1];
 
+        // create the this.updateModule
         this.testUpdateModule = instantiateUpdateModule(this.WebSocketRailsConstructor);
         this.testUpdateModule.setDrawAPI(this.fakeDrawModule);
         this.testUpdateModule.initialize();
@@ -62,27 +82,27 @@ module( "updateModule tests", {
 });
 
 test('instantiateUpdateModule', function() {
+    fakeChannel = this.WebSocketRailsAPI.subscribe("");
+
     // there should be 1 bind for every type of client-server API action
-    this.WebSocketRailsMock.expects("bind").exactly(2);
+    // there should be 1 subscription to the channel
+    this.WebSocketRailsMock.expects("subscribe").exactly(1).returns(fakeChannel);
+    this.WebSocketRailsChannelMock.expects("bind").exactly(1);
+
+    // the WebSocketRails itself should have only 1 bind for getInitImg
+    this.WebSocketRailsMock.expects("bind").exactly(1);
     this.WebSocketRailsMock.expects("trigger").exactly(0);
 
     // initialize, just to make sure it works
     var testUpdateModule = instantiateUpdateModule(this.WebSocketRailsConstructor);
     testUpdateModule.initialize();
+
     ok(testUpdateModule != null, "initialization worked as expected");
-
     this.WebSocketRailsMock.verify();
-});
-
-test('updateModule.setSocketClass', function() {
-    var randomSocket = "random string";
-    this.testUpdateModule.setSocketClass(randomSocket);
-
-    equal(this.testUpdateModule.socketClass, randomSocket, "updateModule.setSocketClass correctly set the class");
+    this.WebSocketRailsChannelMock.verify();
 });
 
 test('updateModule.sendAction', function() {
-
     // make an expected JSON out of the args to be passed to sendAction
     var args = ["action", "startx", "starty", "endx", "endy", "color", "strokeWidth"];
     var expectedAction = {};
