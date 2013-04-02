@@ -17,4 +17,10 @@ class Bitmap < ActiveRecord::Base
     #                                          LIMIT 1")
     return Bitmap.where("canvas_id = ?", canvasID).order("created_at DESC").limit(1)
   end
+  
+  # Deletes the oldest bitmap with a given canvas id. Used for
+  # garbage collection.
+  def self.deleteBitmap(canvasID)
+    Bitmap.where("canvas_id = ?", canvasID).order("created_at ASC").first.destroy
+  end
 end

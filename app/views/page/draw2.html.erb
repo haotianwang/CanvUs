@@ -49,5 +49,7 @@ Choose your weapon and draw away!
 </center>
 <script type="text/javascript">
 initialize();
-updateModule.getInitImg();
+updateModule.canvasID = window.location.search.split("=")[1];
+updateModule.getInitImg(window.location.search.split("=")[1]);
+console.log(window.location.search.split("=")[1]);
 </script>

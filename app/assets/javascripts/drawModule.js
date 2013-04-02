@@ -38,3 +38,13 @@ function drawLine(context, startx, starty, endx, endy, color, lineWidth) {
 function clearCanvas(context) {
     context.clearRect(0,0,dispCanvas.width, dispCanvas.height)
 }
+
+/* Inputs:
+ * 	   canvas = an HTML5 canvas reference
+ *     imageData = the url string from calling <canvas>.toDataURL("image/png")
+ */
+function drawBitmap(canvas, imageData) {
+	var imageToLoad = new Image();
+	imageToLoad.src = imageData;
+	canvas.getContext("2d").drawImage(imageToLoad,0,0);
+}
