@@ -49,6 +49,18 @@ class BitmapTest < ActiveSupport::TestCase
     Bitmap.last.destroy
   end
 
+  # Tests the deletion of the oldest bitmap
+  def testDeleteBitmap
+    Bitmap.create(bitmap: 'bitmap_4', canvas_id: 5)
+    Bitmap.create(bitmap: 'bitmap_5', canvas_id: 5)
+    Bitmap.create(bitmap: 'bitmap_6', canvas_id: 5)
+    Bitmap.create(bitmap: 'bitmap_7', canvas_id: 5)
+
+    oldestBitmap = Bitmap.where("canvas_id = ?", 5).order("created_at ASC").first
+    deletedBitmap = Bitmap.deleteBitmap(5)
+    assert_equal(oldestBitmap, deletedBitmap, "Wrong bitmap deleted; was not the oldest one")
+  end
+
   # Empties the test Bitmap database once again.
   def teardown
     Bitmap.destroy_all
