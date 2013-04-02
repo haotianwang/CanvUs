@@ -4,7 +4,7 @@ var canvasButton1,
 	dispCtx, imageData;
 
 function getText() {
-	return "1|12|34|2|5|3";
+	return "0|12|34|2|5|3";
 }
 
 function initialize() {
@@ -46,21 +46,22 @@ function initialize() {
 		htmlBody.appendChild(oneSpaceParagraph);
 		//*/
 
-		//set canvas and context of updateModule
+		//set canvas and context of updateModule then initialize
 		updateModule.setContext(newCanv.getContext("2d"));
 		updateModule.setCanvas(newCanv);
+		updateModule.initialize();
 
 		//call getInitImg: still needs to inclide the canvasID
-		updateModule.getInitImg();
+		updateModule.getInitImg(arrOfCanvases[i]);
 
-		//set onclick event of canvas to http:// + host + /draw + reference to canv
+		//set onclick event of canvas to http:// + host + /draw + reference to canvID from the input array
 		//wrapping the function in another function to store context
 		newCanv.onclick = function(iString) {
 			return function() {
 				window.location.href = "http://" + window.location.host + "/draw2?canvId=" + iString;
 				return false;
 			};
-		}(i);
+		}(arrOfCanvases[i]);
 	}
 	//console.log(newCanv.getContext("2d").getImageData(0,0, newCanv.width, newCanv.height).data);
 	//console.log(newCanv.getContext("2d").getImageData(0,0, newCanv.width, newCanv.height).data.length);

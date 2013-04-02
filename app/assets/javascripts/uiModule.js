@@ -255,6 +255,8 @@ function initialize() {
 
     //set the default context to the dispCtx for the updateModule
     updateModule.setContext(dispCtx);
+    //initialize
+    updateModule.initialize();
 
     //Create the "drawCanvas" - the canvas which we draw on, and then copy
     // onto dispCanvas
