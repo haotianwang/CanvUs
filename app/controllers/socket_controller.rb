@@ -2,11 +2,9 @@ require 'json'
 
 class SocketController < WebsocketRails::BaseController
 
-  REDRAW_THRESHOLD = 100
-
   # Initializes action_count to 0, which will be incremented each time an action is received from a client.
   def initialize_session
-  #  controller_store[:action_count] = 0
+  #  controller_store[:acti] = 0
   end
   
   # Stores an action in the database and increments the action count, which will keep track of how many actions
@@ -16,16 +14,18 @@ class SocketController < WebsocketRails::BaseController
     message_json = JSON.parse(message)
     action = message_json['message']
     canvas_id = message_json['canvasID']
-    Action.storeAction(action, canvas_id)
+    timestamp = Action.storeAction(action, canvas_id)
     if controller_store[canvas_id].nil?
       controller_store[canvas_id] = 1
     else
       controller_store[canvas_id] += 1
-      if controller_store[canvas_id] >= REDRAW_THRESHOLD
-        BackgroundController.redraw(canvas_id)
-      end
+      #if controller_store[canvas_id] >= REDRAW_THRESHOLD
+      #  BackgroundController.redraw(canvas_id)
+      #end
     end
-    WebsocketRails[canvas_id.to_s].trigger(:get_action, action, :namespace => 'socket')
+    response = JSON.parse(action)
+    response['timestamp'] = timestamp
+    WebsocketRails[canvas_id.to_s].trigger(:get_action, response.to_json, :namespace => 'socket')
   end
 
   # Retrieves the most recent canvas state stored in the database as well as any actions that have been done
@@ -43,5 +43,8 @@ class SocketController < WebsocketRails::BaseController
     actions = Action.getActions(canvas_id, timestamp)
     response = {bitmap: bitmap, actions: actions}.to_json
     send_message :get_init_img, response, :namespace => 'socket'
+  end
+
+  def get_bitmap
   end
 end
