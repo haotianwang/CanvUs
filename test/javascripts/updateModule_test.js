@@ -62,6 +62,13 @@ module( "updateModule tests", {
         // create the this.updateModule
         this.testUpdateModule = instantiateUpdateModule(this.WebSocketRailsConstructor);
         this.testUpdateModule.setDrawAPI(this.fakeDrawModule);
+
+        // set the canvas api as a mock
+        this.canvasAPI = {toDataURL: function(arg) {return "fakefakefake"}};
+        this.canvasAPIMock = sinon.mock(this.canvasAPI);
+        this.canvasAPIMock.expects("toDataURL").atLeast(0).returns("fakefakefake");
+        this.testUpdateModule.setCanvas(this.canvasAPI);
+
         this.testUpdateModule.initialize();
 	},
     
@@ -110,7 +117,7 @@ test('updateModule.sendAction', function() {
         expectedAction[args[i]] = args[i];
     }
     var msg = {};
-    msg["message"] = expectedAction;
+    msg["message"] = JSON.stringify(expectedAction);
     msg["canvasID"] = this.testUpdateModule.canvasID;
     msg["userCookie"] = this.testUpdateModule.userCookie;
 
@@ -125,6 +132,7 @@ test('updateModule.sendAction', function() {
 test('updateModule.handleGetAction', function() {
     // make the action to send to updateModule
     var action = createStubAction("clear");
+    action["timestamp"] = 0;
     // this action should invoke clearCanvas exactly once
     this.fakeDrawModuleMock.expects("clearCanvas").returns("").exactly(1);
 
@@ -204,3 +212,25 @@ test('updateModule.getInitImgHandler with bitmap, no action', function() {
     ok(spy.callCount == 0, "getInitImgHandler did not invokeDrawingModule, as expected");
     ok(this.fakeDrawModuleMock.verify(), "getInitImgHandler invoked drawBitmap, as expected");
 });
+
+test('updateModule.sendBitmap', function() {
+    this.canvasAPIMock.expects("toDataURL").exactly(1).returns("fakefakefake");
+    this.WebSocketRailsMock.expects("trigger").exactly(1);
+
+    this.testUpdateModule.sendBitmap();
+
+    this.canvasAPIMock.verify();
+    ok(this.WebSocketRailsMock.verify(), "the sendBitmap method triggers a message as well as calls canvas.toDataURL");
+});
+
+test ('updateModule.sendAction+handleGetAction multiple times to trigger sendBitmap', function() {
+    var spy = sinon.spy(this.testUpdateModule, "sendBitmap");
+    this.fakeDrawModuleMock.expects("clearCanvas").atLeast(0).returns();
+
+    this.testUpdateModule.setActionsLimit(30);
+    for (i = 0; i < 55; i++) {
+        this.testUpdateModule.handleGetAction(createStubAction("clear"));
+    }
+
+    ok(spy.callCount == 1, "sendAction and handleGetAction 55 times with actionsLimit as 30 results in 1 sendBitmap, as expected");
+})

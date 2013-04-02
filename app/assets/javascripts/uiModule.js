@@ -33,8 +33,7 @@ canvLeft = 0; //offset for Y
 
 function initialize() {
 	/*********************** get a new updateModule *****************/
-	updateModule = instantiateUpdateModule(WebSocketRails);
-    updateModule.initialize();
+    updateModule = instantiateUpdateModule(WebSocketRails);
 
     /*********************** Tools Declarations *********************/
 
@@ -254,6 +253,7 @@ function initialize() {
     dlPngButton = document.getElementById("download-png-button");
 
     //set the default context to the dispCtx for the updateModule
+    updateModule.resetDefaults();
     updateModule.setContext(dispCtx);
     //initialize
     updateModule.initialize();
