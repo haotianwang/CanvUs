@@ -46,5 +46,12 @@ class SocketController < WebsocketRails::BaseController
   end
 
   def get_bitmap
+    message_json = JSON.parse(message)
+    bitmap = message_json['bitmap']
+    timestamp = message_json['timestamp']
+    canvas_id = message_json['canvas_id']
+    Bitmap.storeBitmap(bitmap, timestamp, canvas_id)
+    WebsocketRails[canvas_id.to_s].trigger(:sent_bitmap, '', :namespace => 'socket')
+    BackgroundController.cleanUp(canvas_id, 3)
   end
 end
