@@ -13,16 +13,21 @@ class ActionTest < ActiveSupport::TestCase
     Action.create(action: 'action_4', canvas_id: 1)
   end
 
-  def testStoreEmptyAction
+  # Test that the correct validations are enforced on Action record creation.
+  def testValidations
     numActions = Action.all.count
-    Action.storeAction('', 2)
-    assert_equal(numActions, Action.all.count, "Empty action was stored")
+    Action.create(action: 'action_6')
+    Action.create(canvas_id: 2)
+    assert_equal(numActions, Action.all.count, "Action records with empty fields were incorrectly stored")
   end
 
-  def testStoreValidAction
+  # Test that storeAction actually inserts a record into the database when appropriate, i.e.
+  # records that abide by the model's validations.
+  def testStoreAction
     numActions = Action.all.count
+    Action.storeAction('', 2)
     Action.storeAction('action_5', 2)
-    assert_equal(numActions+1, Action.all.count, "Valid action was not stored")
+    assert_equal(numActions+1, Action.all.count, "Valid action was not stored or invalid action was stored")
     Action.last.destroy
   end
 
