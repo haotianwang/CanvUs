@@ -1,9 +1,7 @@
 class Bitmap < ActiveRecord::Base
-  attr_accessible :bitmap, :canvas_id
+  attr_accessible :bitmap, :latest_action_timestamp, :canvas_id
 
   validates :canvas_id, presence: true
-
-  belongs_to :canvas
 
   # Stores the bitmap representing a particular canvas's state.
   def self.storeBitmap(bitmap, latestActionTimeStamp, canvasID)
@@ -18,7 +16,7 @@ class Bitmap < ActiveRecord::Base
     #                                          WHERE B.canvas_id = #{canvasID}
     #                                          ORDER BY B.created_at DESC
     #                                          LIMIT 1")
-    return Bitmap.where("canvas_id = ?", canvasID).order("created_at DESC").limit(1)
+    return Bitmap.where("canvas_id = ?", canvasID).order("created_at DESC").first
   end
   
   # Deletes the oldest bitmap with a given canvas id. Used for

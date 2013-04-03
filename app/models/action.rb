@@ -3,8 +3,6 @@ class Action < ActiveRecord::Base
 
   validates :action, :canvas_id, presence: true
 
-  belongs_to :canvas
-
   # Stores an action done on a particular canvas.
   def self.storeAction(action, canvasID)
     newAction = Action.create(action: action, canvas_id: canvasID)
