@@ -21,11 +21,20 @@ function initialize() {
 	
 	var htmlBody = document.getElementById("body");
 	//get a string representing every available canvas delimited by '|'
-	var strOfCanvases = getText();//updateModule.getCanvasesAvailable();
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET","canvases",false);
+	xmlhttp.send();
+	//var test = "{\"canvases\",\"1|2|3\"}";
+	//console.log("response: " + test.split("\"")[3]);//xmlhttp.responseText.split("\"")[3] + " " + xmlhttp.responseText.length);
+
+
+	var strOfCanvases = xmlhttp.responseText.split("\"")[3];//getText();//updateModule.getCanvasesAvailable();
 	//split the string by '|'
 	var arrOfCanvases = strOfCanvases.split("|");
 	console.log(arrOfCanvases);
 	//for each available canvas
+	if(arrOfCanvases.length == 1 && arrOfCanvases[0] == "")
+		return;
 	for(var i = 0; i < arrOfCanvases.length; i++) {
 		//create a div
 		var newCanv = document.createElement("canvas");
