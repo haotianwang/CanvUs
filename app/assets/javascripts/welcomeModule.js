@@ -47,7 +47,7 @@ function initialize() {
 		//*/
 
 		//set canvas and context of updateModule then initialize
-		updateModule.setContext(newCanv.getContext("2d"));
+		//updateModule.setContext(newCanv.getContext("2d"));
 		updateModule.setCanvas(newCanv);
 		updateModule.initialize();
 
@@ -58,7 +58,7 @@ function initialize() {
 		//wrapping the function in another function to store context
 		newCanv.onclick = function(iString) {
 			return function() {
-				window.location.href = "http://" + window.location.host + "/draw2?canvId=" + iString;
+				window.location.href = "http://" + window.location.host + "/draw2?canvasId=" + iString;
 				return false;
 			};
 		}(arrOfCanvases[i]);

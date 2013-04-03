@@ -51,7 +51,7 @@ function UpdateModule() {
         this.setCanvas(dispCanvas);
 
         this.setCanvasID(-1);
-        canvasID = getURLParameter("canvId");
+        canvasID = getURLParameter("canvasId");
         if (canvasID != null) {
             this.setCanvasID(canvasID);
         }
@@ -89,6 +89,8 @@ function UpdateModule() {
 
     this.setCanvas = function (canvas) {
         this.canvas = canvas;
+        if(canvas != null)
+            this.context = canvas.getContext("2d");
     }
 
     this.setSocketClass = function(socketClass) {
@@ -128,7 +130,7 @@ function UpdateModule() {
     this.handleGetAction = function (data) {
         console.log("got action! it's: " + data);
         myJson = JSON.parse(data);
-        this.invokeDrawingModule(this.context, myJson.action, myJson.startx, myJson.starty, myJson.endx, myJson.endy, myJson.color, myJson.strokeWidth);
+        this.invokeDrawingModule(this.canvas, myJson.action, myJson.startx, myJson.starty, myJson.endx, myJson.endy, myJson.color, myJson.strokeWidth);
         this.lastActionTime = myJson.timestamp;
         this.actionsCount = this.actionsCount + 1;
         if (this.actionsCount >= this.actionsLimit) {
@@ -137,19 +139,20 @@ function UpdateModule() {
         }
     };
 
-    this.invokeDrawingModule = function (context, action, startx, starty, endx, endy, color, strokeWidth) {
+    this.invokeDrawingModule = function (canvas, action, startx, starty, endx, endy, color, strokeWidth) {
         switch(action) {
             case "line":
-                this.DrawAPI.drawLine(context, startx, starty, endx, endy, color, strokeWidth);
+                this.DrawAPI.drawLine(canvas, startx, starty, endx, endy, color, strokeWidth);
                 break;
             case "clear":
-                this.DrawAPI.clearCanvas(context);
+                console.log(canvas)
+                this.DrawAPI.clearCanvas(canvas);
                 break;
             case "rectangle":
-                this.DrawAPI.drawRectangle(context, startx, starty, endx, endy, color, strokeWidth);
+                this.DrawAPI.drawRectangle(canvas, startx, starty, endx, endy, color, strokeWidth);
                 break;
             case "circle":
-                this.DrawAPI.drawCircle(context, startx, starty, endx, endy, color, strokeWidth);
+                this.DrawAPI.drawCircle(canvas, startx, starty, endx, endy, color, strokeWidth);
                 break;
             default:
                 console.log("invokeDrawingModule failed due to unknown action: " + action);
@@ -173,7 +176,7 @@ function UpdateModule() {
             for (var i = 0; i < actions.length; i++) {
                 var thisAction = JSON.parse(actions[i]);
                 console.log(JSON.stringify(thisAction));
-                this.invokeDrawingModule(this.context, thisAction.action, thisAction.startx, thisAction.starty, thisAction.endx, thisAction.endy, thisAction.color, thisAction.strokeWidth);
+                this.invokeDrawingModule(this.canvas, thisAction.action, thisAction.startx, thisAction.starty, thisAction.endx, thisAction.endy, thisAction.color, thisAction.strokeWidth);
             }
         }
     };
@@ -186,20 +189,20 @@ function UpdateModule() {
 
 function getDrawAPI() {
     API = {
-        drawLine: function(context, startx, starty, endx, endy, color, strokeWidth) { 
-            drawLine(context, startx, starty, endx, endy, color, strokeWidth); 
+        drawLine: function(canvas, startx, starty, endx, endy, color, strokeWidth) { 
+            drawLine(canvas, startx, starty, endx, endy, color, strokeWidth); 
         },
             
-        clearCanvas: function(context) { 
-            clearCanvas(context); 
+        clearCanvas: function(canvas) { 
+            clearCanvas(canvas); 
         },
 
-        drawRectangle: function(context, startx, starty, endx, endy, color, strokeWidth) { 
-            drawRectangle(context, startx, starty, endx, endy, color, strokeWidth); 
+        drawRectangle: function(canvas, startx, starty, endx, endy, color, strokeWidth) { 
+            drawRectangle(canvas, startx, starty, endx, endy, color, strokeWidth); 
         },
 
-        drawCircle: function(context, startx, starty, endx, endy, color, strokeWidth) { 
-            drawCircle(context, startx, starty, endx, endy, color, strokeWidth); 
+        drawCircle: function(canvas, startx, starty, endx, endy, color, strokeWidth) { 
+            drawCircle(canvas, startx, starty, endx, endy, color, strokeWidth); 
         },
 
         drawBitmap: function(canvas, bitmap) {

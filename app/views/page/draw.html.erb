@@ -97,5 +97,10 @@ Choose your weapon and draw away!
 </center>
 <script type="text/javascript">
 initialize();
-updateModule.getInitImg(window.location.search.split("=")[1]);
+//ghetto way of doing it
+//updateModule.getInitImg(window.location.search.split("=")[1]);
+paramCanvasID = getURLParameter("canvasId");
+if (paramCanvasID != null) {
+    updateModule.setCanvasID(paramCanvasID);
+}
 </script>
