@@ -45,8 +45,9 @@ function clearCanvas(canvas) {
  */
 function drawBitmap(canvas, imageData) {
 	var imageToLoad = new Image();
-	imageToLoad.onLoad = (function(){
-								canvas.getContext("2d").drawImage(imageToLoad,0,0);
-							})();
+	imageToLoad.onload = function() {
+		canvas.getContext("2d").drawImage(imageToLoad,0,0);
+		console.log("the image has loaded!");
+	};
 	imageToLoad.src = imageData;
 }
