@@ -58,7 +58,7 @@ function initialize() {
 		//wrapping the function in another function to store context
 		newCanv.onclick = function(iString) {
 			return function() {
-				window.location.href = "http://" + window.location.host + "/draw2?canvasId=" + iString;
+				window.location.href = "http://" + window.location.host + "/draw?canvasId=" + iString;
 				return false;
 			};
 		}(arrOfCanvases[i]);
