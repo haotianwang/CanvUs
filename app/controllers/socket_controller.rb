@@ -39,21 +39,25 @@ class SocketController < WebsocketRails::BaseController
       bitmap = ''
       timestamp = DateTime.new(1992, 3, 19)
     else
-      bitmap = bitmap_record[0]['bitmap']
-      timestamp = bitmap_record[0]['created_at']
+      bitmap = bitmap_record['bitmap']
+      timestamp = bitmap_record['latest_action_timestamp']
     end
     actions = Action.getActions(canvas_id, timestamp)
+    puts actions
+    puts "Those are the actions.."
     response = {bitmap: bitmap, actions: actions}.to_json
     send_message :get_init_img, response, :namespace => 'socket'
   end
 
   def get_bitmap
+    puts "Hey, Hoetrain. Stop doubting me."
     message_json = JSON.parse(message)
     bitmap = message_json['bitmap']
     timestamp = message_json['timestamp']
-    canvas_id = message_json['canvas_id']
+    canvas_id = message_json['canvasID']
     Bitmap.storeBitmap(bitmap, timestamp, canvas_id)
     WebsocketRails[canvas_id.to_s].trigger(:sent_bitmap, '', :namespace => 'socket')
+    puts "It looks like I broadcasted.."
     BackgroundController.cleanUp(canvas_id, 3)
   end
 end
