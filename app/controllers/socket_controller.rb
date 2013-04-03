@@ -4,7 +4,6 @@ class SocketController < WebsocketRails::BaseController
 
   # Initializes action_count to 0, which will be incremented each time an action is received from a client.
   def initialize_session
-  #  controller_store[:acti] = 0
   end
   
   # Stores an action in the database and increments the action count, which will keep track of how many actions
@@ -15,15 +14,10 @@ class SocketController < WebsocketRails::BaseController
     action = message_json['message']
     canvas_id = message_json['canvasID']
     timestamp = Action.storeAction(action, canvas_id)
-    if controller_store[canvas_id].nil?
-      controller_store[canvas_id] = 1
+    if Bitmap.where("canvas_id = ?", canvas_id).first.nil?
+      controller_store[canvas_id] = true
       bitmap_id = Bitmap.storeBitmap('', timestamp, canvas_id)
       Canvas.createCanvas(bitmap_id)
-    else
-      controller_store[canvas_id] += 1
-      #if controller_store[canvas_id] >= REDRAW_THRESHOLD
-      #  BackgroundController.redraw(canvas_id)
-      #end
     end
     response = JSON.parse(action)
     response['timestamp'] = timestamp
@@ -35,7 +29,7 @@ class SocketController < WebsocketRails::BaseController
   def send_init_img
     canvas_id = message.to_i
     bitmap_record = Bitmap.getBitmap(canvas_id)
-    if bitmap_record.empty?
+    if bitmap_record.nil?
       bitmap = ''
       timestamp = DateTime.new(1992, 3, 19)
     else
