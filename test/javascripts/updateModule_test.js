@@ -64,7 +64,8 @@ module( "updateModule tests", {
         this.testUpdateModule.setDrawAPI(this.fakeDrawModule);
 
         // set the canvas api as a mock
-        this.canvasAPI = {toDataURL: function(arg) {return "fakefakefake"}};
+        this.canvasAPI = {toDataURL: function(arg) {return "fakefakefake"},
+                          getContext: function() {return ""}};
         this.canvasAPIMock = sinon.mock(this.canvasAPI);
         this.canvasAPIMock.expects("toDataURL").atLeast(0).returns("fakefakefake");
         this.testUpdateModule.setCanvas(this.canvasAPI);
