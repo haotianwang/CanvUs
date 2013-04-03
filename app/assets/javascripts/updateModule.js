@@ -44,6 +44,7 @@ function UpdateModule() {
     this.lastActionTime = null;
     this.actionsLimit = 100;
     this.actionsCount = 0;
+    this.initActions = null;
 
     this.resetDefaults = function() {
         this.setDrawAPI(getDrawAPI());
@@ -168,18 +169,45 @@ function UpdateModule() {
         console.log("got image, raw data is " + data);
         var myJson = JSON.parse(data);
         console.log("got image. it's: " + JSON.stringify(myJson));
-        if (myJson.bitmap != "") {
-            this.DrawAPI.drawBitmap(this.canvas, myJson.bitmap);
-        }
+        // add received actions to this.initActions. Will be used by drawInitActions during callback of drawBitmap
         if (myJson.actions != "") {
             var actions = myJson.actions.split(", ");
-            for (var i = 0; i < actions.length; i++) {
-                var thisAction = JSON.parse(actions[i]);
-                console.log(JSON.stringify(thisAction));
-                this.invokeDrawingModule(this.canvas, thisAction.action, thisAction.startx, thisAction.starty, thisAction.endx, thisAction.endy, thisAction.color, thisAction.strokeWidth);
+            console.log("parsed actions is " + actions); 
+            //this.initActions should be empty when initImg is first received, otherwise where did initActions come from?
+            if (this.initActions == null) {
+                this.initActions = actions;
+            }
+            else {
+                console.log("ERROR: updateModule.initActions is not null when getInitImgHandler is invoked");
             }
         }
+        // draw the bitmap if one exists (with the drawInitActions callback when it's done), or just draw initActions
+        if (myJson.bitmap != "") {
+            this.DrawAPI.drawBitmap(this.canvas, myJson.bitmap, this, this.drawInitActions);
+        }
+        else {
+            this.drawInitActions();
+        }
     };
+
+    this.drawInitActions = function () {
+        console.log("drawInitActions: initActions is " + this.initActions);
+
+        if (this.initActions == null) {
+            console.log("drawInitActions called, but initActions is null!");
+            return;
+        }
+
+        console.log("drawing initial actions..");
+        for (var i = 0; i < this.initActions.length; i++) {
+           var thisAction = JSON.parse(this.initActions[i]);
+            console.log("drawing " + JSON.stringify(thisAction));
+            this.invokeDrawingModule(this.canvas, thisAction.action, thisAction.startx, thisAction.starty, thisAction.endx, thisAction.endy, thisAction.color, thisAction.strokeWidth);
+        }
+        console.log("done drawing initial actions!");
+
+        this.initActions = null;
+    }
 
     this.handleSentBitmap = function () {
         this.actionsCount = 0;
@@ -205,8 +233,8 @@ function getDrawAPI() {
             drawCircle(canvas, startx, starty, endx, endy, color, strokeWidth); 
         },
 
-        drawBitmap: function(canvas, bitmap) {
-            drawBitmap(canvas, bitmap);
+        drawBitmap: function(canvas, bitmap, callbackObject, callbackFunction) {
+            drawBitmap(canvas, bitmap, callbackObject, callbackFunction);
         }
     }
     return API;

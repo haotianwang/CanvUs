@@ -43,11 +43,19 @@ function clearCanvas(canvas) {
  * 	   canvas = an HTML5 canvas reference
  *     imageData = the url string from calling <canvas>.toDataURL("image/png")
  */
-function drawBitmap(canvas, imageData) {
+function drawBitmap(canvas, imageData, callbackObject, callbackFunction) {
 	var imageToLoad = new Image();
 	imageToLoad.onload = function() {
 		canvas.getContext("2d").drawImage(imageToLoad,0,0);
 		console.log("the image has loaded!");
+
+		if (callbackObject != null && callbackFunction != null) {
+			callbackFunction.call(callbackObject);
+		}
+		else if (callbackObject == null && callbackFunction != null) {
+			callbackFunction();
+		}
+
 	};
 	imageToLoad.src = imageData;
 }

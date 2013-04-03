@@ -206,12 +206,42 @@ test('updateModule.getInitImgHandler with bitmap, no action', function() {
     // send init package with 1 bitmap and 2 actions
     var message = JSON.stringify({"bitmap": "fake bitmap", "actions": ""});
     var spy = sinon.spy(this.testUpdateModule, "invokeDrawingModule");
-    this.fakeDrawModuleMock.expects("drawBitmap").exactly(1);
+    this.fakeDrawModuleMock.expects("drawBitmap").exactly(1).callsArgOn(3, this.testUpdateModule);
 
     this.testUpdateModule.getInitImgHandler(message);
 
     ok(spy.callCount == 0, "getInitImgHandler did not invokeDrawingModule, as expected");
     ok(this.fakeDrawModuleMock.verify(), "getInitImgHandler invoked drawBitmap, as expected");
+});
+
+test('updateModule.getInitImgHandler with bitmap, with actions', function() {
+    // send init package with 1 bitmap and 2 actions
+    var message = JSON.stringify({"bitmap": "fake bitmap", "actions": ""+createStubAction("rectangle")+", "+createStubAction("clear")});
+    var spy = sinon.spy(this.testUpdateModule, "invokeDrawingModule");
+    var drawActionsSpy = sinon.spy(this.testUpdateModule, "drawInitActions");
+    this.fakeDrawModuleMock.expects("drawBitmap").exactly(1).callsArgOn(3, this.testUpdateModule);
+    this.fakeDrawModuleMock.expects("drawRectangle").exactly(1);
+    this.fakeDrawModuleMock.expects("clearCanvas").exactly(1);
+
+    this.testUpdateModule.getInitImgHandler(message);
+    console.log("qUnit: testUpdateModule.initActions is " + this.testUpdateModule.initActions);
+
+    ok(spy.callCount == 2, "getInitImgHandler invoked drawing module twice, as expected");
+    ok(drawActionsSpy.callCount == 1, "drawInitActions was called, as expected");
+    ok(this.fakeDrawModuleMock.verify(), "getInitImgHandler invoked drawBitmap and appropriate drawingModule methods, as expected");
+});
+
+test('updateModule.drawInitActions with initActions', function() {
+    var actionsList = [createStubAction("rectangle"),createStubAction("clear")];
+    var spy = sinon.spy(this.testUpdateModule, "invokeDrawingModule");
+    this.fakeDrawModuleMock.expects("drawRectangle").exactly(1);
+    this.fakeDrawModuleMock.expects("clearCanvas").exactly(1);
+
+    this.testUpdateModule.initActions = actionsList;
+    this.testUpdateModule.drawInitActions();
+
+    ok(spy.callCount == 2, "drawInitActions invoked drawing module twice, as expected");
+    ok(this.fakeDrawModuleMock.verify(), "drawInitActions invoked correct drawing actions");
 });
 
 test('updateModule.sendBitmap', function() {
@@ -220,7 +250,7 @@ test('updateModule.sendBitmap', function() {
 
     this.testUpdateModule.sendBitmap();
 
-    this.canvasAPIMock.verify();
+    ok(this.canvasAPIMock.verify(), "sendBitmap called canvas.toDataURL once, as expected");
     ok(this.WebSocketRailsMock.verify(), "the sendBitmap method triggers a message as well as calls canvas.toDataURL");
 });
 
