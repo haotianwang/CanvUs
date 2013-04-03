@@ -237,10 +237,10 @@ function initialize() {
     dispCanvas = document.getElementById('myCanvas');
     dispCtx = dispCanvas.getContext("2d");
     clrButton = document.getElementById('clear-button');
-    blackButton = document.getElementById('black-button');
-    blueButton = document.getElementById('blue-button');
-    redButton = document.getElementById('red-button');
-    lineThicknessBox = document.getElementById("line-thickness-box");
+    //blackButton = document.getElementById('black-button');
+    //blueButton = document.getElementById('blue-button');
+    //redButton = document.getElementById('red-button');
+    //lineThicknessBox = document.getElementById("line-thickness-box");
     //colorBox = document.getElementById("color-box"); //<- depricated by colorSelector
     colorSelector = document.getElementById("color-selector");
     pencilButton = document.getElementById("pencil-button")
@@ -314,7 +314,7 @@ function initialize() {
      
         //move canvas to the right by canvLeft pixels
         //shift if left by 8, because something adds a 8 pixel shift
-        drawCanvas.style.left = canvLeft - 8 + "px";
+        drawCanvas.style.left = canvLeft /*- 8*/ + "px";
     }
 
     //set up canvas once
@@ -426,6 +426,8 @@ function initialize() {
         return false;
     }
 
+    /*
+    //Draw no longer has black/blue/red buttons for quick select
     blackButton.onclick = function() {
         tool.changeColor('#000000');
         return false;
@@ -440,6 +442,7 @@ function initialize() {
         tool.changeColor('#FF0000');
         return false;
     };
+    */
 
     colorSelector.onchange= function (event) {
         console.log("in here" + colorSelector.value)
@@ -447,6 +450,7 @@ function initialize() {
         //return false; //return false on enter (else canvas cleared)
     };
 
+    /*
     //this button works the same for circle rectangle and pencil
     lineThicknessBox.onkeydown = function (event) {
         if(event.keyCode == 13) { //only check for enter
@@ -456,6 +460,7 @@ function initialize() {
         }
         //no return for other key presses, else key press doesn't happen
     };
+    */
 
     console.log(dlPngButton);
     dlPngButton.onclick = function(event) {
