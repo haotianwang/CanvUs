@@ -124,7 +124,7 @@ function UpdateModule() {
         myMsgJson["canvasID"] = this.canvasID;
         myMsgJson["timestamp"] = this.lastActionTime;
         this.dispatcher.trigger('socket.send_bitmap', JSON.stringify(myMsgJson));
-        console.log("just sent updated bitmap!");
+        console.log("just sent updated bitmap! it was " + JSON.stringify(myMsgJson));
     }
 
     this.handleGetAction = function (data) {

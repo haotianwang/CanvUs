@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130402041025) do
+ActiveRecord::Schema.define(:version => 20130402064327) do
 
   create_table "actions", :force => true do |t|
     t.integer  "canvas_id"
@@ -23,8 +23,9 @@ ActiveRecord::Schema.define(:version => 20130402041025) do
   create_table "bitmaps", :force => true do |t|
     t.integer  "canvas_id"
     t.text     "bitmap"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
+    t.datetime "latest_action_timestamp"
   end
 
   create_table "canvas", :force => true do |t|
