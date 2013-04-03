@@ -64,7 +64,8 @@ module( "updateModule tests", {
         this.testUpdateModule.setDrawAPI(this.fakeDrawModule);
 
         // set the canvas api as a mock
-        this.canvasAPI = {toDataURL: function(arg) {return "fakefakefake"}};
+        this.canvasAPI = {toDataURL: function(arg) {return "fakefakefake"},
+                          getContext: function() {return ""}};
         this.canvasAPIMock = sinon.mock(this.canvasAPI);
         this.canvasAPIMock.expects("toDataURL").atLeast(0).returns("fakefakefake");
         this.testUpdateModule.setCanvas(this.canvasAPI);
@@ -223,7 +224,7 @@ test('updateModule.sendBitmap', function() {
     ok(this.WebSocketRailsMock.verify(), "the sendBitmap method triggers a message as well as calls canvas.toDataURL");
 });
 
-test ('updateModule.sendAction+handleGetAction multiple times to trigger sendBitmap', function() {
+test('updateModule.sendAction+handleGetAction multiple times to trigger sendBitmap', function() {
     var spy = sinon.spy(this.testUpdateModule, "sendBitmap");
     this.fakeDrawModuleMock.expects("clearCanvas").atLeast(0).returns();
 
@@ -233,4 +234,10 @@ test ('updateModule.sendAction+handleGetAction multiple times to trigger sendBit
     }
 
     ok(spy.callCount == 1, "sendAction and handleGetAction 55 times with actionsLimit as 30 results in 1 sendBitmap, as expected");
+})
+
+test('updateModule.handleSentBitmap', function() {
+    this.testUpdateModule.actionsCount = 50;
+    this.testUpdateModule.handleSentBitmap();
+    equal(this.testUpdateModule.actionsCount, 0, "handleSentBitmap set actionsCount to 0, as expected");
 })

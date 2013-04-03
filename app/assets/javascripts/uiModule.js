@@ -57,8 +57,9 @@ function initialize() {
                 drawCtx.lineTo(event.relx, event.rely);
                 drawCtx.stroke();
                 //canvasUpdate();
-                clearCanvas(drawCtx);
-                drawLine(dispCtx, prevX, prevY, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                console.log(drawCanvas);
+                clearCanvas(drawCanvas);
+                drawLine(dispCanvas, prevX, prevY, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
 				// send action to server
 				updateModule.sendAction("line", prevX, prevY, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
 				prevX = event.relx;
@@ -111,11 +112,11 @@ function initialize() {
 
             //if not buggyLine, then draw it on the draw canvas (not permanent)
             if(!buggyLine) {
-                clearCanvas(drawCtx);
-                drawLine(drawCtx,tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                clearCanvas(drawCanvas);
+                drawLine(drawCanvas,tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
 			//if buggyLine, then draw it on the disp canvas (permanent) and send to server
             } else {
-                drawLine(dispCtx,tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                drawLine(dispCanvas,tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
                 updateModule.sendAction("line", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             } 
         };
@@ -124,8 +125,8 @@ function initialize() {
             if (mouseDown) {
                 tool.mousemove(event);
                 mouseDown = false;
-                drawLine(dispCtx,tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
-				clearCanvas(drawCtx);
+                drawLine(dispCanvas,tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+				clearCanvas(drawCanvas);
                 // send action to server
 				updateModule.sendAction("line", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             }
@@ -156,11 +157,11 @@ function initialize() {
             }
             //if not buggyRectangle, then draw it on the draw canvas (not permanent)
             if(!buggyRectangle) {
-                clearCanvas(drawCtx);
-                drawRectangle(drawCtx, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                clearCanvas(drawCanvas);
+                drawRectangle(drawCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             //if buggyRect, then draw it on the disp canvas (permanent) and send to server
             } else {
-                drawRectangle(dispCtx, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                drawRectangle(dispCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
                 updateModule.sendAction("rectangle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             } 
         };
@@ -169,8 +170,8 @@ function initialize() {
             if (mouseDown) {
                 tool.mousemove(event);
                 mouseDown = false;
-                drawRectangle(dispCtx, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
-				clearCanvas(drawCtx);
+                drawRectangle(dispCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+				clearCanvas(drawCanvas);
                 //send the action to server
 				updateModule.sendAction("rectangle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             }
@@ -203,11 +204,11 @@ function initialize() {
             }
             //if not buggyCircle, then draw it on the draw canvas (not permanent)
             if(!buggyCircle) {
-                clearCanvas(drawCtx);
-                drawCircle(drawCtx, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                clearCanvas(drawCanvas);
+                drawCircle(drawCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             //if buggyCircle, then draw it on the disp canvas (permanent) and send to server
             } else{
-                drawCircle(dispCtx, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                drawCircle(dispCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
                 updateModule.sendAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             }
         };
@@ -216,8 +217,8 @@ function initialize() {
             if (mouseDown) {
                 tool.mousemove(event);
                 mouseDown = false;
-                drawCircle(dispCtx, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
-				clearCanvas(drawCtx);
+                drawCircle(dispCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+				clearCanvas(drawCanvas);
                 updateModule.sendAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             }
         };
@@ -229,17 +230,17 @@ function initialize() {
 
     //======================== Clear ============================
 	tools.clear = function () {
-        clearCanvas(dispCtx); 
-        clearCanvas(drawCtx);
+        clearCanvas(dispCanvas); 
+        clearCanvas(drawCanvas);
 	};
 
     dispCanvas = document.getElementById('myCanvas');
     dispCtx = dispCanvas.getContext("2d");
     clrButton = document.getElementById('clear-button');
-    blackButton = document.getElementById('black-button');
-    blueButton = document.getElementById('blue-button');
-    redButton = document.getElementById('red-button');
-    lineThicknessBox = document.getElementById("line-thickness-box");
+    //blackButton = document.getElementById('black-button');
+    //blueButton = document.getElementById('blue-button');
+    //redButton = document.getElementById('red-button');
+    //lineThicknessBox = document.getElementById("line-thickness-box");
     //colorBox = document.getElementById("color-box"); //<- depricated by colorSelector
     colorSelector = document.getElementById("color-selector");
     pencilButton = document.getElementById("pencil-button")
@@ -254,7 +255,8 @@ function initialize() {
 
     //set the default context to the dispCtx for the updateModule
     updateModule.resetDefaults();
-    updateModule.setContext(dispCtx);
+    updateModule.setCanvas(dispCanvas);
+    //updateModule.setContext(dispCtx);
     //initialize
     updateModule.initialize();
 
@@ -312,7 +314,7 @@ function initialize() {
      
         //move canvas to the right by canvLeft pixels
         //shift if left by 8, because something adds a 8 pixel shift
-        drawCanvas.style.left = canvLeft - 8 + "px";
+        drawCanvas.style.left = canvLeft /*- 8*/ + "px";
     }
 
     //set up canvas once
@@ -326,7 +328,7 @@ function initialize() {
     //This function draws the "drawing" layer onto the background layer
     function canvasUpdate() {
         dispCtx.drawImage(drawCanvas,0,0);
-        clearCanvas(drawCtx);
+        clearCanvas(drawCanvas);
     }
 
     function handleEvent(event) {
@@ -360,8 +362,8 @@ function initialize() {
     };
 
     clrButton.onclick = function() { 
-		clearCanvas(dispCtx);
-        clearCanvas(drawCtx);
+		clearCanvas(dispCanvas);
+        clearCanvas(drawCanvas);
 		// send the clear to server, everything else can be filler values
 		updateModule.sendAction("clear", 0,0,0,0,0,0);
 
@@ -424,6 +426,8 @@ function initialize() {
         return false;
     }
 
+    /*
+    //Draw no longer has black/blue/red buttons for quick select
     blackButton.onclick = function() {
         tool.changeColor('#000000');
         return false;
@@ -438,6 +442,7 @@ function initialize() {
         tool.changeColor('#FF0000');
         return false;
     };
+    */
 
     colorSelector.onchange= function (event) {
         console.log("in here" + colorSelector.value)
@@ -445,6 +450,7 @@ function initialize() {
         //return false; //return false on enter (else canvas cleared)
     };
 
+    /*
     //this button works the same for circle rectangle and pencil
     lineThicknessBox.onkeydown = function (event) {
         if(event.keyCode == 13) { //only check for enter
@@ -454,6 +460,7 @@ function initialize() {
         }
         //no return for other key presses, else key press doesn't happen
     };
+    */
 
     console.log(dlPngButton);
     dlPngButton.onclick = function(event) {
