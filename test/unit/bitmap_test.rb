@@ -13,7 +13,7 @@ class BitmapTest < ActiveSupport::TestCase
   # Tests that empty bitmaps, which represent blank canvases, are properly stored.
   def testStoreEmptyBitmap
     numBitmaps = Bitmap.all.count
-    Bitmap.storeBitmap('', 3)
+    Bitmap.storeBitmap('', DateTime.new(1991, 9, 19), 3)
     assert_equal(numBitmaps+1, Bitmap.all.count, "Empty bitmap was not stored")
     Bitmap.last.destroy
   end
@@ -21,7 +21,7 @@ class BitmapTest < ActiveSupport::TestCase
   # Tests that nonempty bitmaps are properly stored.
   def testStoreNonemptyBitmap
     numBitmaps = Bitmap.all.count
-    Bitmap.storeBitmap('bitmap_3', 3)
+    Bitmap.storeBitmap('bitmap_3', DateTime.new(1990, 4, 19), 3)
     assert_equal(numBitmaps+1, Bitmap.all.count, "Nonempty bitmap was not stored")
     Bitmap.last.destroy
   end
@@ -29,7 +29,7 @@ class BitmapTest < ActiveSupport::TestCase
   # Tests that a bitmap with a duplicate canvas_id is properly stored.
   def testStoreBitmapDupCanvas
     numBitmaps = Bitmap.all.count
-    Bitmap.storeBitmap('bitmap_3', 0)
+    Bitmap.storeBitmap('bitmap_3', DateTime.new(1992, 5, 19), 0)
     assert_equal(numBitmaps+1, Bitmap.all.count, "Bitmap was not stored")
     Bitmap.last.destroy
   end
@@ -38,14 +38,14 @@ class BitmapTest < ActiveSupport::TestCase
   # which represents a blank canvas.
   def testGetBitmapFailure
     bitmapGot = Bitmap.getBitmap(3)
-    assert(bitmapGot.empty?, "Bitmap incorrectly retrieved")
+    assert(bitmapGot.nil?, "Bitmap incorrectly retrieved")
   end
 
   # Tests that getBitmap will return only the latest bitmap for a particular canvas_id.
   def testGetBitmap
     Bitmap.create(bitmap: 'bitmap_3', canvas_id: 0)
     bitmapGot = Bitmap.getBitmap(0)
-    assert_equal('bitmap_3', bitmapGot[0][:bitmap], "Bitmap incorrectly retrieved")
+    assert_equal('bitmap_3', bitmapGot[:bitmap], "Bitmap incorrectly retrieved")
     Bitmap.last.destroy
   end
 

@@ -49,11 +49,11 @@ class ActionTest < ActiveSupport::TestCase
 
   # Tests the deletion of actions
   def testDeleteActions
-    numActionsGot = Action.getActions(0).split(', ').count
+    numActionsGot = Action.getActions(0, DateTime.new(1991, 6, 22)).split(', ').count
     endTime = DateTime.new(2011,1,1)
 
     a = Action.new(action: 'action_6', canvas_id: 0)
-    a.created_at = DateTime.new(2009,2,2)
+    a.created_at = DateTime.new(2009,8,26)
     a.save
 
     b = Action.new(action: 'action_7', canvas_id: 0)
@@ -61,9 +61,8 @@ class ActionTest < ActiveSupport::TestCase
     b.save
 
     Action.deleteActions(0, endTime)
-    newNumActionsGot = Action.getActions(0).split(', ').count
+    newNumActionsGot = Action.getActions(0, DateTime.new(1992, 9, 19)).split(', ').count
     assert_equal(newNumActionsGot, numActionsGot, "Incorrect number of actions deleted")
-    Bitmap.last.destroy
     Action.last.destroy
   end
 
