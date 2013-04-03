@@ -10,6 +10,13 @@ class BitmapTest < ActiveSupport::TestCase
     Bitmap.create(bitmap: 'bitmap_2', canvas_id: 2)
   end
 
+  # Test that the correct validations are enforced on Bitmap record creation.
+  def testValidations
+    numBitmaps = Bitmap.all.count
+    Bitmap.create()
+    assert_equal(numBitmaps, Bitmap.all.count, "A Bitmap record without a canvas_id was incorrectly stored")
+  end
+
   # Tests that empty bitmaps, which represent blank canvases, are properly stored.
   def testStoreEmptyBitmap
     numBitmaps = Bitmap.all.count
