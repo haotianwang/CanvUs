@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130402064327) do
+ActiveRecord::Schema.define(:version => 20130403074447) do
 
   create_table "actions", :force => true do |t|
     t.integer  "canvas_id"
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(:version => 20130402064327) do
     t.boolean  "active"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+    t.integer  "canvas_id"
   end
 
   create_table "users", :force => true do |t|

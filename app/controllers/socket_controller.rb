@@ -17,7 +17,7 @@ class SocketController < WebsocketRails::BaseController
     if Bitmap.where("canvas_id = ?", canvas_id).first.nil?
       controller_store[canvas_id] = true
       bitmap_id = Bitmap.storeBitmap('', timestamp, canvas_id)
-      Canvas.createCanvas(bitmap_id)
+      Canvas.createCanvas(canvas_id, bitmap_id)
     end
     response = JSON.parse(action)
     response['timestamp'] = timestamp
