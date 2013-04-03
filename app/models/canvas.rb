@@ -3,7 +3,7 @@ class Canvas < ActiveRecord::Base
 
   attr_accessible :canvas_id, :bitmap_id, :user_username, :active
 
-  validates :canvas_id, :bitmap_id, :user_username, :active, presence: true
+  validates :canvas_id, :bitmap_id, :user_username, presence: true
 
   def self.createCanvas(canvasID, bitmapID)
     Canvas.create(canvas_id: canvasID, bitmap_id: bitmapID, user_username: 'mylittlelucas888', active: true)
@@ -21,6 +21,7 @@ class Canvas < ActiveRecord::Base
     canvas.save
   end
 
+  # Gets the Canvas record ids for all active canvases, i.e. canvases that are currently being drawn on.
   def self.getCanvasIDs()
     canvases = Canvas.select("canvas_id").where("active = ?", true)
     canvases = canvases.map{|record| record[:canvas_id]}

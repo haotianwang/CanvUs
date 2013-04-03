@@ -2,12 +2,11 @@ require 'json'
 
 class SocketController < WebsocketRails::BaseController
 
-  # Initializes action_count to 0, which will be incremented each time an action is received from a client.
   def initialize_session
   end
   
-  # Stores an action in the database and increments the action count, which will keep track of how many actions
-  # have been done since the canvas state was last saved. Afterwards, broadcasts the action to all connected
+  # Stores an action in the database and generates the first Bitmap and Canvas records for a particular canvasID
+  # if they do not yet have any records in the database. Afterwards, broadcasts the action to all connected
   # clients.
   def get_action_handler
     message_json = JSON.parse(message)
@@ -15,7 +14,6 @@ class SocketController < WebsocketRails::BaseController
     canvas_id = message_json['canvasID']
     timestamp = Action.storeAction(action, canvas_id)
     if Bitmap.where("canvas_id = ?", canvas_id).first.nil?
-      controller_store[canvas_id] = true
       bitmap_id = Bitmap.storeBitmap('', timestamp, canvas_id)
       Canvas.createCanvas(canvas_id, bitmap_id)
     end
@@ -37,21 +35,20 @@ class SocketController < WebsocketRails::BaseController
       timestamp = bitmap_record['latest_action_timestamp']
     end
     actions = Action.getActions(canvas_id, timestamp)
-    puts actions
-    puts "Those are the actions.."
     response = {bitmap: bitmap, actions: actions}.to_json
     send_message :get_init_img, response, :namespace => 'socket'
   end
 
+  # Stores an updated bitmap in the database according to the current state of the canvas a client is drawing on.
+  # Broadcasts to all clients so that additional bitmaps with almost the exact same state will not be sent. Finally,
+  # calls the cleanUp method to delete old data from the database.
   def get_bitmap
-    puts "Hey, Hoetrain. Stop doubting me."
     message_json = JSON.parse(message)
     bitmap = message_json['bitmap']
     timestamp = message_json['timestamp']
     canvas_id = message_json['canvasID']
     Bitmap.storeBitmap(bitmap, timestamp, canvas_id)
     WebsocketRails[canvas_id.to_s].trigger(:sent_bitmap, '', :namespace => 'socket')
-    puts "It looks like I broadcasted.."
     BackgroundController.cleanUp(canvas_id, 3)
   end
 end
