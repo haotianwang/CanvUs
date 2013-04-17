@@ -1,12 +1,11 @@
 class Canvas < ActiveRecord::Base
-  set_primary_key :canvas_id
+  attr_accessible :bitmap_id, :user_username, :active
 
-  attr_accessible :canvas_id, :bitmap_id, :user_username, :active
-
-  validates :canvas_id, :bitmap_id, :user_username, presence: true
+  validates :bitmap_id, :user_username, presence: true
 
   def self.createCanvas(canvasID, bitmapID)
-    Canvas.create(canvas_id: canvasID, bitmap_id: bitmapID, user_username: 'mylittlelucas888', active: true)
+    canvas = Canvas.create(bitmap_id: bitmapID, user_username: 'mylittlelucas888', active: true)
+    return canvas[:id]
   end
 
   def self.setBitmap(canvasID, bitmapID)
