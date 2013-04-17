@@ -12,17 +12,22 @@
     <link href="bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
     <link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css">
     <script src="http://code.jquery.com/jquery.js"></script>
+    <script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
 </head>
 
 <center>
+<!--
 <div id="canvas-message" class="message">
 Hi, welcome to CanvUs v.1.0.0
 </div><br>
+-->
+
 
 <div id="canvas-instruction-message" class="message">
-Choose your weapon and draw away!
-</div><br>
+<br>
+</div>
+
 
 <div id="canvasContainer">
     <canvas id="myCanvas" width="1000" height="500">
@@ -48,19 +53,22 @@ Choose your weapon and draw away!
                 <a class="btn" input id="line-button" type="submit" value="Line"href="#"><i><img src="glyphicons_097_vector_path_line.png" class="icon-line"></i></a>
                 <a class="btn" 
         <a href="#" class="btn" input id="pencil-button" type="submit" value="Pencil" href="#"><i class="icon-pencil"></i></a>
+                <a class="btn" input id="fill-button" type="submit" value="Fill" href="#"><i><img src="fill.png" class="icon-fill"></i></a>
                 <a class="btn" input id="rectangle-button" type="submit" value="Rectangle" href="#"><i><img src="glyphicons_094_vector_path_square.png" class="icon-square"></i></a>
                 <a class="btn" input id="circle-button" type="submit" value="Circle" href="#"><i><img src="glyphicons_095_vector_path_circle.png" class="icon-circle"></i></a>
                 <a class="btn" id="buggy-line-button" type="submit" value="Buggy Line" href="#"><img src="buggy-line.png" class="icon-buggy-line"></a>
                 <a class="btn" id="buggy-circle-button" type="submit" value="Buggy Circle" href="#"><img src="buggy-circle.png" class="icon-buggy-circle"></a>
                 <a class="btn" id="buggy-rectangle-button" type="submit" value="Buggy Rectangle" href="#"><img src="buggy-rectangle.png" class="icon-buggy-rect"></a>
+                <div><br></div>
 
                 <a href="#" class="btn btn-danger" input id="clear-button" type="submit" value="Clear">Clear</a>
+                <br><br>
         
-                <a href="#" class="btn btn-large btn-success" id="download-png-button" type="submit" value="Download as PNG">Save Image</a>
+                <a href="#" class="btn btn-success" id="download-png-button" type="submit" value="Download as PNG">Save Image</a>
 
             </div>
         </div>
-        Color selector: <input id="color-selector" class="color {hash: true}" value="000000"><br>
+        Change Color: <input id="color-selector" class="color {hash: true}" value="000000"><br><br>
         
         <div class="input-prepend input-append">
             <input class="span2" id="appendedPrependedDropdownButton" type="text">
@@ -80,7 +88,9 @@ Choose your weapon and draw away!
                 </ul>
             </div>
         </div><br>
+        <!--
         <input id="debug-button" type="submit" value="Debug Off">
+        -->
     </form>
 </div>
 
