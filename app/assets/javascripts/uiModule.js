@@ -469,6 +469,7 @@ function initialize() {
         return false;
     }
 
+    /*
     debugButton.onclick = function () {
         debug = !debug;
         if(debug) {
@@ -480,5 +481,6 @@ function initialize() {
         }
         return false;
     };
+    */
 }
 
