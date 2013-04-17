@@ -9,11 +9,13 @@ pencilButton,
 lineButton,
 rectangleButton,
 circleButton,
-blackButton,
-blueButton,
-redButton,
-lineThicknessBox,
-colorBox,
+//blackButton,
+//blueButton,
+//redButton,
+//lineThicknessBox,
+//colorBox,
+fillButton,
+fillOn = false,
 colorSelector,
 buggyCircle = false,
 buggyCircleButton,
@@ -158,11 +160,11 @@ function initialize() {
             //if not buggyRectangle, then draw it on the draw canvas (not permanent)
             if(!buggyRectangle) {
                 clearCanvas(drawCanvas);
-                drawRectangle(drawCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                drawRectangle(drawCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
             //if buggyRect, then draw it on the disp canvas (permanent) and send to server
             } else {
                 drawRectangle(dispCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
-                updateModule.sendAction("rectangle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                updateModule.sendAction("rectangle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
             } 
         };
 
@@ -170,10 +172,10 @@ function initialize() {
             if (mouseDown) {
                 tool.mousemove(event);
                 mouseDown = false;
-                drawRectangle(dispCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                drawRectangle(dispCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
 				clearCanvas(drawCanvas);
                 //send the action to server
-				updateModule.sendAction("rectangle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+				updateModule.sendAction("rectangle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
             }
         };
 
@@ -205,10 +207,10 @@ function initialize() {
             //if not buggyCircle, then draw it on the draw canvas (not permanent)
             if(!buggyCircle) {
                 clearCanvas(drawCanvas);
-                drawCircle(drawCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                drawCircle(drawCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
             //if buggyCircle, then draw it on the disp canvas (permanent) and send to server
             } else{
-                drawCircle(dispCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                drawCircle(dispCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
                 updateModule.sendAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             }
         };
@@ -217,9 +219,9 @@ function initialize() {
             if (mouseDown) {
                 tool.mousemove(event);
                 mouseDown = false;
-                drawCircle(dispCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                drawCircle(dispCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
 				clearCanvas(drawCanvas);
-                updateModule.sendAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                updateModule.sendAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
             }
         };
 
@@ -236,7 +238,10 @@ function initialize() {
 
     dispCanvas = document.getElementById('myCanvas');
     dispCtx = dispCanvas.getContext("2d");
+    dispCtx.lineCap = "round"; //set line cap to round
+    dispCtx.lineJoin = "round"; //set line join to be round (no more jaggies)
     clrButton = document.getElementById('clear-button');
+    fillButton = document.getElementsById('fill-button');
     //blackButton = document.getElementById('black-button');
     //blueButton = document.getElementById('blue-button');
     //redButton = document.getElementById('red-button');
@@ -370,6 +375,9 @@ function initialize() {
         return false;
     };
 
+    fillButton.onclick = function() {
+        fillOn = !fillOn;
+    }
 
     pencilButton.onclick = function() {
         currentTool = "pencil";
