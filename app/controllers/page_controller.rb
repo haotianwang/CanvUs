@@ -4,10 +4,6 @@ class PageController < ApplicationController
     render "draw"
   end
 
-  def draw2
-    render "draw2"
-  end
-
 	def welcome
 		render "welcome"
 	end
