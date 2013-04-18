@@ -1,3 +1,9 @@
+
+body{
+background-image: -webkit-gradient(radial, center bottom, 0, center bottom, 553, color-stop(0, #FFFFFF), color-stop(1, #E8D5D6));
+background-image: -moz-radial-gradient(center bottom, ellipse farthest-corner, #FFFFFF 0%, #E8D5D6 100%);
+}
+
 #canvas-message{
 color:#000000
 }
@@ -14,7 +20,7 @@ position: relative;
 #myCanvas{
 /*border:1px solid #000000;
 background-color:#FFFFFF;*/
-border:1px solid #000000;
+border:1px solid #FFFFFF;
 border-style: double;
 background-color:#FFFFFF;
 /*position: absolute; 

@@ -267,7 +267,7 @@ function initialize() {
     drawCanvas.id = "drawCanvas";
     drawCanvas.width = dispCanvas.width;
     drawCanvas.height = dispCanvas.height;
-    drawCanvas.style.border = "1px solid #FF0000";
+    drawCanvas.style.border = "3px solid #FFFFFF ";
     cnvsContainer.appendChild(drawCanvas);
     drawCtx = drawCanvas.getContext('2d');
     drawCtx.lineCap = "round"; //set line cap to round
