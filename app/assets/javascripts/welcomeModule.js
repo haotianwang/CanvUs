@@ -18,6 +18,8 @@ function initialize() {
         error: function(data) {console.log("new canvas request failed");}
     	}).done(function(data) {
     		console.log("new canvas request response received");
+    		dataJson = JSON.parse(data);
+    		data = dataJson.canvasID
 			if (isNaN(parseInt(data))) {
 				console.log("new canvas request returned a nonInteger: " + data);
 			} else {
