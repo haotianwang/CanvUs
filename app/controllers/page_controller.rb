@@ -12,6 +12,10 @@ class PageController < ApplicationController
 		render "welcome"
 	end
 
+	def welcome2
+		render "welcome2"
+	end
+
 	def canvus
 		render "canvus"
 	end
