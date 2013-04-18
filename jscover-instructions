@@ -1,0 +1,14 @@
+copy CanvUs/app/assets/javascripts/ and replace JSCover/doc/canvus-qunit/src/test/javascripts/
+
+copy CanvUs/test/javascripts/*_test.js to JSCover/doc/canvas-qunit/src/test/
+
+optional: put new dependencies in JSCover/doc/canvas-qunit/src/test/dependencies/
+
+put new javascript links (if necessary) in JSCover/doc/canvas-qunit/src/test/index.html (examples provided)
+
+from JSCover/, run:
+java -jar target/dist/JSCover.jar -ws --branch --document-root=doc/canvus-qunit/src --no-instrument=/qunit --no-instrument=/test/dependencies
+
+go on a browser to:
+http://localhost:8080/jscoverage.html?/test/index.html
+
