@@ -241,7 +241,7 @@ function initialize() {
     dispCtx.lineCap = "round"; //set line cap to round
     dispCtx.lineJoin = "round"; //set line join to be round (no more jaggies)
     clrButton = document.getElementById('clear-button');
-    fillButton = document.getElementsById('fill-button');
+    fillButton = document.getElementById('fill-button');
     //blackButton = document.getElementById('black-button');
     //blueButton = document.getElementById('blue-button');
     //redButton = document.getElementById('red-button');

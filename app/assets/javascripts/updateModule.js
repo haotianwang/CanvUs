@@ -104,7 +104,7 @@ function UpdateModule() {
     }
 
     this.sendAction = function (drawActionType, startx, starty, endx, endy, color, strokeWidth) {
-        if(dontSendActions) {
+        if(this.dontSendActions) {
             console.log("didn't send action")
             return;
         }
