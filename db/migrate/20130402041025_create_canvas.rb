@@ -7,6 +7,5 @@ class CreateCanvas < ActiveRecord::Migration
 
       t.timestamps
     end
-    execute "ALTER TABLE canvas ADD PRIMARY KEY (canvas_id);"
   end
 end

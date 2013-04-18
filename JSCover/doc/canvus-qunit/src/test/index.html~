@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>QUnit Test Suite</title>
+
+	<!-- add qunit library -->
+	<link rel="stylesheet" href="../qunit/qunit.css">
+	<script src="../qunit/qunit.js"></script>
+
+	<!-- add CanvUs test library dependencies -->
+	<script src="sinon-1.6.0.js"></script>
+
+	<!-- add tested files -->
+	<script src="javascripts/uiModule.js"></script>
+	<script src="javascripts/drawModule.js"></script>
+	<script src="javascripts/welcomeModule.js"></script>
+	<script src="javascripts/updateModule.js"></script>
+
+	<!-- add test file -->
+	<script src="updateModule_test.js"></script>
+</head>
+<body>
+	<div id="qunit"></div>
+	<div id="qunit-fixture">test markup</div>
+</body>
+</html>
