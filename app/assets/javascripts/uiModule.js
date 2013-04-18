@@ -221,7 +221,7 @@ function initialize() {
                 mouseDown = false;
                 drawCircle(dispCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
 				clearCanvas(drawCanvas);
-                updateModule.sendAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
+                updateModule.sendAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             }
         };
 
@@ -377,6 +377,8 @@ function initialize() {
 
     fillButton.onclick = function() {
         fillOn = !fillOn;
+        console.log("fillOn is now: " + fillOn);
+        return false;
     }
 
     pencilButton.onclick = function() {
