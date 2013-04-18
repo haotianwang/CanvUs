@@ -16,8 +16,7 @@ class SocketController < WebsocketRails::BaseController
       return
     end
     timestamp = Action.storeAction(action, canvas_id)
-    response = JSON.parse(action)
-    response['timestamp'] = timestamp
+    response = {message: action, timestamp: timestamp}
     WebsocketRails[canvas_id.to_s].trigger(:get_action, response.to_json, :namespace => 'socket')
   end
 
