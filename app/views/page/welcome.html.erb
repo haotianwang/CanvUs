@@ -24,7 +24,9 @@
           // Hide the sign-in button now that the user is authorized, for example:
           document.getElementById('signinButton').setAttribute('style', 'display: none');
           console.log("Connection worked.");
-          window.location.replace("http://localhost:3000/canvus")
+          //console.log(authResult['access_token']);
+          var user_token = authResult['access_token'];
+          window.location.replace("http://54.241.5.2:8080/canvus")
         } else if (authResult['error']) {
           // There was an error.
           // Possible error codes:
