@@ -11,7 +11,7 @@ function drawRectangle(canvas, startx, starty, endx, endy, color, lineWidth, fil
 	canvas.getContext("2d").lineWidth = lineWidth;
     if(fillOn) {
 		canvas.getContext("2d").fillStyle = color;
-    	canvas.getContext("2d").fill();
+    	canvas.getContext("2d").fillRect(x,y,w,h);
 	}
 	canvas.getContext("2d").strokeRect(x,y,w,h);
 }
@@ -24,14 +24,13 @@ function drawCircle(canvas, startx, starty, endx, endy, color, lineWidth, fillOn
 	canvas.getContext("2d").strokeStyle = color;
 	canvas.getContext("2d").lineWidth = lineWidth;
 
-    if(fillOn) {
-		canvas.getContext("2d").fillStyle = color;
-    	canvas.getContext("2d").fill();
-	}
-	
 	canvas.getContext("2d").beginPath();
     canvas.getContext("2d").arc(midX, midY, radius, 0, Math.PI * 2, false);
     canvas.getContext("2d").stroke();
+    if(fillOn){
+    	canvas.getContext("2d").fillStyle = color;
+    	canvas.getContext("2d").fill();
+    }
 }
 
 function drawLine(canvas, startx, starty, endx, endy, color, lineWidth) {
