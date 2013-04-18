@@ -11,9 +11,13 @@ end
 
 group :development, :test do
   gem 'sqlite3'
+  gem 'rspec-rails', '2.11.0'
 end
 
-gem 'cover_me', '>= 1.2.0', :group => :test
+group :test do
+  gem 'cover_me', '>= 1.2.0'
+  gem 'capybara', '1.1.2'
+end
 
 # Gems used only for assets and not required
 # in production environments by default.

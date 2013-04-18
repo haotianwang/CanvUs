@@ -17,7 +17,6 @@ class CanvasTest < ActiveSupport::TestCase
   # Test that the correct validations are enforced on Canvas record creation.
   def testCanvasValidations
     numCanvases = Canvas.all.count
-    Canvas.create(user_username: 'HaotianWang92', active: true)
     Canvas.create(bitmap_id: 2, active: true)
     assert_equal(numCanvases, Canvas.all.count, "Canvases with empty fields were incorrectly inserted")
   end
@@ -25,7 +24,7 @@ class CanvasTest < ActiveSupport::TestCase
   # Test that createCanvas actually inserts a new Canvas record into the database.
   def testCreateCanvas
     numCanvases = Canvas.all.count
-    Canvas.createCanvas(1)
+    Canvas.createCanvas()
     assert_equal(numCanvases+1, Canvas.all.count, "New Canvas was not inserted into the database")
     Canvas.last.destroy
   end
