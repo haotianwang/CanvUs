@@ -8,8 +8,25 @@ function getText() {
 }
 
 function initialize() {
-	/******************** get a new updateModule *********************/
-	canvasButton1 = document.getElementById('canvasButton1');
+	//set the onclicklistener for create room
+	createRoomButton = document.getElementById("createRoomButton");
+	createRoomButton.onclick = function() {
+		url = "/new_canvas"
+		$.ajax({
+        url: url,
+        dataType: 'html',
+        error: function(data) {console.log("new canvas request failed");}
+    	}).done(function(data) {
+    		console.log("new canvas request response received");
+			if (isNaN(parseInt(data))) {
+				console.log("new canvas request returned a nonInteger: " + data);
+			} else {
+				console.log("new canvas request returned an id: " + data);
+				newUrl = '/draw?canvasId='+parseInt(data);
+				window.location = newUrl;
+			}
+      	});
+	}
 
 	/*//This creates a new div, and adds "hello" and then puts it as the last thing
 	//under body
@@ -71,26 +88,6 @@ function initialize() {
 				return false;
 			};
 		}(arrOfCanvases[i]);
-	}
-
-	//set the onclicklistener for create room
-	createRoomButton = document.getElementById("createRoomButton");
-	createRoomButton.onclick = function() {
-		url = "/new_canvas"
-		$.ajax({
-        url: url,
-        dataType: 'html',
-        error: function(data) {console.log("new canvas request failed");}
-    	}).done(function(data) {
-    		console.log("new canvas request response received");
-			if (isNaN(parseInt(data))) {
-				console.log("new canvas request returned a nonInteger: " + data);
-			} else {
-				console.log("new canvas request returned an id: " + data);
-				newUrl = '/draw?canvasId='+parseInt(data);
-				window.location = newUrl;
-			}
-      	});
 	}
 
 	//console.log(newCanv.getContext("2d").getImageData(0,0, newCanv.width, newCanv.height).data);
