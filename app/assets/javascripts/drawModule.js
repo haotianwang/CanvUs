@@ -1,7 +1,7 @@
 
 //** WARNING ** These methods do not store th old state of the context, so 
 // if you change the strokeStyle and lineWidth, they do NOT get restored
-function drawRectangle(canvas, startx, starty, endx, endy, color, lineWidth) {
+function drawRectangle(canvas, startx, starty, endx, endy, color, lineWidth, fillOn) {
 	//draw the other clients' rectangle
 	var x = Math.min(startx, endx);
 	var y = Math.min(starty, endy);
@@ -9,20 +9,28 @@ function drawRectangle(canvas, startx, starty, endx, endy, color, lineWidth) {
 	var h = Math.abs(starty - endy);
 	canvas.getContext("2d").strokeStyle = color;
 	canvas.getContext("2d").lineWidth = lineWidth;
+    if(fillOn) {
+		canvas.getContext("2d").fillStyle = color;
+    	canvas.getContext("2d").fillRect(x,y,w,h);
+	}
 	canvas.getContext("2d").strokeRect(x,y,w,h);
 }
 
-function drawCircle(canvas, startx, starty, endx, endy, color, lineWidth) {
+function drawCircle(canvas, startx, starty, endx, endy, color, lineWidth, fillOn) {
 	var midX = (startx + endx) / 2
     var midY = (starty + endy) / 2
     var radius = Math.sqrt(Math.pow(endx - midX,2) + Math.pow(endy - midY,2));
 
 	canvas.getContext("2d").strokeStyle = color;
 	canvas.getContext("2d").lineWidth = lineWidth;
-	
+
 	canvas.getContext("2d").beginPath();
     canvas.getContext("2d").arc(midX, midY, radius, 0, Math.PI * 2, false);
     canvas.getContext("2d").stroke();
+    if(fillOn){
+    	canvas.getContext("2d").fillStyle = color;
+    	canvas.getContext("2d").fill();
+    }
 }
 
 function drawLine(canvas, startx, starty, endx, endy, color, lineWidth) {

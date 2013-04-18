@@ -45,6 +45,7 @@ function UpdateModule() {
     this.actionsLimit = 100;
     this.actionsCount = 0;
     this.initActions = null;
+    this.dontSendActions = true;
 
     this.resetDefaults = function() {
         this.setDrawAPI(getDrawAPI());
@@ -103,6 +104,10 @@ function UpdateModule() {
     }
 
     this.sendAction = function (drawActionType, startx, starty, endx, endy, color, strokeWidth) {
+        if(this.dontSendActions) {
+            console.log("didn't send action")
+            return;
+        }
         var myActionJson = {
                     "action": drawActionType, 
                     "startx": startx, 
