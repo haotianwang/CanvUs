@@ -39,7 +39,11 @@ function mockDrawModule() {
 }
 
 function createStubAction(actionType) {
-    return JSON.stringify({"action": actionType, "startx": 0, "starty": 0, "endx": 0, "endy": 0, "color": "0", "strokeWidth": 0});
+    if (actionType == "circle" || actionType == "rectangle") {
+        return JSON.stringify({"action": actionType, "startx": 0, "starty": 0, "endx": 0, "endy": 0, "color": "0", "strokeWidth": 0, "fillOn": true, "timestamp": 0});
+    }
+
+    return JSON.stringify({"action": actionType, "startx": 0, "starty": 0, "endx": 0, "endy": 0, "color": "0", "strokeWidth": 0, "timestamp": 0});
 }
 
 module( "updateModule tests", {
@@ -130,16 +134,53 @@ test('updateModule.sendAction', function() {
     ok(this.WebSocketRailsMock.verify(), "verified that sendAction sent the right kind of action");
 });
 
+test('updateModule.sendAction for fillable shapes', function() {
+    // make an expected JSON out of the args to be passed to sendAction
+    var args = ["action", "startx", "starty", "endx", "endy", "color", "strokeWidth", "fillOn"];
+    var expectedAction = {};
+    for (var i = 0; i < args.length; i++) {
+        expectedAction[args[i]] = args[i];
+    }
+    var msg = {};
+    msg["message"] = JSON.stringify(expectedAction);
+    msg["canvasID"] = this.testUpdateModule.canvasID;
+    msg["userCookie"] = this.testUpdateModule.userCookie;
+
+    // expect trigger to be called once (for the send action) with the right type of event, and the expected action string
+    this.WebSocketRailsMock.expects("trigger").withArgs("socket.send_action", JSON.stringify(msg)).exactly(1);
+
+    this.testUpdateModule.sendAction(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+
+    ok(this.WebSocketRailsMock.verify(), "verified that sendAction sent the right kind of action");
+});
+
 test('updateModule.handleGetAction', function() {
     // make the action to send to updateModule
     var action = createStubAction("clear");
-    action["timestamp"] = 0;
+    var actionJson = JSON.parse(action);
     // this action should invoke clearCanvas exactly once
-    this.fakeDrawModuleMock.expects("clearCanvas").returns("").exactly(1);
+    this.fakeDrawModuleMock.expects("clearCanvas")
+        .withArgs(this.testUpdateModule.canvas)
+        .returns("")
+        .exactly(1);
 
     this.testUpdateModule.handleGetAction(action);
 
     ok(this.fakeDrawModuleMock.verify(), "verified that getting a clear action invokes the clearCanvas DrawAPI method");
+    equal(this.testUpdateModule.lastActionTime, 0, "verified that lastActionTime was set correctly by handleGetAction");
+});
+
+test('updateModule.handleGetAction with filled object', function() {
+    var action = createStubAction("circle");
+    var actionJson = JSON.parse(action);
+
+    this.fakeDrawModuleMock.expects("drawCircle")
+        .withArgs(this.testUpdateModule.canvas, actionJson["startx"], actionJson["starty"], actionJson["endx"], actionJson["endy"], actionJson["color"], actionJson["strokeWidth"], actionJson["fillOn"])
+        .returns("").exactly(1);
+
+    this.testUpdateModule.handleGetAction(action);
+
+    ok(this.fakeDrawModuleMock.verify(), "verified that getting a circle action with fill on invokes drawCircle correctly");
 });
 
 test('updateModule.invokeDrawingModule all draw methods', function() {
@@ -175,6 +216,17 @@ test('updateModule.getInitImg', function() {
     this.testUpdateModule.getInitImg(canvasID);
 
     ok(this.WebSocketRailsMock.verify(), "getInitImg sent the expected socket.send_init_img event to web socket");
+});
+
+test('updateModule.getInitImgHandler returns -1, no canvas exists', function() {
+    var message = JSON.stringify({"bitmap": "-1", "actions": ""});
+    var spy = sinon.spy(this.testUpdateModule, "invokeDrawingModule");
+    var failSpy = sinon.spy(this.testUpdateModule, "invalidInitImgHandler");
+
+    this.testUpdateModule.getInitImgHandler(message);
+
+    ok(spy.callCount == 0, "getInitImgHandler did not invoke drawing module, as expected.");
+    ok(failSpy.callCount ==1, "getInitImgHandler invoked invalidInitImgHandler, as expected");
 });
 
 test('updateModule.getInitImgHandler no bitmap, no action', function() {
@@ -270,4 +322,16 @@ test('updateModule.handleSentBitmap', function() {
     this.testUpdateModule.actionsCount = 50;
     this.testUpdateModule.handleSentBitmap();
     equal(this.testUpdateModule.actionsCount, 0, "handleSentBitmap set actionsCount to 0, as expected");
+})
+
+test('updateModule.bucketAction less than threshold actions', function() {
+    var spy = sinon.spy(this.testUpdateModule, "sendAction");
+
+
+    ok(spy.callCount == 0, "sendActions was not invoked since bucketedActions is less than threshold");
+    equal(0, 1, "auto fail on stub test");
+})
+
+test('updateModule.bucketAction more than threshold actions', function() {
+    equal(0, 1, "auto fail on stub test");
 })

@@ -72,6 +72,27 @@ function initialize() {
 			};
 		}(arrOfCanvases[i]);
 	}
+
+	//set the onclicklistener for create room
+	createRoomButton = document.getElementById("createRoomButton");
+	createRoomButton.onclick = function() {
+		url = "/new_canvas"
+		$.ajax({
+        url: url,
+        dataType: 'html',
+        error: function(data) {console.log("new canvas request failed");}
+    	}).done(function(data) {
+    		console.log("new canvas request response received");
+			if (isNaN(parseInt(data))) {
+				console.log("new canvas request returned a nonInteger: " + data);
+			} else {
+				console.log("new canvas request returned an id: " + data);
+				newUrl = '/draw?canvasId='+parseInt(data);
+				window.location = newUrl;
+			}
+      	});
+	}
+
 	//console.log(newCanv.getContext("2d").getImageData(0,0, newCanv.width, newCanv.height).data);
 	//console.log(newCanv.getContext("2d").getImageData(0,0, newCanv.width, newCanv.height).data.length);
 	//console.log(newCanv.getContext("2d").getImageData(0,0, newCanv.width, newCanv.height).data.toString());

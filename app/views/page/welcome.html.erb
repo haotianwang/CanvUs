@@ -1,0 +1,78 @@
+
+ <script src="all.js"></script>
+
+<head>
+    <center>
+        <img src="CanvusLogo.jpg" alt="CanvusLogo">
+    </center>
+</head>
+<body>
+
+<div id="fb-root"></div>
+<script>
+  // Additional JS functions here
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '379446388837048', // App ID
+      channelUrl : '//WWW.YOUR_DOMAIN.COM/channel.html', // Channel File
+      status     : true, // check login status
+      cookie     : true, // enable cookies to allow the server to access the session
+      xfbml      : true  // parse XFBML
+    });
+
+    FB.getLoginStatus(function(response) {
+        if (response.status === 'connected') {
+            //connected
+            var uid = response.authResponse.userID;
+            var accessToken = response.authResponse.accessToken;
+            testAPI();
+        } else if (response.status === 'not_authorized') {
+            login();
+        } else {
+            login();
+        }
+    });
+    // Additional init code here
+  };
+
+  function login() {
+        FB.login(function(response) {
+            if (response.authResponse) {
+            // connected
+            testAPI();
+            } else {
+            // cancelled
+            }
+        });
+    }
+
+    function testAPI() {
+        console.log('Welcome!  Fetching your information.... ');
+        FB.api('/me', function(response) {
+            console.log('Good to see you, ' + response.name + '.');
+        });
+    }
+
+  // Load the SDK Asynchronously
+  (function(d){
+     var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+     if (d.getElementById(id)) {return;}
+     
+     //js = d.createElement('script'); js.id = id; js.async = true;
+     //js.src = "all.js";
+     //ref.parentNode.insertBefore(js, ref);
+
+   }(document));
+</script>
+
+
+ <br>
+ <br>
+
+<center>
+<div class="fb-login-button" data-show-faces="false" data-width="200" data-max-rows="1">Login with Facebook</div>
+</center>
+
+
+</body>
+</html>

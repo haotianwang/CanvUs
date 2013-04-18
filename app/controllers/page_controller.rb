@@ -8,9 +8,13 @@ class PageController < ApplicationController
     render "draw2"
   end
 
-  def canvus
-    render "canvus"
-  end
+	def welcome
+		render "welcome"
+	end
+
+	def canvus
+		render "canvus"
+	end
 
   def canvases
     canvasIDs = Canvas.getCanvasIDs()

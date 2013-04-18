@@ -3,6 +3,7 @@ CanvUs::Application.routes.draw do
 
 	match 'draw' => 'page#draw'
 	match 'draw2' => 'page#draw2'
+	match 'welcome' => 'page#welcome'
 	match 'canvus' => 'page#canvus'
 	match 'canvases' => 'page#canvases'
   match 'new_canvas' => 'page#new_canvas'
