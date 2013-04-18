@@ -8,6 +8,10 @@ class PageController < ApplicationController
 		render "draw"
 	end
 
+	def welcome
+		render "welcome"
+	end
+
 	def canvus
 		render "canvus"
 	end
