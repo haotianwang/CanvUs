@@ -25,7 +25,7 @@ buggyLine = false,
 buggyLineButton,
 dlPngButton,
 textButton,
-textBoxActive,
+textBoxActive = false,
 uploadButton,
 formDown = false, //this is because class="btn" doesn't have "value"
 doneButton,
@@ -35,7 +35,11 @@ prevTool = 'pencil',
 currentTool = 'pencil', //defaults tool to pencil tool
 updateModule,
 uploadedImage,
-textInTextBox; 
+textInTextBox = [''],
+numLetDict = ['0','1','2','3','4','5','6','7','8','9',
+              'a','b','c','d','e','f','g','h','i','j',
+              'k','l','m','n','o','p','q','r','s','t',
+              'u','v','w','x','y','z'];
 
 var browser,
 //need canvas position for non-FF browsers
@@ -98,7 +102,12 @@ function initialize() {
 
         this.changeColor = function(color) {
             drawCtx.strokeStyle = color;
-        }
+        };
+
+        //don't capture keypresses outside of textbox tool
+        document.onkeydown = function (event) {
+            return;
+        };
     };
 
     //======================== Line ============================
@@ -147,7 +156,12 @@ function initialize() {
 
         this.changeColor = function(color) {
             drawCtx.strokeStyle = color;
-        }
+        };
+
+        //don't capture keypresses outside of textbox tool
+        document.onkeydown = function (event) {
+            return;
+        };
     };
 
     //======================== Rectangle ============================
@@ -193,7 +207,12 @@ function initialize() {
 
         this.changeColor = function(color) {
             drawCtx.strokeStyle = color;
-        }
+        };
+
+        //don't capture keypresses outside of textbox tool
+        document.onkeydown = function (event) {
+            return;
+        };
     };
 
     //======================== Circle ============================
@@ -241,6 +260,11 @@ function initialize() {
         this.changeColor = function(color) {
             drawCtx.strokeStyle = color;
         }
+
+        //don't capture keypresses outside of textbox tool
+        document.onkeydown = function (event) {
+            return;
+        };  
     };
 
     //======================== TextBox ============================
@@ -249,14 +273,28 @@ function initialize() {
 
         this.mousedown = function (event) {
             if(textBoxActive) {
-                //copy contents onto drawCanvas
+                //copy contents onto dispCanvas
+                clearCanvas(drawCanvas);
+                for(var i = 0; i < textInTextBox.length; i++) {
+                    drawTextOnCanvas(dispCanvas, textInTextBox[i], event.relx, event.rely+i*15);
+                }
+                for(var i = 0; i < textInTextBox.length; i++) {
+                    updateModule.bucketAction("text", event.relx, event.rely+i*15, 0,0, textInTextBox[i]);
+                }
+                textBoxActive = false;
+                textInTextBox - [''];
             } else {
                 //create new textBox at cursor location
+                textBoxActive = true;
             }
         };
 
         this.mousemove = function (event) {
             if(textBoxActive) {
+                clearCanvas(drawCanvas);
+                for(var i = 0; i < textInTextBox.length; i++) {
+                    drawTextOnCanvas(drawCanvas, textInTextBox[i], event.relx, event.rely+i*15);
+                }
                 //move textbox around with mouse
             }
         };
@@ -266,7 +304,36 @@ function initialize() {
         };
 
         document.onkeydown = function (event) {
-
+            var charCode = (event.which) ? event.which : event.keyCode;
+            if(charCode >= 48 && charCode <= 57) {
+                textInTextBox[textInTextBox.length-1] += numLetDict[charCode-48];
+            }
+            else if(charCode >= 96 && charCode <= 105){
+                textInTextBox[textInTextBox.length-1] += numLetDict[charCode-96];
+            }
+            else if(charCode >= 65 && charCode <= 90 ) {
+                textInTextBox[textInTextBox.length-1] += numLetDict[charCode-55];
+            }
+            else if(charCode == 32) {
+                textInTextBox[textInTextBox.length-1] += ' ';
+            }
+            else if(charCode == 8) {
+                if(textInTextBox[textInTextBox.length-1].length > 0){
+                    textInTextBox[textInTextBox.length-1] = textInTextBox[textInTextBox.length-1].substring(0, textInTextBox[textInTextBox.length-1].length-1)
+                }
+                else if (textInTextBox.length > 1){
+                    textInTextBox.pop();
+                }
+            }
+            else if(charCode == 13) {
+                textInTextBox.push('');
+            }
+            clearCanvas(drawCanvas);
+            for(var i = 0; i < textInTextBox.length; i++) {
+                drawTextOnCanvas(drawCanvas, textInTextBox[i], event.relx, event.rely+i*15);
+            }
+            console.log(charCode);
+            console.log(textInTextBox);
         };
     };
 
@@ -306,6 +373,11 @@ function initialize() {
                 //updateModule.sendActions();
                 setTool(prevTool);
             }
+        };
+
+        //don't capture keypresses outside of textbox tool
+        document.onkeydown = function (event) {
+            return;
         };
     };
 
@@ -548,6 +620,7 @@ function initialize() {
         prevTool = currentTool
         currentTool = "textbox";
         tool = new tools[currentTool]();
+        textBoxActive = true;
         return false;
     }
 
