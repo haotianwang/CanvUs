@@ -283,6 +283,7 @@ function initialize() {
                 for(var i = 0; i < textInTextBox.length; i++) {
                     updateModule.bucketAction("text", uploadedImage.canvX, uploadedImage.canvY+i*15, 0,0, textInTextBox[i]);
                 }
+                updateModule.sendActions();
                 textBoxActive = false;
                 textInTextBox = [''];
             } else {

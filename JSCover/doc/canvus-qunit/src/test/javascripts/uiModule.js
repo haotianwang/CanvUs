@@ -24,9 +24,18 @@ buggyRectangleButton,
 buggyLine = false,
 buggyLineButton,
 dlPngButton,
+textButton,
+textBoxActive,
+uploadButton,
+formDown = false, //this is because class="btn" doesn't have "value"
+doneButton,
+fileBox,
 debug = false,
+prevTool = 'pencil',
 currentTool = 'pencil', //defaults tool to pencil tool
-updateModule; 
+updateModule,
+uploadedImage,
+textInTextBox; 
 
 var browser,
 //need canvas position for non-FF browsers
@@ -234,6 +243,72 @@ function initialize() {
         }
     };
 
+    //======================== TextBox ============================
+    tools.textbox = function () {
+        var tool = this;
+
+        this.mousedown = function (event) {
+            if(textBoxActive) {
+                //copy contents onto drawCanvas
+            } else {
+                //create new textBox at cursor location
+            }
+        };
+
+        this.mousemove = function (event) {
+            if(textBoxActive) {
+                //move textbox around with mouse
+            }
+        };
+
+        this.mouseup = function (event) {
+            //this will do nothing :)
+        };
+
+        document.onkeydown = function (event) {
+
+        };
+    };
+
+    //======================== MovePicture ============================
+    tools.movepicture = function () {
+        var tool = this;
+
+        this.mousedown = function (event) {
+            if(mouseDown) {
+                //call mouseup
+                tool.mouseup();
+            } else {
+                mouseDown = true;
+                uploadedImage.canvX = event.relx;
+                uploadedImage.canvY = event.rely;
+                drawImageOnCanvas(drawCanvas, uploadedImage.src, uploadedImage.canvX, uploadedImage.canvY);
+            }
+        };
+
+        this.mousemove = function (event) {
+            if(!mouseDown)
+                return;
+            clearCanvas(drawCanvas);
+            uploadedImage.canvX = event.relx;
+            uploadedImage.canvY = event.rely;
+            drawImageOnCanvas(drawCanvas, uploadedImage.src, uploadedImage.canvX, uploadedImage.canvY);
+
+        };
+
+        this.mouseup = function (event) {
+            if(mouseDown) {
+                mouseDown = false;
+                //copy contents onto dispcontext
+                drawImageOnCanvas(dispCanvas, uploadedImage.src,uploadedImage.canvX , uploadedImage.canvY);
+                //send to update module
+                updateModule.bucketAction("image", uploadedImage.canvX, uploadedImage.canvY, 0, 0 ,uploadedImage.src);
+                updateModule.sendActions();
+                setTool(prevTool);
+            }
+        };
+    };
+
     dispCanvas = document.getElementById('myCanvas');
     dispCtx = dispCanvas.getContext("2d");
     dispCtx.lineCap = "round"; //set line cap to round
@@ -255,6 +330,9 @@ function initialize() {
     buggyLineButton = document.getElementById("buggy-line-button");
     debugButton = document.getElementById("debug-button");
     dlPngButton = document.getElementById("download-png-button");
+    textButton = document.getElementById("text-button");
+    uploadButton = document.getElementById("upload-button");
+    doneButton = document.getElementById("done-button");
 
     //set the default context to the dispCtx for the updateModule
     updateModule.resetDefaults();
@@ -295,6 +373,9 @@ function initialize() {
     } else {
         browser = "unknown browser"
     }
+
+    //hide the upload form
+    $('#load-div').hide();
 
 
     //called the first time, and every time the display canvas changes
@@ -368,6 +449,11 @@ function initialize() {
     //======================== Clear ============================
 
     clrButton.onclick = function() { 
+        if(currentTool == "movepicture"){
+            //revert the tool
+            currentTool = prevTool;
+            tool = new tools[currentTool]();
+        }
 		clearCanvas(dispCanvas);
         clearCanvas(drawCanvas);
 		// send the clear to server, everything else can be filler values
@@ -377,20 +463,33 @@ function initialize() {
         return false;
     };
 
+    function checkMovePic() {
+        if(currentTool == "movepicture"){
+            tool.mouseup();
+        }
+    }
+
     fillButton.onclick = function() {
+        if(currentTool == "movepicture"){
+            checkMovePic(); //set picture
+            //revert the tool
+            currentTool = prevTool;
+            tool = new tools[currentTool]();
+        }
         fillOn = !fillOn;
         console.log("fillOn is now: " + fillOn);
         return false;
     }
 
     pencilButton.onclick = function() {
+        checkMovePic();
         currentTool = "pencil";
         tool = new tools[currentTool]();
         return false;
     };
 
     lineButton.onclick = function() {
-        console.log("here")
+        checkMovePic();
         buggyLine = false;
         currentTool = "line";
         tool = new tools[currentTool]();
@@ -398,6 +497,8 @@ function initialize() {
     };
 
     rectangleButton.onclick = function() {
+        checkMovePic();
+        prevTool = currentTool
         currentTool = "rectangle";
         buggyRectangle = false;
         tool = new tools[currentTool]();
@@ -405,6 +506,7 @@ function initialize() {
     };
 
     circleButton.onclick = function() {
+        checkMovePic();
         buggyCircle = false;
         currentTool = "circle";
         tool = new tools[currentTool]();
@@ -412,6 +514,7 @@ function initialize() {
     };
 
     buggyLineButton.onclick = function() {
+        checkMovePic();
         //lets you play with the buggy line
         drawCtx.beginPath();
         buggyLine = true;
@@ -421,6 +524,7 @@ function initialize() {
     }
 
     buggyCircleButton.onclick = function() {
+        checkMovePic();
         //lets you play with the buggy circle
         drawCtx.beginPath();
         buggyCircle = true;
@@ -430,10 +534,19 @@ function initialize() {
     }
 
     buggyRectangleButton.onclick = function() {
+        checkMovePic();
         //lets you play with the buggy rectangle
         drawCtx.beginPath();
         buggyRectangle = true;
         currentTool = "rectangle";
+        tool = new tools[currentTool]();
+        return false;
+    }
+
+    textButton.onclick = function() {
+        checkMovePic();
+        prevTool = currentTool
+        currentTool = "textbox";
         tool = new tools[currentTool]();
         return false;
     }
@@ -457,6 +570,12 @@ function initialize() {
     */
 
     colorSelector.onchange= function (event) {
+        if(currentTool == "movepicture"){
+            checkMovePic(); //set picture
+            //revert the tool
+            currentTool = prevTool;
+            tool = new tools[currentTool]();
+        }
         console.log("in here" + colorSelector.value)
         tool.changeColor(colorSelector.value);
         //return false; //return false on enter (else canvas cleared)
@@ -474,7 +593,6 @@ function initialize() {
     };
     */
 
-    console.log(dlPngButton);
     dlPngButton.onclick = function(event) {
         Canvas2Image.saveAsPNG(dispCanvas);
         document.getElementById('canvas-message2').innerHTML = "Thanks for download the image, plese rename file to <filename>.png to view"; 
@@ -494,5 +612,76 @@ function initialize() {
         return false;
     };
     */
+
+    uploadButton.onclick = function() {
+        checkMovePic();
+        if(!formDown){
+            $("#load-div").slideDown('slow')
+            formDown = true;
+        } else {
+            $("#load-div").slideUp('slow')
+            formDown = false;
+        }
+        return false;
+    }
+
+    doneButton.onclick = function() {
+        var input, file, fr;
+
+        if (typeof window.FileReader !== 'function') {
+            write("The file API isn't supported on this browser yet.");
+            return;
+        }
+
+        input = document.getElementById('file-box');
+        if (!input) {
+            write("Um, couldn't find the imgfile element.");
+        }
+        else if (!input.files) {
+            write("This browser doesn't seem to support the `files` property of file inputs.");
+        }
+        else if (!input.files[0]) {
+            write("Please select a file before clicking 'Load'");
+        }
+        else {
+            file = input.files[0];
+            fr = new FileReader();
+            fr.onload = setUpDrawImage;
+            fr.readAsDataURL(file);
+        }
+
+        function setUpDrawImage() {
+            uploadedImage = new Image();
+            uploadedImage.onload = function() {
+                drawImageOnCanvas(drawCanvas, fr.result, 
+                    drawCanvas.width/2 - uploadedImage.width/2, 
+                    drawCanvas.height/2 - uploadedImage.height/2)
+                uploadedImage.canvX = drawCanvas.width/2 - uploadedImage.width/2;
+                uploadedImage.canvY = drawCanvas.height/2 - uploadedImage.height/2;
+            }
+            uploadedImage.src = fr.result;
+        }
+
+        function write(msg) {
+            var p = document.createElement('p');
+            p.innerHTML = msg;
+            document.body.appendChild(p);
+        }
+        //since the file input is read-only, we must replace the entire thing to clear
+        var imgInput = $('#file-box');
+        imgInput.replaceWith( imgInput = imgInput.val('').clone( true ) );
+        fileBox = document.getElementById('file-box');
+        formDown = false;
+        $("#load-div").slideUp('slow');
+        prevTool = currentTool
+        currentTool = "movepicture";
+        tool = new tools[currentTool]();
+    }
+
+    function setTool(newTool) {
+        currentTool = newTool;
+        tool = new tools[currentTool]();
+    }
+
 }
 

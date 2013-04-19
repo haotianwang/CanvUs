@@ -67,3 +67,27 @@ function drawBitmap(canvas, imageData, callbackObject, callbackFunction) {
 	};
 	imageToLoad.src = imageData;
 }
+
+/* Inputs:
+ * canvas = an HTML5 canvas reference
+ * imageData = the data for the image
+ * canvX, canvY = where on canvas to put the image 
+ */
+function drawImageOnCanvas(canvas, imageData, canvX, canvY) {
+	var img = new Image();
+	img.onload = function () {
+		canvas.getContext('2d').drawImage(img,0,0,img.width, img.height,
+    	canvX, canvY, img.width, img.height);
+	};
+	img.src = imageData;
+}
+
+/* Inputs:
+ * canvas = an HTML5 canvas reference
+ * text = the text to draw on the canvas
+ * canvX, canvY = where on the canvas to write the text
+ */
+function drawTextOnCanvas(canvas, text, canvX, canvY) {
+	canvas.getContext('2d').font = "bold 12px sans-serif";
+	canvas.getContext('2d').fillText(text, canvX, canvY);
+}

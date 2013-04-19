@@ -7,7 +7,7 @@ optional: put new dependencies in JSCover/doc/canvas-qunit/src/test/dependencies
 put new javascript links (if necessary) in JSCover/doc/canvas-qunit/src/test/index.html (examples provided)
 
 from JSCover/, run:
-java -jar target/dist/JSCover.jar -ws --branch --document-root=doc/canvus-qunit/src --no-instrument=/qunit --no-instrument=/test/dependencies --no-instrument=/test/*_test.js
+java -jar target/dist/JSCover.jar -ws --branch --document-root=doc/canvus-qunit/src --no-instrument=/qunit --no-instrument=/test/dependencies --no-instrument=/test/tests
 
 go on a browser to:
 http://localhost:8080/jscoverage.html?/test/index.html
