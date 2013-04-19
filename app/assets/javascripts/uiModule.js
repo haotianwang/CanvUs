@@ -34,7 +34,8 @@ debug = false,
 prevTool = 'pencil',
 currentTool = 'pencil', //defaults tool to pencil tool
 updateModule,
-uploadedImage; 
+uploadedImage,
+textInTextBox; 
 
 var browser,
 //need canvas position for non-FF browsers
@@ -263,6 +264,8 @@ function initialize() {
         this.mouseup = function (event) {
             //this will do nothing :)
         };
+
+        document.
     };
 
     //======================== MovePicture ============================
@@ -299,6 +302,8 @@ function initialize() {
                 //send to update module
                 updateModule.bucketAction("clear", 0,0,0,0,0,0);
                 updateModule.sendActions();
+                currentTool = prevTool;
+                tool = new tools[currentTool]();
             }
         };
     };
