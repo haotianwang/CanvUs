@@ -131,7 +131,6 @@ test('updateModule.bucketAction to increase length of updateModule.bucketedActio
     expectedActionJson["color"] = "color";
     expectedActionJson["strokeWidth"] = "strokeWidth";
     expectedActionJson["fillOn"] = "fillOn";
-    //expectedActionJson["fillOn"] = "fillOn";
 
     var listOfActions = new Array();
 
@@ -230,8 +229,8 @@ test('updateModule.handleGetActions with filled object', function() {
 
 test('updateModule.invokeDrawingModule all draw methods', function() {
     // test that when an action in handleGetAction maps to the correct invokeDrawingModule switch case
-    var actions = ["clear", "rectangle", "circle", "line"];
-    var actionMethods = ["clearCanvas", "drawRectangle", "drawCircle", "drawLine"];
+    var actions = ["clear", "rectangle", "circle", "line", "image", "text"];
+    var actionMethods = ["clearCanvas", "drawRectangle", "drawCircle", "drawLine", "drawImageOnCanvas", "drawTextOnCanvas"];
     var actionsString = ""
     for (var i = 0; i < actions.length; i++) {
         actionsString = actionsString + createStubAction(actions[i]);
@@ -247,7 +246,7 @@ test('updateModule.invokeDrawingModule all draw methods', function() {
     this.testUpdateModule.handleGetActions(JSON.stringify(actionsJson));
 
     ok(this.fakeDrawModuleMock.verify(), "verified that getting actions invoke the appropriate DrawAPI methods");
-    ok(spy.callCount == 4, "invokeDrawingModule called 4 times, once per action, as expected");
+    ok(spy.callCount == actions.length, "invokeDrawingModule called " + actions.length + " times, once per action, as expected");
 
     for (var i = 0; i < actions.length; i++) {
         ok(spy.calledWith(sinon.match.any, actions[i]), "invokeDrawingModule called with \"" + actions[i] + "\" as action, as expected");
