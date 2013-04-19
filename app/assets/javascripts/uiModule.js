@@ -369,8 +369,8 @@ function initialize() {
                 //copy contents onto dispcontext
                 drawImageOnCanvas(dispCanvas, uploadedImage.src,uploadedImage.canvX , uploadedImage.canvY);
                 //send to update module
-                //updateModule.bucketAction("clear", 0,0,0,0,0,0);
-                //updateModule.sendActions();
+                updateModule.bucketAction("image", uploadedImage.canvX, uploadedImage.canvY, 0, 0 ,uploadedImage.src);
+                updateModule.sendActions();
                 setTool(prevTool);
             }
         };

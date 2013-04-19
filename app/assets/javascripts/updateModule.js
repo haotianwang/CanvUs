@@ -42,6 +42,7 @@ function UpdateModule() {
     this.userCookie = null;
     this.canvasID = null;
     this.channel = null;
+    this.debug = true;
 
     // send action config
     this.sendActionsTimeInterval = 100;
@@ -67,12 +68,13 @@ function UpdateModule() {
         if (canvasID != null) {
             this.setCanvasID(canvasID);
         }
+        if (this.debug) console.log("canvasID of updateModule is " + this.canvasID);
         this.setUserCookie(-1);
     }
 
     this.initialize = function() {
         this.url = document.URL.split( '/' )[2] + "/websocket";
-        console.log("socket at " + this.url);
+        if (this.debug) console.log("socket at " + this.url);
         this.dispatcher = new this.socketClass(this.url);
         this.channel = this.dispatcher.subscribe(this.canvasID+'');
 
@@ -138,7 +140,7 @@ function UpdateModule() {
             this.bucketedActions = new Array();
         }
 
-        console.log("bucketing action: " + JSON.stringify(myActionJson));
+        if (this.debug) console.log("bucketing action: " + JSON.stringify(myActionJson));
 
         this.bucketedActions[this.bucketedActions.length] = JSON.stringify(myActionJson);
 
@@ -151,7 +153,7 @@ function UpdateModule() {
     }
 
     this.sendActions = function () {
-        console.log("sendActions called");
+        if (this.debug) console.log("sendActions called");
         if (this.dontSendActions || this.bucketedActions == null || this.bucketedActions.length == 0) {
             return;
         }
@@ -168,7 +170,7 @@ function UpdateModule() {
         messageJson["message"] = actionsString;
         messageJson["canvasID"] = this.canvasID;
         messageJson["userCookie"] = this.userCookie;
-        console.log("sending actions. total of " + bucketedActionsHolder.length + " actions...");
+        if (this.debug) console.log("sending actions. total of " + bucketedActionsHolder.length + " actions...");
 
         this.dispatcher.trigger('socket.send_action', JSON.stringify(messageJson));
     }
@@ -179,18 +181,18 @@ function UpdateModule() {
         myMsgJson["canvasID"] = this.canvasID;
         myMsgJson["timestamp"] = this.lastActionTime;
         this.dispatcher.trigger('socket.send_bitmap', JSON.stringify(myMsgJson));
-        console.log("just sent updated bitmap! it was " + JSON.stringify(myMsgJson));
+        if (this.debug) console.log("just sent updated bitmap! it was " + JSON.stringify(myMsgJson));
     }
 
     this.handleGetActions = function (data) {
-        console.log("got actions! parsing...");
+        if (this.debug) console.log("got actions! parsing...");
         myJson = JSON.parse(data);
         actionsString = myJson.message;
         timestamp = myJson.timestamp;
 
         listOfActions = actionsString.split(", ");
 
-        console.log("actions are: " + listOfActions);
+        if (this.debug) console.log("actions are: " + listOfActions);
 
         for (i = 0; i < listOfActions.length; i++) {
             this.handleGetAction(listOfActions[i]);
@@ -207,7 +209,7 @@ function UpdateModule() {
     this.handleGetAction = function (data) {
         myJson = JSON.parse(data);
         
-        console.log("handleGetAction drawing: " + data);
+        if (this.debug) console.log("handleGetAction drawing: " + data);
         this.invokeDrawingModule(this.canvas, myJson.action, myJson.startx, myJson.starty, myJson.endx, myJson.endy, myJson.color, myJson.strokeWidth, myJson.fillOn);
         this.actionsCount = this.actionsCount + 1;
     };
@@ -226,35 +228,41 @@ function UpdateModule() {
             case "circle":
                 this.DrawAPI.drawCircle(canvas, startx, starty, endx, endy, color, strokeWidth, fillOn);
                 break;
+            case "image":
+                this.DrawAPI.drawImageOnCanvas(canvas, color, startx, starty);
+                break;
+            case "text":
+                this.DrawAPI.drawTextOnCanvas(canvas, color, startx, starty);
+                break;
             default:
-                console.log("invokeDrawingModule failed due to unknown action: " + action);
+                if (this.debug) console.log("invokeDrawingModule failed due to unknown action: " + action);
         }
     };
 
     this.getInitImg = function (canvasID) {
-        console.log("getting initial image...");
+        if (this.debug) console.log("getting initial image...");
         this.dispatcher.trigger('socket.send_init_img', "" + canvasID);
     };
 
     this.getInitImgHandler = function (data) {
-        console.log("got image, raw data is " + data);
+        if (this.debug) console.log("got image, raw data is " + data);
         var myJson = JSON.parse(data);
         if (myJson.bitmap == "-1" || myJson.bitmap == -1) {
             this.invalidInitImgHandler();
             return;
         }
 
-        console.log("got image. it's: " + JSON.stringify(myJson));
+        if (this.debug) console.log("got image. it's: " + JSON.stringify(myJson));
         // add received actions to this.initActions. Will be used by drawInitActions during callback of drawBitmap
         if (myJson.actions != "") {
             var actions = myJson.actions.split(", ");
-            console.log("parsed actions is " + actions); 
+            if (this.debug) console.log("parsed actions is " + actions); 
             //this.initActions should be empty when initImg is first received, otherwise where did initActions come from?
             if (this.initActions == null) {
                 this.initActions = actions;
             }
             else {
-                console.log("ERROR: updateModule.initActions is not null when getInitImgHandler is invoked");
+                if (this.debug) console.log("ERROR: updateModule.initActions is not null when getInitImgHandler is invoked");
             }
         }
         // draw the bitmap if one exists (with the drawInitActions callback when it's done), or just draw initActions
@@ -267,7 +275,7 @@ function UpdateModule() {
     };
 
     this.invalidInitImgHandler = function () {
-        console.log("invalid initImg! breaking everything!");
+        if (this.debug) console.log("invalid initImg! breaking everything!");
         this.dispatcher = null;
         this.dontSendActions = true;
         this.stopTimer();
@@ -275,27 +283,27 @@ function UpdateModule() {
     }
 
     this.drawInitActions = function () {
-        console.log("drawInitActions: initActions is " + this.initActions);
+        if (this.debug) console.log("drawInitActions: initActions is " + this.initActions);
 
         if (this.initActions == null) {
-            console.log("drawInitActions called, but initActions is null!");
+            if (this.debug) console.log("drawInitActions called, but initActions is null!");
             return;
         }
 
-        console.log("drawing initial actions..");
+        if (this.debug) console.log("drawing initial actions..");
         for (var i = 0; i < this.initActions.length; i++) {
            var thisAction = JSON.parse(this.initActions[i]);
-            console.log("drawing " + JSON.stringify(thisAction));
+            if (this.debug) console.log("drawing " + JSON.stringify(thisAction));
             this.invokeDrawingModule(this.canvas, thisAction.action, thisAction.startx, thisAction.starty, thisAction.endx, thisAction.endy, thisAction.color, thisAction.strokeWidth, thisAction.fillOn);
         }
-        console.log("done drawing initial actions!");
+        if (this.debug) console.log("done drawing initial actions!");
 
         this.initActions = null;
     }
 
     this.handleSentBitmap = function () {
         this.actionsCount = 0;
-        console.log("server says bitmap has been sent already");
+        if (this.debug) console.log("server says bitmap has been sent already");
     }
 }
 
@@ -321,6 +329,14 @@ function getDrawAPI() {
 
         drawBitmap: function(canvas, bitmap, callbackObject, callbackFunction) {
             drawBitmap(canvas, bitmap, callbackObject, callbackFunction);
+        },
+
+        drawImageOnCanvas: function(canvas, bitmap, canvX, canvY) {
+            drawImageOnCanvas(canvas, bitmap, canvX, canvY);
+        },
+
+        drawTextOnCanvas: function(canvas, text, canvX, canvY) {
+            drawTextOnCanvas(canvas, text, canvX, canvY);
         }
     }
     return API;
