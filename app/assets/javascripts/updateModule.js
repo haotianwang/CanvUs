@@ -267,6 +267,7 @@ function UpdateModule() {
     };
 
     this.invalidInitImgHandler = function () {
+        console.log("invalid initImg! breaking everything!");
         this.dispatcher = null;
         this.dontSendActions = true;
         this.stopTimer();
