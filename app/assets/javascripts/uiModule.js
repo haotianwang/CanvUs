@@ -34,7 +34,7 @@ debug = false,
 prevTool = 'pencil',
 currentTool = 'pencil', //defaults tool to pencil tool
 updateModule,
-uploadedImage,
+uploadedImage = new Image(),
 textInTextBox = [''],
 numLetDict = ['0','1','2','3','4','5','6','7','8','9',
               'a','b','c','d','e','f','g','h','i','j',
@@ -275,14 +275,16 @@ function initialize() {
             if(textBoxActive) {
                 //copy contents onto dispCanvas
                 clearCanvas(drawCanvas);
+                uploadedImage.canvX = event.relx;
+                uploadedImage.canvY = event.rely;
                 for(var i = 0; i < textInTextBox.length; i++) {
-                    drawTextOnCanvas(dispCanvas, textInTextBox[i], event.relx, event.rely+i*15);
+                    drawTextOnCanvas(dispCanvas, textInTextBox[i], uploadedImage.canvX, uploadedImage.canvY+i*15);
                 }
                 for(var i = 0; i < textInTextBox.length; i++) {
-                    updateModule.bucketAction("text", event.relx, event.rely+i*15, 0,0, textInTextBox[i]);
+                    updateModule.bucketAction("text", uploadedImage.canvX, uploadedImage.canvY+i*15, 0,0, textInTextBox[i]);
                 }
                 textBoxActive = false;
-                textInTextBox - [''];
+                textInTextBox = [''];
             } else {
                 //create new textBox at cursor location
                 textBoxActive = true;
@@ -292,8 +294,10 @@ function initialize() {
         this.mousemove = function (event) {
             if(textBoxActive) {
                 clearCanvas(drawCanvas);
+                uploadedImage.canvX = event.relx;
+                uploadedImage.canvY = event.rely;;
                 for(var i = 0; i < textInTextBox.length; i++) {
-                    drawTextOnCanvas(drawCanvas, textInTextBox[i], event.relx, event.rely+i*15);
+                    drawTextOnCanvas(drawCanvas, textInTextBox[i], uploadedImage.canvX, uploadedImage.canvY+i*15);
                 }
                 //move textbox around with mouse
             }
@@ -301,39 +305,43 @@ function initialize() {
 
         this.mouseup = function (event) {
             //this will do nothing :)
+            uploadedImage.canvX = event.relx;
+            uploadedImage.canvY = event.rely;
         };
 
         document.onkeydown = function (event) {
-            var charCode = (event.which) ? event.which : event.keyCode;
-            if(charCode >= 48 && charCode <= 57) {
-                textInTextBox[textInTextBox.length-1] += numLetDict[charCode-48];
-            }
-            else if(charCode >= 96 && charCode <= 105){
-                textInTextBox[textInTextBox.length-1] += numLetDict[charCode-96];
-            }
-            else if(charCode >= 65 && charCode <= 90 ) {
-                textInTextBox[textInTextBox.length-1] += numLetDict[charCode-55];
-            }
-            else if(charCode == 32) {
-                textInTextBox[textInTextBox.length-1] += ' ';
-            }
-            else if(charCode == 8) {
-                if(textInTextBox[textInTextBox.length-1].length > 0){
-                    textInTextBox[textInTextBox.length-1] = textInTextBox[textInTextBox.length-1].substring(0, textInTextBox[textInTextBox.length-1].length-1)
+            if(textBoxActive) {
+                var charCode = (event.which) ? event.which : event.keyCode;
+                if(charCode >= 48 && charCode <= 57) {
+                    textInTextBox[textInTextBox.length-1] += numLetDict[charCode-48];
                 }
-                else if (textInTextBox.length > 1){
-                    textInTextBox.pop();
+                else if(charCode >= 96 && charCode <= 105){
+                    textInTextBox[textInTextBox.length-1] += numLetDict[charCode-96];
                 }
+                else if(charCode >= 65 && charCode <= 90 ) {
+                    textInTextBox[textInTextBox.length-1] += numLetDict[charCode-55];
+                }
+                else if(charCode == 32) {
+                    textInTextBox[textInTextBox.length-1] += ' ';
+                }
+                else if(charCode == 8) {
+                    if(textInTextBox[textInTextBox.length-1].length > 0){
+                        textInTextBox[textInTextBox.length-1] = textInTextBox[textInTextBox.length-1].substring(0, textInTextBox[textInTextBox.length-1].length-1)
+                    }
+                    else if (textInTextBox.length > 1){
+                        textInTextBox.pop();
+                    }
+                }
+                else if(charCode == 13) {
+                    textInTextBox.push('');
+                }
+                clearCanvas(drawCanvas);
+                for(var i = 0; i < textInTextBox.length; i++) {
+                    drawTextOnCanvas(drawCanvas, textInTextBox[i], uploadedImage.canvX, uploadedImage.canvY+i*15);
+                }
+                console.log(charCode);
+                console.log(textInTextBox);
             }
-            else if(charCode == 13) {
-                textInTextBox.push('');
-            }
-            clearCanvas(drawCanvas);
-            for(var i = 0; i < textInTextBox.length; i++) {
-                drawTextOnCanvas(drawCanvas, textInTextBox[i], event.relx, event.rely+i*15);
-            }
-            console.log(charCode);
-            console.log(textInTextBox);
         };
     };
 
@@ -620,7 +628,7 @@ function initialize() {
         prevTool = currentTool
         currentTool = "textbox";
         tool = new tools[currentTool]();
-        textBoxActive = true;
+        textBoxActive = false;
         return false;
     }
 
