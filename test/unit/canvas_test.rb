@@ -65,7 +65,7 @@ class CanvasTest < ActiveSupport::TestCase
 
   # Empties the test databases once again.
   def teardown
-    Action.destroy_all
+    Bitmap.destroy_all
     Canvas.destroy_all
   end
 end
