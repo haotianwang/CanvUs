@@ -81,3 +81,13 @@ function drawImageOnCanvas(canvas, imageData, canvX, canvY) {
 	};
 	img.src = imageData;
 }
+
+/* Inputs:
+ * canvas = an HTML5 canvas reference
+ * text = the text to draw on the canvas
+ * canvX, canvY = where on the canvas to write the text
+ */
+function drawTextOnCanvas(canvas, text, canvX, canvY) {
+	canvas.getContext('2d').font = "bold 12px sans-serif";
+	canvas.getContext('2d').fillText(text, canvX, canvY);
+}
