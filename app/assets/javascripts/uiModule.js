@@ -63,7 +63,7 @@ function initialize() {
                 clearCanvas(drawCanvas);
                 drawLine(dispCanvas, prevX, prevY, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
 				// send action to server
-				updateModule.sendAction("line", prevX, prevY, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+				updateModule.bucketAction("line", prevX, prevY, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
 				prevX = event.relx;
                 prevY = event.rely;
             }
@@ -75,6 +75,7 @@ function initialize() {
                 tool.mousemove(event);
                 mouseDown = false;
 				drawCtx.beginPath();
+                updateModule.sendActions();
             }
         };
 
@@ -119,7 +120,7 @@ function initialize() {
 			//if buggyLine, then draw it on the disp canvas (permanent) and send to server
             } else {
                 drawLine(dispCanvas,tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
-                updateModule.sendAction("line", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                updateModule.bucketAction("line", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             } 
         };
 
@@ -130,7 +131,8 @@ function initialize() {
                 drawLine(dispCanvas,tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
 				clearCanvas(drawCanvas);
                 // send action to server
-				updateModule.sendAction("line", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+				updateModule.bucketAction("line", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                updateModule.sendActions();
             }
         };
 
@@ -164,7 +166,7 @@ function initialize() {
             //if buggyRect, then draw it on the disp canvas (permanent) and send to server
             } else {
                 drawRectangle(dispCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
-                updateModule.sendAction("rectangle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
+                updateModule.bucketAction("rectangle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
             } 
         };
 
@@ -175,7 +177,8 @@ function initialize() {
                 drawRectangle(dispCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
 				clearCanvas(drawCanvas);
                 //send the action to server
-				updateModule.sendAction("rectangle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
+				updateModule.bucketAction("rectangle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
+                updateModule.sendActions();
             }
         };
 
@@ -211,7 +214,7 @@ function initialize() {
             //if buggyCircle, then draw it on the disp canvas (permanent) and send to server
             } else{
                 drawCircle(dispCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
-                updateModule.sendAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                updateModule.bucketAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
             }
         };
 
@@ -221,7 +224,8 @@ function initialize() {
                 mouseDown = false;
                 drawCircle(dispCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
 				clearCanvas(drawCanvas);
-                updateModule.sendAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                updateModule.bucketAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                updateModule.sendActions();
             }
         };
 
@@ -229,12 +233,6 @@ function initialize() {
             drawCtx.strokeStyle = color;
         }
     };
-
-    //======================== Clear ============================
-	tools.clear = function () {
-        clearCanvas(dispCanvas); 
-        clearCanvas(drawCanvas);
-	};
 
     dispCanvas = document.getElementById('myCanvas');
     dispCtx = dispCanvas.getContext("2d");
@@ -264,6 +262,7 @@ function initialize() {
     //updateModule.setContext(dispCtx);
     //initialize
     updateModule.initialize();
+    updateModule.startTimer();
 
     //Create the "drawCanvas" - the canvas which we draw on, and then copy
     // onto dispCanvas
@@ -366,11 +365,14 @@ function initialize() {
         windowResize();
     };
 
+    //======================== Clear ============================
+
     clrButton.onclick = function() { 
 		clearCanvas(dispCanvas);
         clearCanvas(drawCanvas);
 		// send the clear to server, everything else can be filler values
-		updateModule.sendAction("clear", 0,0,0,0,0,0);
+		updateModule.bucketAction("clear", 0,0,0,0,0,0);
+        updateModule.sendActions();
 
         return false;
     };
