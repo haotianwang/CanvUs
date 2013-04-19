@@ -33,6 +33,7 @@ function instantiateUpdateModule(socketClass) {
 }
 
 function UpdateModule() {
+    // general config
     this.socketClass = null;
     this.dispatcher = null;
     this.DrawAPI = null;
@@ -41,13 +42,20 @@ function UpdateModule() {
     this.userCookie = null;
     this.canvasID = null;
     this.channel = null;
+
+    // send action config
     this.sendActionsTimeInterval = 1000;
-    this.lastActionTime = null;
-    this.actionsLimit = 300;
-    this.actionsCount = 0;
-    this.initActions = null;
     this.dontSendActions = false;
     this.timer = null;
+    this.bucketedActions = null;
+
+    // send bitmap config
+    this.actionsLimit = 300;
+    this.actionsCount = 0;
+    this.lastActionTime = null;
+
+    // getInitImg config
+    this.initActions = null;
 
     this.resetDefaults = function() {
         this.setDrawAPI(getDrawAPI());
@@ -71,10 +79,8 @@ function UpdateModule() {
         var module = this;
 
         this.dispatcher.bind('socket.get_init_img', function(data) {module.getInitImgHandler(data)});
-        this.channel.bind('socket.get_action', function(data) {module.handleGetAction(data)});
+        this.channel.bind('socket.get_action', function(data) {module.handleGetActions(data)});
         this.channel.bind('socket.sent_bitmap', function(data) {module.handleSentBitmap()});
-
-        this.startTimer();
     }
 
     this.setActionsLimit = function(limit) {
@@ -108,43 +114,63 @@ function UpdateModule() {
     }
 
     this.startTimer = function () {
-        var module = this;
-        this.timer = setInterval(module.sendActions, this.sendActionsTimeInterval);
+        this.timer = new Date().getTime();
     }
 
     this.stopTimer = function () {
-        if (this.timer != null) {
-            clearInterval(this.timer);
-            this.timer = null;
-        }
+        this.timer = null;
     }
 
-    this.sendAction = function (drawActionType, startx, starty, endx, endy, color, strokeWidth, fillOn) {
-        if(this.dontSendActions) {
-            console.log("didn't send action")
-            return;
-        }
+    this.bucketAction = function(drawActionType, startx, starty, endx, endy, color, strokeWidth, fillOn) {
         var myActionJson = {
-                    "action": drawActionType, 
-                    "startx": startx, 
-                    "starty": starty, 
-                    "endx": endx, 
-                    "endy": endy,
-                    "color": color,
-                    "strokeWidth": strokeWidth };
+            "action": drawActionType, 
+            "startx": startx, 
+            "starty": starty, 
+            "endx": endx, 
+            "endy": endy,
+            "color": color,
+            "strokeWidth": strokeWidth };
         if (fillOn != null) {
             myActionJson["fillOn"] = fillOn;
         }
-        var myMsgJson = { "message": JSON.stringify(myActionJson) };
-        myMsgJson["canvasID"] = this.canvasID;
-        myMsgJson["userCookie"] = this.userCookie;
-        console.log("sending action..." + JSON.stringify(myMsgJson));
 
-        this.dispatcher.trigger('socket.send_action', JSON.stringify(myMsgJson));
+        if (this.bucketedActions == null) {
+            this.bucketedActions = new Array();
+        }
+
+        console.log("bucketing action: " + JSON.stringify(myActionJson));
+
+        this.bucketedActions[this.bucketedActions.length] = JSON.stringify(myActionJson);
+
+        if (this.timer != null) {
+            if (new Date().getTime() - this.timer > this.sendActionsTimeInterval) {
+                this.sendActions();
+                this.timer = new Date().getTime();
+            }
+        }
     }
 
     this.sendActions = function () {
+        console.log("sendActions called");
+        if (this.dontSendActions || this.bucketedActions == null || this.bucketedActions.length == 0) {
+            return;
+        }
+        var bucketedActionsHolder = this.bucketedActions;
+        this.bucketedActions = null;
 
+        var actionsString = "";
+        for (var i = 0; i < bucketedActionsHolder.length; i++) {
+            actionsString = actionsString + bucketedActionsHolder[i];
+            if (i+1 < bucketedActionsHolder.length) actionsString = actionsString + ", ";
+        }
+
+        var messageJson = {};
+        messageJson["message"] = actionsString;
+        messageJson["canvasID"] = this.canvasID;
+        messageJson["userCookie"] = this.userCookie;
+        console.log("sending actions. total of " + bucketedActionsHolder.length + " actions...");
+
+        this.dispatcher.trigger('socket.send_action', JSON.stringify(messageJson));
     }
 
     this.sendBitmap = function () {
@@ -156,51 +182,35 @@ function UpdateModule() {
         console.log("just sent updated bitmap! it was " + JSON.stringify(myMsgJson));
     }
 
-    this.handleGetAction = function (data) {
-        myJson = JSON.parse(data);
-
-        this.invokeDrawingModule(this.canvas, myJson.action, myJson.startx, myJson.starty, myJson.endx, myJson.endy, myJson.color, myJson.strokeWidth, myJson.fillOn);
-        this.actionsCount = this.actionsCount + 1;
-        if (this.actionsCount >= this.actionsLimit) {
-            this.actionsCount = 0;
-            this.sendBitmap();
-        }
-    };
-
     this.handleGetActions = function (data) {
         console.log("got actions! parsing...");
         myJson = JSON.parse(data);
         actionsString = myJson.message;
         timestamp = myJson.timestamp;
 
-        listOfActions = actionsString.split("},{");
-        if (listOfActions.length > 1) {
-            for (i = 0; i < listOfActions.length; i++) {
-                if (i == 0) {
-                    listOfActions[i] = listOfActions[i] + "}";
-                }
-                else if (i == listOfActions.length-1) {
-                    listOfActions[i] = "{" + listOfActions[i];
-                }
-                else {
-                    listOfActions[i] = "{" + listOfActions[i] + "}";
-                }
-            }
+        listOfActions = actionsString.split(", ");
 
-            for (i = 0; i < listOfActions.length; i++) {
-                console.log("got action: " + listOfActions[i]);
-            }
-        }
-        else {
-            listOfActions = [actionsString];
-        }
+        console.log("actions are: " + listOfActions);
 
         for (i = 0; i < listOfActions.length; i++) {
             this.handleGetAction(listOfActions[i]);
         }
 
         this.lastActionTime = timestamp;
+
+        if (this.actionsCount >= this.actionsLimit) {
+            this.actionsCount = 0;
+            this.sendBitmap();
+        }
     }
+
+    this.handleGetAction = function (data) {
+        myJson = JSON.parse(data);
+        
+        console.log("handleGetAction drawing: " + data);
+        this.invokeDrawingModule(this.canvas, myJson.action, myJson.startx, myJson.starty, myJson.endx, myJson.endy, myJson.color, myJson.strokeWidth, myJson.fillOn);
+        this.actionsCount = this.actionsCount + 1;
+    };
 
     this.invokeDrawingModule = function (canvas, action, startx, starty, endx, endy, color, strokeWidth, fillOn) {
         switch(action) {
@@ -229,6 +239,11 @@ function UpdateModule() {
     this.getInitImgHandler = function (data) {
         console.log("got image, raw data is " + data);
         var myJson = JSON.parse(data);
+        if (myJson.bitmap == "-1" || myJson.bitmap == -1) {
+            this.invalidInitImgHandler();
+            return;
+        }
+
         console.log("got image. it's: " + JSON.stringify(myJson));
         // add received actions to this.initActions. Will be used by drawInitActions during callback of drawBitmap
         if (myJson.actions != "") {
@@ -250,6 +265,13 @@ function UpdateModule() {
             this.drawInitActions();
         }
     };
+
+    this.invalidInitImgHandler = function () {
+        this.dispatcher = null;
+        this.dontSendActions = true;
+        this.stopTimer();
+        this.drawAPI = null;
+    }
 
     this.drawInitActions = function () {
         console.log("drawInitActions: initActions is " + this.initActions);

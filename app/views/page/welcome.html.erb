@@ -1,5 +1,6 @@
+<html>
 
- <script src="all.js"></script>
+<!-- <script src="all.js"></script> -->
 
 <head>
     <center>
@@ -8,69 +9,46 @@
 </head>
 <body>
 
-<div id="fb-root"></div>
-<script>
-  // Additional JS functions here
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId      : '379446388837048', // App ID
-      channelUrl : '//WWW.YOUR_DOMAIN.COM/channel.html', // Channel File
-      status     : true, // check login status
-      cookie     : true, // enable cookies to allow the server to access the session
-      xfbml      : true  // parse XFBML
-    });
-
-    FB.getLoginStatus(function(response) {
-        if (response.status === 'connected') {
-            //connected
-            var uid = response.authResponse.userID;
-            var accessToken = response.authResponse.accessToken;
-            testAPI();
-        } else if (response.status === 'not_authorized') {
-            login();
-        } else {
-            login();
+<!-- Place this asynchronous JavaScript just before your </body> tag -->
+    <script type="text/javascript">
+      (function() {
+       var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+       po.src = 'https://apis.google.com/js/client:plusone.js';
+       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+     })();
+    </script>
+    <script type="text/JavaScript">
+      function signinCallback(authResult) {
+        if (authResult['access_token']) {
+          // Successfully authorized
+          // Hide the sign-in button now that the user is authorized, for example:
+          document.getElementById('signinButton').setAttribute('style', 'display: none');
+          console.log("Connection worked.");
+          //console.log(authResult['access_token']);
+          var user_token = authResult['access_token'];
+          window.location.replace("http://54.241.5.2:8080/canvus")
+        } else if (authResult['error']) {
+          // There was an error.
+          // Possible error codes:
+          //   "access_denied" - User denied access to your app
+          //   "immediate_failed" - Could not automatially log in the user
+          console.log('There was an error: ' + authResult['error']);
         }
-    });
-    // Additional init code here
-  };
-
-  function login() {
-        FB.login(function(response) {
-            if (response.authResponse) {
-            // connected
-            testAPI();
-            } else {
-            // cancelled
-            }
-        });
-    }
-
-    function testAPI() {
-        console.log('Welcome!  Fetching your information.... ');
-        FB.api('/me', function(response) {
-            console.log('Good to see you, ' + response.name + '.');
-        });
-    }
-
-  // Load the SDK Asynchronously
-  (function(d){
-     var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
-     if (d.getElementById(id)) {return;}
-     
-     //js = d.createElement('script'); js.id = id; js.async = true;
-     //js.src = "all.js";
-     //ref.parentNode.insertBefore(js, ref);
-
-   }(document));
-</script>
-
-
- <br>
- <br>
-
-<center>
-<div class="fb-login-button" data-show-faces="false" data-width="200" data-max-rows="1">Login with Facebook</div>
+      }
+    </script>
+    <br>
+    <br>
+  <center>
+  <span id="signinButton">
+    <span
+      class="g-signin"
+      data-callback="signinCallback"
+      data-clientid="116262710897.apps.googleusercontent.com"
+      data-cookiepolicy="single_host_origin"
+      data-requestvisibleactions="http://schemas.google.com/AddActivity"
+      data-scope="https://www.googleapis.com/auth/plus.login">
+  </span>
+</span>
 </center>
 
 
