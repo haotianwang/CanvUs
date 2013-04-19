@@ -67,3 +67,17 @@ function drawBitmap(canvas, imageData, callbackObject, callbackFunction) {
 	};
 	imageToLoad.src = imageData;
 }
+
+/* Inputs:
+ * canvas = an HTML5 canvas reference
+ * imageData = the data for the image
+ * canvX, canvY = where on canvas to put the image 
+ */
+function drawImageOnCanvas(canvas, imageData, canvX, canvY) {
+	var img = new Image();
+	img.onload = function () {
+		canvas.getContext('2d').drawImage(uploadedImage,0,0,uploadedImage.width, uploadedImage.height,
+    	canvX, canvY, uploadedImage.width, uploadedImage.height);
+	};
+	img.src = imageData;
+}
