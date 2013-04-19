@@ -27,16 +27,15 @@ local   all         postgres                          md5 sameuser
     branch: canvusfirstrelease
     tag: v1.0.0
 
-7. run: rails g websocket_rails:install
-		rails g qunit:install
+7. run: rake db:create and rake db:migrate
 
-8. run: rake db:create and rake db:migrate
+8. run: rails server
 
-9. run: rails server
-
-10. open a browser and go to http://localhost:3000/draw
+9. open a browser and go to http://localhost:3000/draw
 
 =======3RD PARTY SOFTWARE USAGE GUIDES=======
 qunit-rails: https://github.com/frodsan/qunit-rails
 websocket-rails: https://github.com/DanKnox/websocket-rails
 sinon: http://sinonjs.org/
+jscover: http://tntim96.github.io/JSCover/
+coverme: https://github.com/markbates/cover_me
