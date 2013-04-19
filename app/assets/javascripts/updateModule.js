@@ -44,13 +44,13 @@ function UpdateModule() {
     this.channel = null;
 
     // send action config
-    this.sendActionsTimeInterval = 1000;
+    this.sendActionsTimeInterval = 100;
     this.dontSendActions = false;
     this.timer = null;
     this.bucketedActions = null;
 
     // send bitmap config
-    this.actionsLimit = 300;
+    this.actionsLimit = 1000;
     this.actionsCount = 0;
     this.lastActionTime = null;
 
