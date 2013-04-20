@@ -25,4 +25,8 @@ class PageController < ApplicationController
     canvasIDJSON = {canvasID: canvas[:id]}.to_json
     render :json => canvasIDJSON
   end
+
+  def chat
+    render "chat"
+  end
 end
