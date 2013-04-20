@@ -47,10 +47,12 @@ function ChatUpdateModule(canvas) {
     }
 
     this.sendText = function (textString) {
+        if (this.debug) console.log("sending text: " + textString);
         this.channel.trigger('socket.get_text', textString);
     }
 
     this.handleGetText = function (data) {
+        if (this.debug) console.log("got text:  " + data);
         this.chatAPI.drawText(this.canvas, data);
     };
 }
