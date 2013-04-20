@@ -1,5 +1,6 @@
 <%= javascript_include_tag "drawModule" %>
 <%= javascript_include_tag "chatModule" %>
+<%= javascript_include_tag "chatUpdateModule" %>
 
 <head>
     <!-- Bootstrap -->
@@ -16,7 +17,7 @@
 	Hi! Welcome to CanvUsChat v1.0.0
 </div>
 
-<div id="chatCanvasContainer" style="position: relative">
+<div id="chatCanvasContainer" style="position: relative; border:5px solid #FF0000">
     <canvas id="chatCanvas" width="500" height="450">
     </canvas>
 </div>

@@ -8,11 +8,12 @@ dummyVar,
 uploadedImage = new Image(),
 okayButton,
 chatBoxName,
-chatBoxText;
+chatBoxText,
+updateModule, 
+randomID = Math.floor(Math.random()*1000000);
 
-function initialize() {
-	//** create new update module **
-	//updateModule = instantiateUpdateModule();
+function initialize() {//** create new update module **
+	updateModule = instantiateChatUpdateModule(document.getElementById("chatCanvas"), "text");
 
 	chatCanvas = document.getElementById("chatCanvas");
 	//updateModule.setCanvas(chatCanvas);
@@ -57,9 +58,22 @@ function initialize() {
 };
 
 function printText() {
-	textInTextBox.push(chatBoxName.value + ": " + chatBoxText.value);
+	var newText = chatBoxName.value + ": " + chatBoxText.value
+	textInTextBox.push(newText);
+	updateModule.sendText(randomID + newText);
+	chatBoxText.value = '';
 	clearCanvas(chatCanvas);
 	for(var i = 0; i < textInTextBox.length; i++) {
         drawTextOnCanvas(chatCanvas, textInTextBox[i], 15, 15+i*15);
     }
 };
+
+function drawText(canvas, text) {
+	if(randomID != text.substring(0,text.indexOf(chatBoxName.value))) {
+		textInTextBox.push(text.substring(text.indexOf(chatBoxName.value), text.length));
+	}
+	clearCanvas(chatCanvas);
+	for(var i = 0; i < textInTextBox.length; i++) {
+        drawTextOnCanvas(chatCanvas, textInTextBox[i], 15, 15+i*15);
+    }
+}

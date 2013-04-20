@@ -3,6 +3,7 @@ function instantiateChatUpdateModule(canvas, channelName) {
     chatUpdateModule = new ChatUpdateModule(canvas);
     chatUpdateModule.setChannelName(channelName);
     chatUpdateModule.initialize();
+    return chatUpdateModule;
 }
 
 function ChatUpdateModule(canvas) {
