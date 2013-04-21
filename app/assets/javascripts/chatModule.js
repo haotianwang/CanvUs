@@ -24,25 +24,38 @@ function initialize() {//** create new update module **
 
 function printText() {
 	var newText = chatBoxName.value + ": " + chatBoxText.value
-	textInTextBox.push(newText);
+	//No longer print your own message, send it to the updateModule and only print
+	// when it gets back to you, which means no more need for randomID
+	/*textInTextBox.push(newText);
 	if(textInTextBox.length > numberOfLines) {
 		textInTextBox = textInTextBox.splice(1,textInTextBox.length);
+	}*/
+	//this will split strings that are too long
+	for(var i = 0; i < newText.length; i+= 96) {
+		if(i + 96 > newText.length) {
+			updateModule.sendText(/*randomID + */newText.substring(i, newText.length));
+		} else {
+			updateModule.sendText(newText.substring(i, i+96));
+		}
 	}
-	updateModule.sendText(randomID + newText);
 	chatBoxText.value = '';
+	/*
 	clearCanvas(chatCanvas);
 	for(var i = 0; i < textInTextBox.length; i++) {
         drawTextOnCanvas(chatCanvas, textInTextBox[i], 15, 15+i*15);
-    }
+    }*/
 };
 
 function drawText(canvas, text) {
-	if(randomID != text.substring(0,text.indexOf(chatBoxName.value))) {
+	//Just print after you recieve it, so no longer need to figure out who is who via
+	//random number generator
+	//if(randomID != text.substring(0,text.indexOf(chatBoxName.value))) {
 		textInTextBox.push(text.substring(text.indexOf(chatBoxName.value), text.length));
 		if(textInTextBox.length > numberOfLines) {
 			textInTextBox = textInTextBox.splice(1,textInTextBox.length);
 		}
-	}
+	//}
+	
 	clearCanvas(chatCanvas);
 	for(var i = 0; i < textInTextBox.length; i++) {
         drawTextOnCanvas(chatCanvas, textInTextBox[i], 15, 15+i*15);

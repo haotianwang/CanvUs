@@ -89,6 +89,6 @@ function drawImageOnCanvas(canvas, imageData, canvX, canvY) {
  */
 function drawTextOnCanvas(canvas, text, canvX, canvY) {
 	console.log(text);
-	canvas.getContext('2d').font = "bold 12px sans-serif";
+	canvas.getContext('2d').font = "bold 12px monospace";
 	canvas.getContext('2d').fillText(text, canvX, canvY);
 }

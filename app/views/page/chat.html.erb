@@ -13,22 +13,26 @@
     <script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
 </head>
 <body>
-<div id="chatMessage" class="message">
-	Hi! Welcome to CanvUsChat v1.0.0
+<div id="chatMessage" class="message" width="720">
+	<center>Hi! Welcome to CanvUsChat v1.1.0</center>
 </div>
 
-<div id="chatCanvasContainer" style="position: relative; border:5px solid #FF0000">
-    <canvas id="chatCanvas" width="500" height="450">
-    </canvas>
+<div id="chatCanvasContainer" width="720">
+	<center>
+    	<canvas id="chatCanvas" width="700" height="450" style="border:1px solid #000000">
+    	</canvas>
+	</center>
 </div>
 </body>
 
-<form style="border:10px solid #FF00FF;"onsubmit="return false;">
+<form onsubmit="return false;" width="720">
+<center>
 Alias/Username: 
 <input id="chat-box-name" type="text" name="chatBoxText" value="Enter Name Here">
 Type Here:
 <input id="chat-box-text" type="text" name="chatBoxText">	
 <input id="text-submit-button" type="submit" value="Send" onclick="printText();">
+</center>
 </form>
 
 <script type="text/javascript">
