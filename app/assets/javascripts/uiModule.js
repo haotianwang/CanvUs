@@ -242,7 +242,7 @@ function initialize() {
             //if buggyCircle, then draw it on the disp canvas (permanent) and send to server
             } else{
                 drawCircle(dispCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
-                updateModule.bucketAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                updateModule.bucketAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
             }
         };
 
@@ -252,7 +252,7 @@ function initialize() {
                 mouseDown = false;
                 drawCircle(dispCanvas, tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
 				clearCanvas(drawCanvas);
-                updateModule.bucketAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
+                updateModule.bucketAction("circle", tool.x0, tool.y0, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth, fillOn);
                 updateModule.sendActions();
             }
         };
