@@ -8,8 +8,13 @@ class SocketController < WebsocketRails::BaseController
   # Stores an action in the database and generates the first Bitmap and Canvas records for a particular canvasID
   # if they do not yet have any records in the database. Afterwards, broadcasts the action to all connected
   # clients.
-  def get_action_handler
-    message_json = JSON.parse(message)
+  def get_action_handler(test_message = nil)
+    if test_message.nil?
+      working_message = message
+    else
+      working_message = test_message
+    end
+    message_json = JSON.parse(working_message)
     action = message_json['message']
     canvas_id = message_json['canvasID']
     if Canvas.find(canvas_id).nil?
@@ -22,8 +27,13 @@ class SocketController < WebsocketRails::BaseController
 
   # Retrieves the most recent canvas state stored in the database as well as any actions that have been done
   # since that canvas state was stored to send to a newly connected client.
-  def send_init_img
-    canvas_id = message.to_i
+  def send_init_img(test_message = nil)
+    if test_message.nil?
+      working_message = message
+    else
+      working_message = test_message
+    end
+    canvas_id = working_message.to_i
     bitmap_record = Bitmap.getBitmap(canvas_id)
     if bitmap_record.nil?
       bitmap = -1
@@ -34,14 +44,22 @@ class SocketController < WebsocketRails::BaseController
       actions = Action.getActions(canvas_id, timestamp)
     end
     response = {bitmap: bitmap, actions: actions}.to_json
+    if !test_message.nil?
+      return response
+    end
     send_message :get_init_img, response, :namespace => 'socket'
   end
 
   # Stores an updated bitmap in the database according to the current state of the canvas a client is drawing on.
   # Broadcasts to all clients so that additional bitmaps with almost the exact same state will not be sent. Finally,
   # calls the cleanUp method to delete old data from the database.
-  def get_bitmap
-    message_json = JSON.parse(message)
+  def get_bitmap(test_message = nil)
+    if test_message.nil?
+      working_message = message
+    else
+      working_message = test_message
+    end
+    message_json = JSON.parse(working_message)
     bitmap = message_json['bitmap']
     timestamp = message_json['timestamp']
     canvas_id = message_json['canvasID']

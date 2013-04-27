@@ -7,5 +7,6 @@ CanvUs::Application.routes.draw do
 	match 'welcome2' => 'page#welcome2'
 	match 'canvus' => 'page#canvus'
 	match 'canvases' => 'page#canvases'
-  match 'new_canvas' => 'page#new_canvas'
+  	match 'new_canvas' => 'page#new_canvas'
+  	match 'chat' => 'page#chat'
 end

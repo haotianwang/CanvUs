@@ -8,10 +8,6 @@ class PageController < ApplicationController
 		render "welcome"
 	end
 
-	def welcome2
-		render "welcome2"
-	end
-
 	def canvus
 		render "canvus"
 	end
@@ -28,5 +24,9 @@ class PageController < ApplicationController
     Canvas.setBitmap(canvas[:id], bitmapID)
     canvasIDJSON = {canvasID: canvas[:id]}.to_json
     render :json => canvasIDJSON
+  end
+
+  def chat
+    render "chat"
   end
 end

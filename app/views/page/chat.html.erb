@@ -1,0 +1,41 @@
+<%= javascript_include_tag "drawModule" %>
+<%= javascript_include_tag "chatModule" %>
+<%= javascript_include_tag "chatUpdateModule" %>
+
+<head>
+    <!-- Bootstrap -->
+    
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css">
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
+</head>
+<body>
+<div id="chatMessage" class="message" width="720">
+	<center>Hi! Welcome to CanvUsChat v1.1.0</center>
+</div>
+
+<div id="chatCanvasContainer" width="720">
+	<center>
+    	<canvas id="chatCanvas" width="700" height="450" style="border:1px solid #000000">
+    	</canvas>
+	</center>
+</div>
+</body>
+
+<form onsubmit="return false;" width="720">
+<center>
+Alias/Username: 
+<input id="chat-box-name" type="text" name="chatBoxText" value="Enter Name Here">
+Type Here:
+<input id="chat-box-text" type="text" name="chatBoxText">	
+<input id="text-submit-button" type="submit" value="Send" onclick="printText();">
+</center>
+</form>
+
+<script type="text/javascript">
+initialize();
+</script>
+

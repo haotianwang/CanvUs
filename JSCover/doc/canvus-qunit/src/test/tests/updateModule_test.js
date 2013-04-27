@@ -92,7 +92,7 @@ module( "updateModule tests", {
         this.fakeDrawModule= null;
         this.fakeDrawModuleMock = null;
 
-        this.testUpdateModule = null
+        this.testUpdateModule = null;
 ;	}
 });
 
@@ -111,6 +111,7 @@ test('instantiateUpdateModule', function() {
     // initialize, just to make sure it works
     var testUpdateModule = instantiateUpdateModule(this.WebSocketRailsConstructor);
     testUpdateModule.initialize();
+    testUpdateModule.stopTimer();
 
     ok(testUpdateModule != null, "initialization worked as expected");
     this.WebSocketRailsMock.verify();
@@ -118,7 +119,7 @@ test('instantiateUpdateModule', function() {
 });
 
 test('updateModule.bucketAction to increase length of updateModule.bucketedActions', function() {
-    var spy = sinon.spy(this.testUpdateModule, "sendAction");
+    var spy = sinon.spy(this.testUpdateModule, "sendActions");
     var args = ["action", "startx", "starty", "endx", "endy", "color", "strokeWidth", "fillOn"];
 
     var expectedActionJson = {}
@@ -127,8 +128,9 @@ test('updateModule.bucketAction to increase length of updateModule.bucketedActio
     expectedActionJson["starty"] = "starty";
     expectedActionJson["endx"] = "endx";
     expectedActionJson["endy"] = "endy";
-    expectedActionJson["strokWidth"] = "strokeWidth";
-    expectedActionJson["fillOn"] = false;
+    expectedActionJson["color"] = "color";
+    expectedActionJson["strokeWidth"] = "strokeWidth";
+    expectedActionJson["fillOn"] = "fillOn";
 
     var listOfActions = new Array();
 
@@ -138,8 +140,8 @@ test('updateModule.bucketAction to increase length of updateModule.bucketedActio
     }
 
     ok(spy.callCount == 0, "sendActions was not invoked since timer is not on");
-    equal(testUpdateModule.bucketedActions.length, 5, "bucketing 5 actions made the length of the bucket 5");
-    equal(JSON.stringify(expectedActionJson), testUpdateModule.bucketedActions[0], "actions saved in expected form");
+    equal(this.testUpdateModule.bucketedActions.length, 5, "bucketing 5 actions made the length of the bucket 5");
+    equal(JSON.stringify(expectedActionJson), this.testUpdateModule.bucketedActions[0], "actions saved in expected form");
 })
 
 test('updateModule.sendActions', function() {
@@ -157,7 +159,7 @@ test('updateModule.sendActions', function() {
         this.testUpdateModule.bucketAction(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
         expectedActionsString = expectedActionsString + JSON.stringify(expectedAction);
         if (i < 2) {
-            expectedActionsString = expectedActionsString + ",";
+            expectedActionsString = expectedActionsString + ", ";
         }
     }
 
@@ -193,11 +195,12 @@ test('updateModule.sendActions for fillable shapes', function() {
     this.testUpdateModule.sendActions();
 
     ok(this.WebSocketRailsMock.verify(), "verified that sendAction sent the right kind of action");
+    equal(this.testUpdateModule.bucketedActions, null, "verified that sending the actions clears the bucketedActions list");
 });
 
 test('updateModule.handleGetActions', function() {
     var action = createStubAction("clear");
-    var actionsString = action + "," + action + "," + action;
+    var actionsString = action + ", " + action + ", " + action;
     var messageJson = {};
     messageJson["message"] = actionsString;
     messageJson["timestamp"] = 0;
@@ -213,7 +216,7 @@ test('updateModule.handleGetActions', function() {
 test('updateModule.handleGetActions with filled object', function() {
     var action = createStubAction("circle");
     var actionJson = JSON.parse(action);
-    actionsJson = {"message": action, "timestamp":0};
+    actionsJson = {"message": action, "timestamp": 0};
 
     this.fakeDrawModuleMock.expects("drawCircle")
         .withArgs(this.testUpdateModule.canvas, actionJson["startx"], actionJson["starty"], actionJson["endx"], actionJson["endy"], actionJson["color"], actionJson["strokeWidth"], actionJson["fillOn"])
@@ -226,13 +229,13 @@ test('updateModule.handleGetActions with filled object', function() {
 
 test('updateModule.invokeDrawingModule all draw methods', function() {
     // test that when an action in handleGetAction maps to the correct invokeDrawingModule switch case
-    var actions = ["clear", "rectangle", "circle", "line"];
-    var actionMethods = ["clearCanvas", "drawRectangle", "drawCircle", "drawLine"];
+    var actions = ["clear", "rectangle", "circle", "line", "image", "text"];
+    var actionMethods = ["clearCanvas", "drawRectangle", "drawCircle", "drawLine", "drawImageOnCanvas", "drawTextOnCanvas"];
     var actionsString = ""
     for (var i = 0; i < actions.length; i++) {
         actionsString = actionsString + createStubAction(actions[i]);
         if (actions.length > i+1) {
-            actionsString = actionsString + ",";
+            actionsString = actionsString + ", ";
         }
         this.fakeDrawModuleMock.expects(actionMethods[i]).exactly(1);
     }
@@ -243,7 +246,7 @@ test('updateModule.invokeDrawingModule all draw methods', function() {
     this.testUpdateModule.handleGetActions(JSON.stringify(actionsJson));
 
     ok(this.fakeDrawModuleMock.verify(), "verified that getting actions invoke the appropriate DrawAPI methods");
-    ok(spy.callCount == 4, "invokeDrawingModule called 4 times, once per action, as expected");
+    ok(spy.callCount == actions.length, "invokeDrawingModule called " + actions.length + " times, once per action, as expected");
 
     for (var i = 0; i < actions.length; i++) {
         ok(spy.calledWith(sinon.match.any, actions[i]), "invokeDrawingModule called with \"" + actions[i] + "\" as action, as expected");
@@ -257,6 +260,19 @@ test('updateModule.getInitImg', function() {
     this.testUpdateModule.getInitImg(canvasID);
 
     ok(this.WebSocketRailsMock.verify(), "getInitImg sent the expected socket.send_init_img event to web socket");
+});
+
+test('updateModule.invalidInitImgHandler', function() {
+    var message = JSON.stringify({"bitmap": "-1", "actions": ""});
+    var spy = sinon.spy(this.testUpdateModule, "invokeDrawingModule");
+    var failSpy = sinon.spy(this.testUpdateModule, "invalidInitImgHandler");
+
+    this.testUpdateModule.invalidInitImgHandler();
+
+    equal(this.testUpdateModule.dispatcher, null, "invalidInitImgHandler destroys the dispatcher, as expected");
+    equal(this.testUpdateModule.timer, null, "invalidInitImgHandler destroys the timer, as expected");
+    equal(this.testUpdateModule.dontSendActions, true, "invalidInitImgHandler set dontSendActions to true, as expected");
+    equal(this.drawAPI, null, "invalidInitImgHandler destroys connection to drawing module, as expected");
 });
 
 test('updateModule.getInitImgHandler returns -1, no canvas exists', function() {
@@ -349,10 +365,13 @@ test('updateModule.sendBitmap', function() {
 test('updateModule.sendAction+handleGetAction multiple times to trigger sendBitmap', function() {
     var spy = sinon.spy(this.testUpdateModule, "sendBitmap");
     this.fakeDrawModuleMock.expects("clearCanvas").atLeast(0).returns();
+    this.fakeDrawModuleMock.expects("drawRectangle").atLeast(0).returns();
+    this.fakeDrawModuleMock.expects("drawLine").atLeast(0).returns();
 
-    this.testUpdateModule.setActionsLimit(30);
-    for (i = 0; i < 55; i++) {
-        this.testUpdateModule.handleGetAction(createStubAction("clear"));
+    this.testUpdateModule.setActionsLimit(20);
+    var message = JSON.stringify({"message": createStubAction("clear")+", "+createStubAction("rectangle")+", "+createStubAction("line"), "timestamp": 0});
+    for (var i = 0; i < 7; i++) {
+        this.testUpdateModule.handleGetActions(message);
     }
 
     ok(spy.callCount == 1, "sendAction and handleGetAction 55 times with actionsLimit as 30 results in 1 sendBitmap, as expected");

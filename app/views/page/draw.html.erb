@@ -12,6 +12,8 @@
     <link href="bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
     <link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css">
     <script src="http://code.jquery.com/jquery.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
     <script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
     <!-- <script src="bootstrap/js/bootstrap.min.js"></script> -->
     <div style="width: 100%; height: 50px; background: #EBA397;"> 
@@ -72,6 +74,18 @@ Hi, welcome to CanvUs v.1.0.0
                 <div class="btn-group">
                         <a href="#" class="btn btn-success" id="download-png-button" type="submit" value="Download as PNG">Save Image</a>  
                 </div> 
+                <div class="btn-group">
+                    <a href="#" class="btn btn-danger" input id="upload-button" type="submit">Upload Image</a>
+                </div> 
+                <div class="btn-group">
+                    <a href="#" class="btn btn-danger" input id="text-button" type="submit">Text</a>
+                </div> 
+                <div id="load-div" style="border:10px solid #FFFF00;">
+                    <form action='#' onsubmit="return false;"style="border:10px solid #000000;">
+                        <input type='file' id='file-box' />
+                        <input type='button' id='done-button' value='Done' />
+                    </form>
+                </div>
                 
 
             </div>
