@@ -343,6 +343,7 @@ function initialize() {
                 console.log(charCode);
                 console.log(textInTextBox);
             }
+            return false;
         };
     };
 
