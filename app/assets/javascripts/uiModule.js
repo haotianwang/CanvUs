@@ -1,6 +1,7 @@
 var prevX, prevY,
 dispCanvas, dispCtx, 
 drawCanvas, drawCtx,
+backButton,
 clrButton,
 mouseDown = false,
 tools = {},
@@ -343,6 +344,7 @@ function initialize() {
                 console.log(charCode);
                 console.log(textInTextBox);
             }
+            return false;
         };
     };
 
@@ -356,8 +358,8 @@ function initialize() {
                 tool.mouseup();
             } else {
                 mouseDown = true;
-                uploadedImage.canvX = event.relx;
-                uploadedImage.canvY = event.rely;
+                uploadedImage.canvX = event.relx - uploadedImage.width / 2;
+                uploadedImage.canvY = event.rely - uploadedImage.height / 2;
                 drawImageOnCanvas(drawCanvas, uploadedImage.src, uploadedImage.canvX, uploadedImage.canvY);
             }
         };
@@ -366,8 +368,8 @@ function initialize() {
             if(!mouseDown)
                 return;
             clearCanvas(drawCanvas);
-            uploadedImage.canvX = event.relx;
-            uploadedImage.canvY = event.rely;
+            uploadedImage.canvX = event.relx - uploadedImage.width / 2;
+            uploadedImage.canvY = event.rely - uploadedImage.height / 2;
             drawImageOnCanvas(drawCanvas, uploadedImage.src, uploadedImage.canvX, uploadedImage.canvY);
 
         };
@@ -394,6 +396,7 @@ function initialize() {
     dispCtx = dispCanvas.getContext("2d");
     dispCtx.lineCap = "round"; //set line cap to round
     dispCtx.lineJoin = "round"; //set line join to be round (no more jaggies)
+    backButton = document.getElementById('back-button');
     clrButton = document.getElementById('clear-button');
     fillButton = document.getElementById('fill-button');
     //blackButton = document.getElementById('black-button');
@@ -763,6 +766,12 @@ function initialize() {
     function setTool(newTool) {
         currentTool = newTool;
         tool = new tools[currentTool]();
+    }
+
+    backButton.onclick = function() {
+        //okay room for logic. Should the back button take you back to the original page?
+        //or should it take you back to the page the canvus is on? 
+        window.location.href = "http://" + window.location.host;
     }
 
 }
