@@ -4,6 +4,8 @@
 
 <head>
     <script src="http://code.jquery.com/jquery.js"></script>
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css">
     <div style="width: 100%; height: 50px; background: #EBA397;"> 
 		<font color="#EBA397">".   ."</font>      
 		<img src="CanvusLogo3.jpg" alt="">
@@ -13,14 +15,14 @@
 <body id="body">
 <center id="instructions">
 <div>
-Hi, welcome to CanvUs 2.0<br>
+
 Please select a canvas below to join a room
 </div>
 
-<div>
-	Or create a new room: 
-	<input id="createRoomButton" type="submit" value="create room">
-</div>
+<!-- <input id="createRoomButton" type="submit" value="create room"> -->
+<div class="btn-group">
+    <a href="#" class="btn btn-success" id="createRoomButton" type="submit" value="create room">+ New Canvus</a>  
+</div> 
 </center>
 
 <center>

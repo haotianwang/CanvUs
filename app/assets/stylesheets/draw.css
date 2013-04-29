@@ -2,6 +2,8 @@
 body{
 background-image: -webkit-gradient(radial, center bottom, 0, center bottom, 553, color-stop(0, #FFFFFF), color-stop(1, #E8D5D6));
 background-image: -moz-radial-gradient(center bottom, ellipse farthest-corner, #FFFFFF 0%, #E8D5D6 100%);
+-webkit-user-select: none; /* Chrome/Safari */        
+-moz-user-select: none; /* Firefox */
 }
 
 #canvas-message{
