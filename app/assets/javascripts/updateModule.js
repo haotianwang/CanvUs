@@ -291,10 +291,17 @@ function UpdateModule() {
         }
 
         if (this.debug) console.log("drawing initial actions..");
-        for (var i = 0; i < this.initActions.length; i++) {
-           var thisAction = JSON.parse(this.initActions[i]);
+        iters = this.initActions.length;
+        for (var i = 0; i < iters; i++) {
+            var thisAction = JSON.parse(this.initActions.shift());
             if (this.debug) console.log("drawing " + JSON.stringify(thisAction));
-            this.invokeDrawingModule(this.canvas, thisAction.action, thisAction.startx, thisAction.starty, thisAction.endx, thisAction.endy, thisAction.color, thisAction.strokeWidth, thisAction.fillOn);
+
+            if (thisAction.action == "image") {
+                this.DrawAPI.drawImageOnCanvas(this.canvas, thisAction.color, thisAction.startx, thisAction.starty, this, this.drawInitActions);
+                return;
+            } else {
+                this.invokeDrawingModule(this.canvas, thisAction.action, thisAction.startx, thisAction.starty, thisAction.endx, thisAction.endy, thisAction.color, thisAction.strokeWidth, thisAction.fillOn);
+            }
         }
         if (this.debug) console.log("done drawing initial actions!");
 
@@ -331,8 +338,8 @@ function getDrawAPI() {
             drawBitmap(canvas, bitmap, callbackObject, callbackFunction);
         },
 
-        drawImageOnCanvas: function(canvas, bitmap, canvX, canvY) {
-            drawImageOnCanvas(canvas, bitmap, canvX, canvY);
+        drawImageOnCanvas: function(canvas, bitmap, canvX, canvY, callbackObject, callbackFunction) {
+            drawImageOnCanvas(canvas, bitmap, canvX, canvY, callbackObject, callbackFunction);
         },
 
         drawTextOnCanvas: function(canvas, text, canvX, canvY) {

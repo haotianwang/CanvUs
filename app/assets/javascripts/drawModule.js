@@ -73,11 +73,18 @@ function drawBitmap(canvas, imageData, callbackObject, callbackFunction) {
  * imageData = the data for the image
  * canvX, canvY = where on canvas to put the image 
  */
-function drawImageOnCanvas(canvas, imageData, canvX, canvY) {
+function drawImageOnCanvas(canvas, imageData, canvX, canvY, callbackObject, callbackFunction) {
 	var img = new Image();
 	img.onload = function () {
 		canvas.getContext('2d').drawImage(img,0,0,img.width, img.height,
     	canvX, canvY, img.width, img.height);
+
+    	if (callbackObject != null && callbackFunction != null) {
+			callbackFunction.call(callbackObject);
+		}
+		else if (callbackObject == null && callbackFunction != null) {
+			callbackFunction();
+		}
 	};
 	img.src = imageData;
 }
