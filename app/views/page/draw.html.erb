@@ -58,9 +58,9 @@ Hi, welcome to CanvUs v.1.0.0
         
         <div class="btn-toolbar">
             <div class="btn-group" data-toggle="buttons-radio">
-                <a class="btn" input id="line-button" type="submit" value="Line"href="#"><i><img src="glyphicons_097_vector_path_line.png" class="icon-line"></i></a>
                 <a class="btn" 
                 <a href="#" class="btn" input id="pencil-button" type="submit" value="Pencil" href="#"><i class="icon-pencil"></i></a>
+                <a class="btn" input id="line-button" type="submit" value="Line"href="#"><i><img src="glyphicons_097_vector_path_line.png" class="icon-line"></i></a>
                 <a class="btn" input id="fill-button" type="submit" value="Fill" href="#"><i><img src="fill.png" class="icon-fill"></i></a>
                 <a class="btn" input id="rectangle-button" type="submit" value="Rectangle" href="#"><i><img src="glyphicons_094_vector_path_square.png" class="icon-square"></i></a>
                 <a class="btn" input id="circle-button" type="submit" value="Circle" href="#"><i><img src="glyphicons_095_vector_path_circle.png" class="icon-circle"></i></a>
@@ -89,6 +89,7 @@ Hi, welcome to CanvUs v.1.0.0
 
             </div>
         </div>
+        <script> $('#pencil-button').button('toggle');</script>
 
         <div class="btn-group">
             Change Color: <input id="color-selector" class="color {hash: true}" value="000000">
@@ -99,15 +100,15 @@ Hi, welcome to CanvUs v.1.0.0
                 <span class="caret"></span>
             </button>
                 <ul class="dropdown-menu">
-                    <li><a href="#">1pt</a></li>
-                    <li><a href="#">2pt</a></li>
-                    <li><a href="#">4pt</a></li>
-                    <li><a href="#">8pt</a></li>
-                    <li><a href="#">16pt</a></li>
-                    <li><a href="#">32pt</a></li>
-                    <li><a href="#">64pt</a></li>
+                    <li><a href="#" id="thick-1" type="button">1pt</a></li>
+                    <li><a href="#" id="thick-2" type="button">2pt</a></li>
+                    <li><a href="#" id="thick-4" type="button">4pt</a></li>
+                    <li><a href="#" id="thick-8" type="button">8pt</a></li>
+                    <li><a href="#" id="thick-16" type="button">16pt</a></li>
+                    <li><a href="#" id="thick-32" type="button">32pt</a></li>
+                    <li><a href="#" id="thick-64" type="button">64pt</a></li>
                 </ul>
-            </div>
+        </div>
         </div><br>
         <!--
         <input id="debug-button" type="submit" value="Debug Off">
