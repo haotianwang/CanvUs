@@ -281,13 +281,6 @@ function initialize() {
     blueButton = document.getElementById('blue-button');
     redButton = document.getElementById('red-button');
     lineThicknessBox = document.getElementById("line-thickness-box");
-    lineThick1 = document.getElementById("thick-1");
-    lineThick2 = document.getElementById("thick-2");
-    lineThick4 = document.getElementById("thick-4");
-    lineThick8 = document.getElementById("thick-8");
-    lineThick16 = document.getElementById("thick-16");
-    lineThick32 = document.getElementById("thick-32");
-    lineThick64 = document.getElementById("thick-64");
     //colorBox = document.getElementById("color-box"); //<- depricated by colorSelector
     colorSelector = document.getElementById("color-selector");
     pencilButton = document.getElementById("pencil-button")
@@ -513,35 +506,6 @@ function initialize() {
     };
     
     
-    lineThick1.onclick = function (event) {
-        console.log("clicked here" + 1);
-        drawCtx.lineWidth = 1;
-        return false;
-    };
-    lineThick2.onclick = function (event) {
-        drawCtx.lineWidth = 2;
-        return false;
-    };
-    lineThick4.onclick = function (event) {
-        drawCtx.lineWidth = 4;
-        return false;
-    };
-    lineThick8.onclick = function (event) {
-        drawCtx.lineWidth = 8;
-        return false;
-    };
-    lineThick16.onclick = function (event) {
-        drawCtx.lineWidth = 16;
-        return false;
-    };
-    lineThick32.onclick = function (event) {
-        drawCtx.lineWidth = 32;
-        return false;
-    };
-    lineThick64.onclick = function (event) {
-        drawCtx.lineWidth = 64;
-        return false;
-    };
 
 
     console.log(dlPngButton);

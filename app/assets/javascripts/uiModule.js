@@ -417,6 +417,13 @@ function initialize() {
     textButton = document.getElementById("text-button");
     uploadButton = document.getElementById("upload-button");
     doneButton = document.getElementById("done-button");
+    lineThick1 = document.getElementById("thick-1");
+    lineThick2 = document.getElementById("thick-2");
+    lineThick4 = document.getElementById("thick-4");
+    lineThick8 = document.getElementById("thick-8");
+    lineThick16 = document.getElementById("thick-16");
+    lineThick32 = document.getElementById("thick-32");
+    lineThick64 = document.getElementById("thick-64");
 
     //set the default context to the dispCtx for the updateModule
     updateModule.resetDefaults();
@@ -677,6 +684,35 @@ function initialize() {
         //no return for other key presses, else key press doesn't happen
     };
     */
+
+    lineThick1.onclick = function () {
+        drawCtx.lineWidth = 1;
+        return false;
+    };
+    lineThick2.onclick = function () {
+        drawCtx.lineWidth = 2;
+        return false;
+    };
+    lineThick4.onclick = function () {
+        drawCtx.lineWidth = 4;
+        return false;
+    };
+    lineThick8.onclick = function () {
+        drawCtx.lineWidth = 8;
+        return false;
+    };
+    lineThick16.onclick = function () {
+        drawCtx.lineWidth = 16;
+        return false;
+    };
+    lineThick32.onclick = function () {
+        drawCtx.lineWidth = 32;
+        return false;
+    };
+    lineThick64.onclick = function () {
+        drawCtx.lineWidth = 64;
+        return false;
+    };
 
     dlPngButton.onclick = function(event) {
         Canvas2Image.saveAsPNG(dispCanvas);
