@@ -3,6 +3,7 @@ var canvasButton1,
 	dispCanvas,
 	dispCtx, imageData,
 	arrOfCanvases,
+	backButton,
 	numOfCanvasOnPage = 6,
 	//the VARIABLE pageId is Zero-Indexed 
 	//  whereas the URL parameter is One-Indexed
@@ -62,6 +63,7 @@ function initialize() {
 	var canvasLinksDiv = document.getElementById("canvas-links-div");
 	var pageControlDiv = document.getElementById("page-control-div");
 	var pageNumberTextDiv = document.getElementById("page-number-text-div");
+	backButton = document.getElementById('back-button');
 	//get a string representing every available canvas delimited by '|'
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET","canvases",false);
@@ -149,6 +151,12 @@ function initialize() {
 	//append page number stuff to the page-control-div
 	var pageNumber = " Page: " + (pageId + 1) + " of " + numOfCanvasPages + " ";
 	$('#page-control-div').append(pageNumber);
+
+	backButton.onclick = function() {
+        //okay room for logic. Should the back button take you back to the original page?
+        //or should it take you back to the page the canvus is on? 
+        window.location.href = "http://" + window.location.host;
+    }
 
 	if(pageId+1 < numOfCanvasPages) {
 		var nextPageButton = document.createElement("input");

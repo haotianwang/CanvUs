@@ -2,6 +2,7 @@ var prevX, prevY,
 dispCanvas, dispCtx, 
 drawCanvas, drawCtx,
 backButton,
+homeButton,
 clrButton,
 mouseDown = false,
 tools = {},
@@ -397,6 +398,7 @@ function initialize() {
     dispCtx.lineCap = "round"; //set line cap to round
     dispCtx.lineJoin = "round"; //set line join to be round (no more jaggies)
     backButton = document.getElementById('back-button');
+    homeButton = document.getElementById('home-button');
     clrButton = document.getElementById('clear-button');
     fillButton = document.getElementById('fill-button');
     //blackButton = document.getElementById('black-button');
@@ -808,6 +810,10 @@ function initialize() {
         //okay room for logic. Should the back button take you back to the original page?
         //or should it take you back to the page the canvus is on? 
         window.location.href = "http://" + window.location.host;
+    }
+
+    backButton.hover = function() {
+        homeButton.fadeIn();   
     }
 
 }

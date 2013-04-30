@@ -17,10 +17,22 @@
     <!-- <script src="bootstrap/js/bootstrap.min.js"></script> -->
     <div style="width: 100%; height: 50px; background: #EBA397;"> 
         <!-- added button here -->
-        <a href="#" class="btn btn-danger" id="back-button" type="submit" >Back To Main Page</a>
+        <!-- <a href="#" class="btn btn-danger" id="back2-button" type="submit" >Back To Main Page</a> -->
         <font color="#EBA397">".   ."</font>      
-        <img src="CanvusLogo3.jpg" alt="">
+        <img id="back-button" src="CanvusLogo3.jpg" alt="">
+        <img id="home-button" src="Home.png" alt="">
     </div>
+    <style>
+        img {cursor: hand; cursor: pointer;}
+        #home-button{
+            display:none;
+        }
+        #back-button:hover #home-button{
+            display:inline;
+        }
+    </style>
+    
+
 </head>
 
 
