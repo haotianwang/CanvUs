@@ -7,20 +7,23 @@ class Action < ActiveRecord::Base
   @@mutex = Mutex.new
 
   def self.flushActions()
-    length = @@actionsCache.length
     time = Time.now
-    puts length
+    length = 0
     @@mutex.synchronize do
+      length = @@actionsCache.length
       Action.transaction do
         length.times do |i|
           action = @@actionsCache.delete_at(0)
           x = action.save
-          puts x
+          if x == false
+            puts "FAILED"
+            puts x
+          end
         end
       end
     end
     timeAfter = Time.now
-    puts "it took ", timeAfter-time," to flush actions!"
+    print "it took ", timeAfter-time," to flush ", length, " actions!", "\n"
   end
 
   def self.repeatFlush()
@@ -32,6 +35,10 @@ class Action < ActiveRecord::Base
 
   def self.returnCache()
     return @@actionsCache
+  end
+
+  def self.returnMutex()
+    return @@mutex
   end
 
   # Stores an action done on a particular canvas.
@@ -61,16 +68,16 @@ class Action < ActiveRecord::Base
     start = DateTime.new(2009,06,18)
     time = Time.now
     @@mutex.synchronize do
-      time2 = Time.now
+      #time2 = Time.now
       Action.transaction do
         Action.where(:canvas_id => canvasID, :created_at => start..timestamp).each do |action|
           action.destroy
         end
       end
-      time2After = Time.now
-      puts "it took ", time2After-time2," to mutex actions!"
+      #time2After = Time.now
+      #print "it took ", time2After-time2," to mutex actions!", "\n"
     end
     timeAfter = Time.now
-    puts "it took ", timeAfter-time," to delete actions!"
+    print "it took ", timeAfter-time," to delete actions!", "\n"
   end
 end
