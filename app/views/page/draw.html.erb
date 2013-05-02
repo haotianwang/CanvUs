@@ -80,29 +80,9 @@ Hi, welcome to CanvUs v.1.0.0
                 <a class="btn" id="buggy-circle-button" type="submit" value="Buggy Circle" href="#"><img src="buggy-circle.png" class="icon-buggy-circle"></a>
                 <a class="btn" id="buggy-rectangle-button" type="submit" value="Buggy Rectangle" href="#"><img src="buggy-rectangle.png" class="icon-buggy-rect"></a>
                 <a class="btn" id="text-button" type="submit"><img src="text-tool.png" class="icon-text"></a>
-                
-                <div><br></div>
-
-                <div class="btn-group">
-                        <a href="#" class="btn btn-success" id="download-png-button" type="submit" value="Download as PNG">Save Image</a>  
-                </div> 
-                <div class="btn-group">
-                    <a href="#" class="btn btn-warning" input id="upload-button" type="submit">Upload Image</a>
-                </div> 
-                 <div class="btn-group">
-                    <a href="#" class="btn btn-danger" input id="clear-button" type="submit" value="Clear">Clear</a>
-                </div> 
-
-                <div id="load-div" style="border:10px solid #FFFF00;">
-                    <form action='#' onsubmit="return false;"style="border:10px solid #000000;">
-                        <input type='file' id='file-box' />
-                        <input type='button' id='done-button' value='Done' />
-                    </form>
-                </div>
-                
-
             </div>
         </div>
+        
         <script> $('#pencil-button').button('toggle');</script>
 
         <div class="btn-group">
@@ -125,8 +105,33 @@ Hi, welcome to CanvUs v.1.0.0
                     <li><a href="#" id="thick-64" type="submit">64px</a></li>
                 </ul>
         </div>
-        <input type="checkbox" id="fill-button" /> <font>  Fill</font> 
-        </div><br>
+        <input type="checkbox" id="fill-button" style="position:relative; top:-3.5px;"/> <font>  Fill</font> 
+
+        </div>
+
+        <script>
+            $(document).on('click','.dropdown ul a',function(){
+                var text = $(this).text();
+                $(this).closest('.dropdown').children('a.dropdown-toggle').text(text);
+            });
+
+        </script>
+         <div class="btn-group" style="position:relative; top:-7px;">
+                        <a href="#" class="btn btn-success" id="download-png-button" type="submit" value="Download as PNG">Save Image</a>  
+                </div> 
+                <div class="btn-group" style="position:relative; top:-7px;">
+                    <a href="#" class="btn btn-warning" input id="upload-button" type="submit">Upload Image</a>
+                </div> 
+                 <div class="btn-group" style="position:relative; top:-7px;">
+                    <a href="#" class="btn btn-danger" input id="clear-button" type="submit" value="Clear">Clear</a>
+                </div> 
+
+                <div id="load-div" style="border:10px solid #FFFF00;">
+                    <form action='#' onsubmit="return false;"style="border:10px solid #000000;">
+                        <input type='file' id='file-box' />
+                        <input type='button' id='done-button' value='Done' />
+                    </form>
+                </div>
         <!--
         <input id="debug-button" type="submit" value="Debug Off">
         -->
