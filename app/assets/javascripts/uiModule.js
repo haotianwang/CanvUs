@@ -568,8 +568,10 @@ function initialize() {
             //revert the tool
             currentTool = prevTool;
             tool = new tools[currentTool]();
+            
         }
         fillOn = !fillOn;
+        fileButton.checked = true;
         console.log("fillOn is now: " + fillOn);
         return false;
     }
@@ -812,9 +814,6 @@ function initialize() {
         window.location.href = "http://" + window.location.host;
     }
 
-    backButton.hover = function() {
-        homeButton.fadeIn();   
-    }
-
+    
 }
 
