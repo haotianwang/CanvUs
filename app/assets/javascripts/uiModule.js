@@ -405,6 +405,7 @@ function initialize() {
     homeButton = document.getElementById('home-button');
     clrButton = document.getElementById('clear-button');
     fillButton = document.getElementById('fill-button');
+    var changeThickValue = document.getElementById('thick-button');
     //blackButton = document.getElementById('black-button');
     //blueButton = document.getElementById('blue-button');
     //redButton = document.getElementById('red-button');
@@ -701,30 +702,44 @@ function initialize() {
 
     lineThick1.onclick = function () {
         drawCtx.lineWidth = 1;
+        changeThickValue.innerHTML = "       1px    ";
+        $('#thick-button').append("<span class='caret'></span>");
         return false;
     };
     lineThick2.onclick = function () {
         drawCtx.lineWidth = 2;
+        changeThickValue.innerHTML = "2px ";
+        $('#thick-button').append("<span class='caret'></span>");
         return false;
     };
     lineThick4.onclick = function () {
         drawCtx.lineWidth = 4;
+        changeThickValue.innerHTML = "4px ";
+        $('#thick-button').append("<span class='caret'></span>");
         return false;
     };
     lineThick8.onclick = function () {
         drawCtx.lineWidth = 8;
+        changeThickValue.innerHTML = "8px ";
+        $('#thick-button').append("<span class='caret'></span>");
         return false;
     };
     lineThick16.onclick = function () {
         drawCtx.lineWidth = 16;
+        changeThickValue.innerHTML = "16px ";
+        $('#thick-button').append("<span class='caret'></span>");
         return false;
     };
     lineThick32.onclick = function () {
         drawCtx.lineWidth = 32;
+        changeThickValue.innerHTML = "32px ";
+        $('#thick-button').append("<span class='caret'></span>");
         return false;
     };
     lineThick64.onclick = function () {
         drawCtx.lineWidth = 64;
+        changeThickValue.innerHTML = "64px ";
+        $('#thick-button').append("<span class='caret'></span>");
         return false;
     };
 
