@@ -76,7 +76,6 @@ function initialize() {
                 drawCtx.lineTo(event.relx, event.rely);
                 drawCtx.stroke();
                 //canvasUpdate();
-                console.log(drawCanvas);
                 clearCanvas(drawCanvas);
                 drawLine(dispCanvas, prevX, prevY, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
 				// send action to server
@@ -562,13 +561,33 @@ function initialize() {
         return false;
     };
 
+
+    function toolSetUp() {
+        checkMovePic()
+        checkEraser()
+    }
+
     function checkMovePic() {
         if(currentTool == "movepicture"){
             tool.mouseup();
         }
     }
+    
+    function checkEraser() {
+        if(eraseOn) {
+            eraseOn = false;
+             //pop the old context
+            drawCtx.restore();
+            //change the LineThickness back to the old one
+            changeLineThickness(drawCtx.lineWidth);
+            //set the color to the value of colorSelector (in case user changed color while using eraser)
+            drawCtx.strokeStyle = colorSelector.value;   
+        }
+    }
+
 
     fillButton.onclick = function() {
+        checkEraser();
         if(currentTool == "movepicture"){
             checkMovePic(); //set picture
             //revert the tool
@@ -583,18 +602,29 @@ function initialize() {
     }
 
     pencilButton.onclick = function() {
-        checkMovePic();
+        toolSetUp();
         currentTool = "pencil";
         tool = new tools[currentTool]();
         return false;
     };
     
     eraserButton.onclick = function() {
-
+        //only do something if not eraseOn
+        if(!eraseOn) {
+            //ORDER MATTERS!!!!
+            checkMovePic();
+            drawCtx.save();
+            tool.changeColor("#FFFFFF");
+            eraseOn = true;
+            changeLineThickness(32);
+            currentTool = "pencil";
+            tool = new tools[currentTool]();
+        }
+        return false;
     }
 
     lineButton.onclick = function() {
-        checkMovePic();
+        toolSetUp();
         buggyLine = false;
         currentTool = "line";
         tool = new tools[currentTool]();
@@ -602,7 +632,7 @@ function initialize() {
     };
 
     rectangleButton.onclick = function() {
-        checkMovePic();
+        toolSetUp();
         prevTool = currentTool
         currentTool = "rectangle";
         buggyRectangle = false;
@@ -611,7 +641,7 @@ function initialize() {
     };
 
     circleButton.onclick = function() {
-        checkMovePic();
+        toolSetUp();
         buggyCircle = false;
         currentTool = "circle";
         tool = new tools[currentTool]();
@@ -619,7 +649,7 @@ function initialize() {
     };
 
     buggyLineButton.onclick = function() {
-        checkMovePic();
+        toolSetUp();
         //lets you play with the buggy line
         drawCtx.beginPath();
         buggyLine = true;
@@ -629,7 +659,7 @@ function initialize() {
     }
 
     buggyCircleButton.onclick = function() {
-        checkMovePic();
+        toolSetUp();
         //lets you play with the buggy circle
         drawCtx.beginPath();
         buggyCircle = true;
@@ -639,7 +669,7 @@ function initialize() {
     }
 
     buggyRectangleButton.onclick = function() {
-        checkMovePic();
+        toolSetUp();
         //lets you play with the buggy rectangle
         drawCtx.beginPath();
         buggyRectangle = true;
@@ -649,7 +679,7 @@ function initialize() {
     }
 
     textButton.onclick = function() {
-        checkMovePic();
+        toolSetUp();
         prevTool = currentTool
         currentTool = "textbox";
         tool = new tools[currentTool]();
@@ -682,7 +712,7 @@ function initialize() {
             currentTool = prevTool;
             tool = new tools[currentTool]();
         }
-        console.log("in here" + colorSelector.value)
+        //console.log("in here" + colorSelector.value)
         tool.changeColor(colorSelector.value);
         //return false; //return false on enter (else canvas cleared)
     };
