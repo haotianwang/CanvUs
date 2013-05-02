@@ -495,6 +495,7 @@ function initialize() {
     };
 
     //this button works the same for circle rectangle and pencil
+    
     lineThicknessBox.onkeydown = function (event) {
         if(event.keyCode == 13) { //only check for enter
             drawCtx.lineWidth = parseInt(lineThicknessBox.value);
@@ -503,6 +504,9 @@ function initialize() {
         }
         //no return for other key presses, else key press doesn't happen
     };
+    
+    
+
 
     console.log(dlPngButton);
     dlPngButton.onclick = function(event) {

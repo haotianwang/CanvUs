@@ -1,6 +1,8 @@
 var prevX, prevY,
 dispCanvas, dispCtx, 
 drawCanvas, drawCtx,
+backButton,
+homeButton,
 clrButton,
 mouseDown = false,
 tools = {},
@@ -343,6 +345,7 @@ function initialize() {
                 console.log(charCode);
                 console.log(textInTextBox);
             }
+            return false;
         };
     };
 
@@ -356,8 +359,8 @@ function initialize() {
                 tool.mouseup();
             } else {
                 mouseDown = true;
-                uploadedImage.canvX = event.relx;
-                uploadedImage.canvY = event.rely;
+                uploadedImage.canvX = event.relx - uploadedImage.width / 2;
+                uploadedImage.canvY = event.rely - uploadedImage.height / 2;
                 drawImageOnCanvas(drawCanvas, uploadedImage.src, uploadedImage.canvX, uploadedImage.canvY);
             }
         };
@@ -366,8 +369,8 @@ function initialize() {
             if(!mouseDown)
                 return;
             clearCanvas(drawCanvas);
-            uploadedImage.canvX = event.relx;
-            uploadedImage.canvY = event.rely;
+            uploadedImage.canvX = event.relx - uploadedImage.width / 2;
+            uploadedImage.canvY = event.rely - uploadedImage.height / 2;
             drawImageOnCanvas(drawCanvas, uploadedImage.src, uploadedImage.canvX, uploadedImage.canvY);
 
         };
@@ -394,6 +397,8 @@ function initialize() {
     dispCtx = dispCanvas.getContext("2d");
     dispCtx.lineCap = "round"; //set line cap to round
     dispCtx.lineJoin = "round"; //set line join to be round (no more jaggies)
+    backButton = document.getElementById('back-button');
+    homeButton = document.getElementById('home-button');
     clrButton = document.getElementById('clear-button');
     fillButton = document.getElementById('fill-button');
     //blackButton = document.getElementById('black-button');
@@ -414,6 +419,13 @@ function initialize() {
     textButton = document.getElementById("text-button");
     uploadButton = document.getElementById("upload-button");
     doneButton = document.getElementById("done-button");
+    lineThick1 = document.getElementById("thick-1");
+    lineThick2 = document.getElementById("thick-2");
+    lineThick4 = document.getElementById("thick-4");
+    lineThick8 = document.getElementById("thick-8");
+    lineThick16 = document.getElementById("thick-16");
+    lineThick32 = document.getElementById("thick-32");
+    lineThick64 = document.getElementById("thick-64");
 
     //set the default context to the dispCtx for the updateModule
     updateModule.resetDefaults();
@@ -675,6 +687,35 @@ function initialize() {
     };
     */
 
+    lineThick1.onclick = function () {
+        drawCtx.lineWidth = 1;
+        return false;
+    };
+    lineThick2.onclick = function () {
+        drawCtx.lineWidth = 2;
+        return false;
+    };
+    lineThick4.onclick = function () {
+        drawCtx.lineWidth = 4;
+        return false;
+    };
+    lineThick8.onclick = function () {
+        drawCtx.lineWidth = 8;
+        return false;
+    };
+    lineThick16.onclick = function () {
+        drawCtx.lineWidth = 16;
+        return false;
+    };
+    lineThick32.onclick = function () {
+        drawCtx.lineWidth = 32;
+        return false;
+    };
+    lineThick64.onclick = function () {
+        drawCtx.lineWidth = 64;
+        return false;
+    };
+
     dlPngButton.onclick = function(event) {
         Canvas2Image.saveAsPNG(dispCanvas);
         document.getElementById('canvas-message2').innerHTML = "Thanks for download the image, plese rename file to <filename>.png to view"; 
@@ -763,6 +804,16 @@ function initialize() {
     function setTool(newTool) {
         currentTool = newTool;
         tool = new tools[currentTool]();
+    }
+
+    backButton.onclick = function() {
+        //okay room for logic. Should the back button take you back to the original page?
+        //or should it take you back to the page the canvus is on? 
+        window.location.href = "http://" + window.location.host;
+    }
+
+    backButton.hover = function() {
+        homeButton.fadeIn();   
     }
 
 }
