@@ -14,11 +14,7 @@ class Action < ActiveRecord::Base
       Action.transaction do
         length.times do |i|
           action = @@actionsCache.delete_at(0)
-          x = action.save
-          if x == false
-            puts "FAILED"
-            puts x
-          end
+          action.save
         end
       end
     end
@@ -26,19 +22,8 @@ class Action < ActiveRecord::Base
     print "it took ", timeAfter-time," to flush ", length, " actions!", "\n"
   end
 
-  def self.repeatFlush()
-    while (true)
-      Action.flushActions()
-      sleep 3
-    end
-  end
-
   def self.returnCache()
     return @@actionsCache
-  end
-
-  def self.returnMutex()
-    return @@mutex
   end
 
   # Stores an action done on a particular canvas.
@@ -57,7 +42,7 @@ class Action < ActiveRecord::Base
   def self.getActions(canvasID, timestamp)
     actions = Action.select("action, created_at").where("canvas_id = ?", canvasID).order("created_at ASC")
     # Keep only the actions that were done after the bitmap was last stored.
-    actions = actions.keep_if{|record| record['created_at'] > timestamp}
+    actions = actions.keep_if{|record| record['created_at'] >= timestamp}
     actions = actions.map{|record| record['action']} # Return only the action fields.
     return actions.join(', ')
   end
@@ -68,14 +53,12 @@ class Action < ActiveRecord::Base
     start = DateTime.new(2009,06,18)
     time = Time.now
     @@mutex.synchronize do
-      #time2 = Time.now
       Action.transaction do
+        timestamp = (timestamp.to_time - 1.second).to_datetime
         Action.where(:canvas_id => canvasID, :created_at => start..timestamp).each do |action|
           action.destroy
         end
       end
-      #time2After = Time.now
-      #print "it took ", time2After-time2," to mutex actions!", "\n"
     end
     timeAfter = Time.now
     print "it took ", timeAfter-time," to delete actions!", "\n"
