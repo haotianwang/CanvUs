@@ -35,6 +35,7 @@ function initialize() {
 				window.location = newUrl;
 			}
       	});
+      	return false; //so the page doesn't try to reload
 	}
 
 	//Parse the pageId url parameter and set it to the pageId variable
@@ -126,12 +127,7 @@ function initialize() {
 		}(arrOfCanvases[i]);
 	}
 
-	//div for page number and button
-	//var pageButtonDiv = document.createElement("div");
-	//pageButtonDiv.id = "page-button-div";
-	//pageButtonDiv.style = "border:5px solid #0000FF"
-	//htmlBody.appendChild(pageButtonDiv);
-
+	//append page number stuff to the page-control-div
 	if(pageId != 0) {
 		var prevPageButton = document.createElement("input");
 		prevPageButton.id = "prev-page-button";
@@ -148,7 +144,6 @@ function initialize() {
 		$('#page-control-div').append(prevPageButton);
 	}
 
-	//append page number stuff to the page-control-div
 	var pageNumber = " Page: " + (pageId + 1) + " of " + numOfCanvasPages + " ";
 	$('#page-control-div').append(pageNumber);
 
@@ -173,5 +168,58 @@ function initialize() {
 		}(pageId + 1);
 
 		//$('page-control-div').append(nextPageButton);
+	}
+
+	var pageJumpDiv = document.getElementById("page-jump-div");
+
+	var jumpPageTextBox, jumpPageButton;
+
+	jumpPageTextBox = document.createElement("input");
+	jumpPageTextBox.id = "jump-page-text-box";
+	jumpPageTextBox.type = "text";
+	jumpPageTextBox.style.width = "20px";
+	jumpPageTextBox.style.height = "15px";
+	pageJumpDiv.appendChild(jumpPageTextBox);
+
+	jumpPageButton = document.createElement("input");
+	jumpPageButton.id = "jump-page-button";
+	jumpPageButton.type = "submit";
+	jumpPageButton.value = "Jump To Page";
+	pageJumpDiv.appendChild(jumpPageButton);
+
+	//logic for the jumpPageTextBox and jumpPageButton here
+	jumpPageTextBox.onkeydown = function (event) {
+		if(event.keyCode == 13) {
+			//only check for enter
+			if(!jumpToPage(jumpPageTextBox.value)) {
+				alert("Please enter a number");
+				jumpPageTextBox.value = "";
+			}
+		}
+	}
+
+	jumpPageButton.onclick = function (event) {
+		if(!jumpToPage(jumpPageTextBox.value)) {
+			alert("Please enter a number");
+			jumpPageTextBox.value = "";
+		}
+	}
+
+	//This methods takes a string and jumps to the page denoted by it
+	// returns false if unsuccessful, true if successful
+	function jumpToPage(text) {
+		if(isNaN(text)) { //invalid page number, not a number
+			return false; //means there's an error with input
+		}
+		else if(parseInt(text) > numOfCanvasPages) {
+			window.location.href = "http://" + window.location.host + "/?pageId=" + numOfCanvasPages;
+			return true;
+		} else if (parseInt(text) <= numOfCanvasPages) {
+			window.location.href = "http://" + window.location.host + "/?pageId=" + parseInt(text);
+			return true;
+		} else {
+			//unknown error
+			return false;
+		}
 	}
 }
