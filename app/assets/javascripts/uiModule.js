@@ -3,6 +3,7 @@ dispCanvas, dispCtx,
 drawCanvas, drawCtx,
 backButton,
 homeButton,
+backHomeDiv,
 clrButton,
 mouseDown = false,
 tools = {},
@@ -400,8 +401,9 @@ function initialize() {
     dispCtx = dispCanvas.getContext("2d");
     dispCtx.lineCap = "round"; //set line cap to round
     dispCtx.lineJoin = "round"; //set line join to be round (no more jaggies)
-    backButton = document.getElementById('back-button');
-    homeButton = document.getElementById('home-button');
+    //backButton = document.getElementById('back-button');
+    //homeButton = document.getElementById('home-button');
+    backHomeDiv = document.getElementById('back-home-div');
     clrButton = document.getElementById('clear-button');
     fillButton = document.getElementById('fill-button');
     var changeThickValue = document.getElementById('thick-button');
@@ -855,7 +857,7 @@ function initialize() {
         tool = new tools[currentTool]();
     }
 
-    backButton.onclick = function() {
+    backHomeDiv.onclick = function() {
         //okay room for logic. Should the back button take you back to the original page?
         //or should it take you back to the page the canvus is on? 
         window.location.href = "http://" + window.location.host;
