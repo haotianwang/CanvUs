@@ -412,7 +412,8 @@ function initialize() {
     //lineThicknessBox = document.getElementById("line-thickness-box");
     //colorBox = document.getElementById("color-box"); //<- depricated by colorSelector
     colorSelector = document.getElementById("color-selector");
-    pencilButton = document.getElementById("pencil-button")
+    pencilButton = document.getElementById("pencil-button");
+    eraserButton = document.getElementById("eraser-button");
     lineButton = document.getElementById("line-button");
     rectangleButton = document.getElementById("rectangle-button");
     circleButton = document.getElementById("circle-button");
@@ -588,11 +589,9 @@ function initialize() {
         return false;
     };
     
-    /*
     eraserButton.onclick = function() {
 
     }
-    */
 
     lineButton.onclick = function() {
         checkMovePic();
