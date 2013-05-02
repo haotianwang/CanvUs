@@ -34,6 +34,9 @@ end
 gem 'jquery-rails'
 gem 'websocket-rails', '0.4.2'
 
+#rufus-scheduler is for running periodic tasks
+gem 'rufus-scheduler'
+
 group :development, :test do
   gem 'qunit-rails'
 end
