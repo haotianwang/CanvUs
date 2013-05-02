@@ -179,6 +179,8 @@ function initialize() {
 	jumpPageTextBox.type = "text";
 	jumpPageTextBox.style.width = "20px";
 	jumpPageTextBox.style.height = "15px";
+	jumpPageTextBox.style.position = "relative";
+	jumpPageTextBox.style.top = "5px";
 	pageJumpDiv.appendChild(jumpPageTextBox);
 
 	jumpPageButton = document.createElement("input");
