@@ -8,6 +8,8 @@ mouseDown = false,
 tools = {},
 tool,
 pencilButton,
+eraserButton,
+eraseOn = false,
 lineButton,
 rectangleButton,
 circleButton,
@@ -103,7 +105,9 @@ function initialize() {
         };
 
         this.changeColor = function(color) {
-            drawCtx.strokeStyle = color;
+            if(!eraseOn) {
+                drawCtx.strokeStyle = color;
+            }
         };
 
         //don't capture keypresses outside of textbox tool
@@ -401,6 +405,7 @@ function initialize() {
     homeButton = document.getElementById('home-button');
     clrButton = document.getElementById('clear-button');
     fillButton = document.getElementById('fill-button');
+    var changeThickValue = document.getElementById('thick-button');
     //blackButton = document.getElementById('black-button');
     //blueButton = document.getElementById('blue-button');
     //redButton = document.getElementById('red-button');
@@ -568,8 +573,10 @@ function initialize() {
             //revert the tool
             currentTool = prevTool;
             tool = new tools[currentTool]();
+            
         }
         fillOn = !fillOn;
+        fileButton.checked = true;
         console.log("fillOn is now: " + fillOn);
         return false;
     }
@@ -580,6 +587,12 @@ function initialize() {
         tool = new tools[currentTool]();
         return false;
     };
+    
+    /*
+    eraserButton.onclick = function() {
+
+    }
+    */
 
     lineButton.onclick = function() {
         checkMovePic();
@@ -688,33 +701,39 @@ function initialize() {
     */
 
     lineThick1.onclick = function () {
-        drawCtx.lineWidth = 1;
+        changeLineThickness(1);
         return false;
     };
     lineThick2.onclick = function () {
-        drawCtx.lineWidth = 2;
+        changeLineThickness(2);
         return false;
     };
     lineThick4.onclick = function () {
-        drawCtx.lineWidth = 4;
+        changeLineThickness(4);
         return false;
     };
     lineThick8.onclick = function () {
-        drawCtx.lineWidth = 8;
+        changeLineThickness(8);
         return false;
     };
     lineThick16.onclick = function () {
-        drawCtx.lineWidth = 16;
+        changeLineThickness(16);
         return false;
     };
     lineThick32.onclick = function () {
-        drawCtx.lineWidth = 32;
+        changeLineThickness(32);
         return false;
     };
     lineThick64.onclick = function () {
-        drawCtx.lineWidth = 64;
+        changeLineThickness(64);
         return false;
     };
+
+    function changeLineThickness(thickness) {
+        drawCtx.lineWidth = thickness;
+        changeThickValue.innerHTML = thickness + "px "
+        $('#thick-button').append("<span class='caret'></span>");
+    }
 
     dlPngButton.onclick = function(event) {
         Canvas2Image.saveAsPNG(dispCanvas);
@@ -801,6 +820,7 @@ function initialize() {
         tool = new tools[currentTool]();
     }
 
+
     function setTool(newTool) {
         currentTool = newTool;
         tool = new tools[currentTool]();
@@ -812,9 +832,6 @@ function initialize() {
         window.location.href = "http://" + window.location.host;
     }
 
-    backButton.hover = function() {
-        homeButton.fadeIn();   
-    }
-
+    
 }
 

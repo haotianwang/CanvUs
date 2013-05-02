@@ -179,6 +179,8 @@ function initialize() {
 	jumpPageTextBox.type = "text";
 	jumpPageTextBox.style.width = "20px";
 	jumpPageTextBox.style.height = "15px";
+	jumpPageTextBox.style.position = "relative";
+	jumpPageTextBox.style.top = "5px";
 	pageJumpDiv.appendChild(jumpPageTextBox);
 
 	jumpPageButton = document.createElement("input");
@@ -203,6 +205,7 @@ function initialize() {
 			alert("Please enter a number");
 			jumpPageTextBox.value = "";
 		}
+		return false;
 	}
 
 	//This methods takes a string and jumps to the page denoted by it
@@ -216,6 +219,45 @@ function initialize() {
 			return true;
 		} else if (parseInt(text) <= numOfCanvasPages) {
 			window.location.href = "http://" + window.location.host + "/?pageId=" + parseInt(text);
+			return true;
+		} else {
+			//unknown error
+			return false;
+		}
+	}
+
+	var roomJumpTextBox, roomJumpButton;
+
+	roomJumpTextBox = document.getElementById("room-jump-text-box");
+	roomJumpButton = document.getElementById("room-jump-button");
+
+	roomJumpTextBox.onkeydown = function (event) {
+		if(event.keyCode == 13) {
+			//only check for enter
+			if(!jumpToRoom(roomJumpTextBox.value)) {
+				roomJumpTextBox.value = "";
+			}
+		}
+	}
+
+	roomJumpButton.onclick = function (event) {
+		if(!jumpToRoom(roomJumpTextBox.value)) {
+			roomJumpTextBox.value = "";
+		}
+		return false;
+	}
+
+	function jumpToRoom(text) {
+		if(isNaN(text)) { //invalid page number, not a number
+			alert("Please enter a number");
+			return false; //means there's an error with input
+		} else if(arrOfCanvases.indexOf(text) == -1) {
+		 	console.log("Input is: " + text);
+		 	console.log(arrOfCanvases.indexOf(text))
+		 	alert("Room doesn't exist. Please try again or create another room.")
+			return false;
+		} else if(arrOfCanvases.indexOf(text) != -1){
+			window.location.href = "http://" + window.location.host + "/draw?canvasId=" + parseInt(text);
 			return true;
 		} else {
 			//unknown error
