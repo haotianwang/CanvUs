@@ -8,6 +8,8 @@ mouseDown = false,
 tools = {},
 tool,
 pencilButton,
+eraserButton,
+eraseOn = false,
 lineButton,
 rectangleButton,
 circleButton,
@@ -103,7 +105,9 @@ function initialize() {
         };
 
         this.changeColor = function(color) {
-            drawCtx.strokeStyle = color;
+            if(!eraseOn) {
+                drawCtx.strokeStyle = color;
+            }
         };
 
         //don't capture keypresses outside of textbox tool
@@ -580,6 +584,12 @@ function initialize() {
         tool = new tools[currentTool]();
         return false;
     };
+    
+    /*
+    eraserButton.onclick = function() {
+
+    }
+    */
 
     lineButton.onclick = function() {
         checkMovePic();
@@ -800,6 +810,7 @@ function initialize() {
         currentTool = "movepicture";
         tool = new tools[currentTool]();
     }
+
 
     function setTool(newTool) {
         currentTool = newTool;
