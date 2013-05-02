@@ -3,9 +3,45 @@ class Action < ActiveRecord::Base
 
   validates :action, :canvas_id, presence: true
 
+  @@actionsCache = []
+  @@mutex = Mutex.new
+
+  def self.flushActions()
+    length = @@actionsCache.length
+    time = Time.now
+    puts length
+    @@mutex.synchronize do
+      Action.transaction do
+        length.times do |i|
+          action = @@actionsCache.delete_at(0)
+          x = action.save
+          puts x
+        end
+      end
+    end
+    timeAfter = Time.now
+    puts "it took ", timeAfter-time," to flush actions!"
+  end
+
+  def self.repeatFlush()
+    while (true)
+      Action.flushActions()
+      sleep 3
+    end
+  end
+
+  def self.returnCache()
+    return @@actionsCache
+  end
+
   # Stores an action done on a particular canvas.
   def self.storeAction(action, canvasID)
-    newAction = Action.create(action: action, canvas_id: canvasID)
+    newAction = Action.new(action: action, canvas_id: canvasID)
+    newAction.created_at = DateTime.now
+    @@actionsCache.push(newAction)
+    if (@@actionsCache.length>1000)
+      Action.flushActions()
+    end
     return newAction[:created_at]
   end
 
@@ -23,8 +59,18 @@ class Action < ActiveRecord::Base
   # given timestamp. This method is used for garbage collection.
   def self.deleteActions(canvasID, timestamp)
     start = DateTime.new(2009,06,18)
-    Action.where(:canvas_id => canvasID, :created_at => start..timestamp).each do |action|
-      action.destroy
+    time = Time.now
+    @@mutex.synchronize do
+      time2 = Time.now
+      Action.transaction do
+        Action.where(:canvas_id => canvasID, :created_at => start..timestamp).each do |action|
+          action.destroy
+        end
+      end
+      time2After = Time.now
+      puts "it took ", time2After-time2," to mutex actions!"
     end
+    timeAfter = Time.now
+    puts "it took ", timeAfter-time," to delete actions!"
   end
 end

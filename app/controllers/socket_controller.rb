@@ -42,6 +42,12 @@ class SocketController < WebsocketRails::BaseController
       bitmap = bitmap_record['bitmap']
       timestamp = bitmap_record['latest_action_timestamp']
       actions = Action.getActions(canvas_id, timestamp)
+      actionsCacheCopy = Array.new(Action.returnCache())
+      actionsCacheCopy.each do |a|
+        if a.canvas_id==canvas_id
+          actions.push(a)
+        end
+      end
     end
     response = {bitmap: bitmap, actions: actions}.to_json
     if !test_message.nil?
