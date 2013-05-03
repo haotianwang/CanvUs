@@ -798,7 +798,24 @@ function initialize() {
         return false;
     }
 
+    function checkExtensions(fileName) {
+        var validExtensions = ["jpg", "jpeg", "png", "gif"];
+        if(fileName.lastIndexOf(".") == -1) {
+            return false;
+        }
+        var extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+        if(validExtensions.indexOf(extension) == -1) {
+            return false;
+        }
+        return true;
+    }
+
     doneButton.onclick = function() {
+        if (!checkExtensions(document.getElementById("file-box").value)) {
+            alert("File not supported. Please only upload .jpg, .jpeg, .png, and .gif files.");
+            document.getElementById("file-box").value = "";
+            return;
+        }
         var input, file, fr;
 
         if (typeof window.FileReader !== 'function') {
@@ -808,13 +825,16 @@ function initialize() {
 
         input = document.getElementById('file-box');
         if (!input) {
-            write("Um, couldn't find the imgfile element.");
+            alert("Um, couldn't find the imgfile element.");
+            return;
         }
         else if (!input.files) {
-            write("This browser doesn't seem to support the `files` property of file inputs.");
+            alert("This browser doesn't seem to support the `files` property of file inputs.");
+            return;
         }
         else if (!input.files[0]) {
-            write("Please select a file before clicking 'Load'");
+            alert("Please select a file before clicking 'Load'");
+            return;
         }
         else {
             file = input.files[0];
