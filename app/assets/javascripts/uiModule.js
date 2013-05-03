@@ -444,7 +444,7 @@ function initialize() {
 
     //set roomIDDiv here....
     var roomIDDiv = document.getElementById("room-id-div");
-    roomIDDiv.innerHTML = "<font size='8' style=\"font-family:'Comic Sans MS', cursive, sans-serif\"> You're in Room: " + updateModule.canvasID + "</font>";
+    roomIDDiv.innerHTML = "<font size='5' style=\"font-family:'Comic Sans MS', cursive, sans-serif\"> You're in Room: " + updateModule.canvasID + "</font>";
 
     //Create the "drawCanvas" - the canvas which we draw on, and then copy
     // onto dispCanvas
