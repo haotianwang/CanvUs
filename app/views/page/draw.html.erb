@@ -51,7 +51,7 @@ Hi, welcome to CanvUs v.1.0.0
     <canvas id="myCanvas" width="1000" height="500">
     </canvas>
 
-    
+
     <div id="chatContainer">
         <a id="chat-button" href="#" class="btn btn-info" type="submit" value="Display Chat">Chat</a>
         <br><br>
@@ -125,24 +125,24 @@ Hi, welcome to CanvUs v.1.0.0
         <input type="checkbox" id="fill-button" style="position:relative; top:-3.5px;"/> <font>  Fill</font> 
 
         </div>
-
         
-         <div class="btn-group" style="position:relative; top:-7px;">
-                        <a href="#" class="btn btn-success" id="download-png-button" type="submit" value="Download as PNG">Save Image</a>  
-                </div> 
-                <div class="btn-group" style="position:relative; top:-7px;">
-                    <a href="#" class="btn btn-warning" input id="upload-button" type="submit">Upload Image</a>
-                </div> 
-                 <div class="btn-group" style="position:relative; top:-7px;">
-                    <a href="#" class="btn btn-danger" input id="clear-button" type="submit" value="Clear">Clear</a>
-                </div> 
+        <div id="load-div" style="border:1px solid #000000;width:400px;position:relative; top:-12px">
+            <form action='#' onsubmit="return false;"style="border:10px solid #000000;">
+                <input type='file' id='file-box' />
+                <input type='button' id='done-button' value='Done' />
+            </form>
+        </div>
 
-                <div id="load-div" style="border:1px solid #000000;width:400px;">
-                    <form action='#' onsubmit="return false;"style="border:10px solid #000000;">
-                        <input type='file' id='file-box' />
-                        <input type='button' id='done-button' value='Done' />
-                    </form>
-                </div>
+        <div class="btn-group" style="position:relative; top:-7px;">
+            <a href="#" class="btn btn-success" id="download-png-button" type="submit" value="Download as PNG">Save Image</a>  
+        </div> 
+        <div class="btn-group" style="position:relative; top:-7px;">
+            <a href="#" class="btn btn-warning" input id="upload-button" type="submit">Upload Image</a>
+        </div> 
+        <div class="btn-group" style="position:relative; top:-7px;">
+            <a href="#" class="btn btn-danger" input id="clear-button" type="submit" value="Clear">Clear</a>
+        </div> 
+
         <!--
         <input id="debug-button" type="submit" value="Debug Off">
         -->
