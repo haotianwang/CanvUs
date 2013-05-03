@@ -2,6 +2,7 @@
 function instantiateChatUpdateModule(chatBox, channelName) {
     chatUpdateModule = new ChatUpdateModule(chatBox);
     chatUpdateModule.setChannelName(channelName);
+    console.log("Channel name is " + channelName);
     chatUpdateModule.initialize();
     return chatUpdateModule;
 }

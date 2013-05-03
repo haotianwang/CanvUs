@@ -7,8 +7,8 @@ chatIsVisible,
 textInTextBox = [''], 
 numberOfLines = 100;
 
-function initializeChat() {//** create new update module **
-	chatUpdateModule = instantiateChatUpdateModule(document.getElementById("chatBox"), "text");
+function initializeChat(canvasID) {//** create new update module **
+	chatUpdateModule = instantiateChatUpdateModule(document.getElementById("chatBox"), "chat" + canvasID);
 
 	chatBox = document.getElementById("chatBox")
 	chatBoxName = document.getElementById("chat-box-name");
@@ -35,11 +35,19 @@ function initializeChat() {//** create new update module **
 function printText() {
 	var newText = "<b>" + chatBoxName.value + "</b>: " + chatBoxText.value
 	//this will split strings that are too long
-	for(var i = 0; i < newText.length; i+= 96) {
-		if(i + 96 > newText.length) {
+	if (chatBoxName.value.length > 16) {
+		chatBoxName.value = chatBoxName.value.substring(0, 17);
+	}
+
+	chatUpdateModule.sendText("<b>" + chatBoxName.value + "</b>: " + chatBoxText.value.substring(0, 16-chatBoxName.value.length));
+
+	newText = chatBoxText.value.substring(16-chatBoxName.value.length, chatBoxText.value.length);
+
+	for(var i = 0; i < newText.length; i+= 18) {
+		if(i + 18 > newText.length) {
 			chatUpdateModule.sendText(newText.substring(i, newText.length));
 		} else {
-			chatUpdateModule.sendText(newText.substring(i, i+96));
+			chatUpdateModule.sendText(newText.substring(i, i+18));
 		}
 	}
 	chatBoxText.value = '';
@@ -55,7 +63,7 @@ function displayText(text) {
 	
 	$("#chatBox").text("");
 	for(var i = 0; i < textInTextBox.length; i++) {
-    $("#chatBox").append("<p>" + textInTextBox[i]);
-  }
-  $("#chatBox").scrollTop(this.chatBox.scrollHeight);
+    	$("#chatBox").append("<p>" + textInTextBox[i]);
+  	}
+  	$("#chatBox").scrollTop(this.chatBox.scrollHeight);
 }

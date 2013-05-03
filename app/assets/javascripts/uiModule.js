@@ -570,6 +570,10 @@ function initialize() {
         //move canvas to the right by canvLeft pixels
         //shift if left by 8, because something adds a 8 pixel shift
         drawCanvas.style.left = canvLeft /*- 8*/ + "px";
+
+        chatContainer = document.getElementById("chatContainer");
+        chatContainer.style.top = "-640px";
+        chatContainer.style.left = "640px";
     }
 
     //set up canvas once
