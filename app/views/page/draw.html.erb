@@ -1,3 +1,5 @@
+<%= javascript_include_tag "chatUpdateModule" %>
+<%= javascript_include_tag "chatModule" %>
 <%= javascript_include_tag "updateModule" %>
 <%= javascript_include_tag "uiModule" %>
 <%= javascript_include_tag "drawModule" %>
@@ -5,6 +7,7 @@
 <%= javascript_include_tag "base64" %>
 <%= javascript_include_tag "canvas2Image" %>
 <%= stylesheet_link_tag "draw" %>
+<%= stylesheet_link_tag "chat" %>
 
 <head>
     <!-- Bootstrap -->
@@ -12,6 +15,7 @@
     <link href="bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
     <link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css">
     <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
     <script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
     <script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/bootstrap-button.js"></script>
     
@@ -49,6 +53,19 @@ Hi, welcome to CanvUs v.1.0.0
 <div id="canvasContainer">
     <canvas id="myCanvas" width="1000" height="500">
     </canvas>
+    <div id="chatContainer">
+        <a id="chat-button" href="#" class="btn btn-info" type="submit" value="Display Chat">Chat</a>
+        <div id="chatBox">
+        <p></p>
+        </div>
+        <form id="text-entry-fields" onsubmit="return false;">
+            <input id="chat-box-name" type="text" name="chatBoxName" value="Name">
+            <br>
+            <input id="chat-box-text" type="text" name="chatBoxText" value="Message">  
+            <br> 
+            <input id="text-submit-button" type="submit" value="Send" onclick="printText();">
+        </form>
+    </div>
 </div>
 
 <div id="canvasControl-box">
@@ -132,12 +149,12 @@ Hi, welcome to CanvUs v.1.0.0
 </center>
 <script type="text/javascript">
 initialize();
+initializeChat();
 //ghetto way of doing it
 //updateModule.getInitImg(window.location.search.split("=")[1]);
 paramCanvasID = getURLParameter("canvasId");
 if (paramCanvasID != null) {
     updateModule.setCanvasID(paramCanvasID);
 }
-console.log(paramCanvasID);
 updateModule.getInitImg(paramCanvasID);
 </script>

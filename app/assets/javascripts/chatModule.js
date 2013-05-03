@@ -1,50 +1,61 @@
-var chatCanvas,
-textInTextBox = [''],
-numLetDict = ['0','1','2','3','4','5','6','7','8','9',
-              'a','b','c','d','e','f','g','h','i','j',
-              'k','l','m','n','o','p','q','r','s','t',
-              'u','v','w','x','y','z'],
-dummyVar,
-uploadedImage = new Image(),
-okayButton,
+var chatUpdateModule,
+chatBox,
 chatBoxName,
 chatBoxText,
-updateModule, 
-randomID = Math.floor(Math.random()*1000000),
-numberOfLines = 29;
+chatButton,
+chatIsVisible,
+textInTextBox = [''], 
+numberOfLines = 100;
 
-function initialize() {//** create new update module **
-	updateModule = instantiateChatUpdateModule(document.getElementById("chatCanvas"), "text");
+function initializeChat() {//** create new update module **
+	chatUpdateModule = instantiateChatUpdateModule(document.getElementById("chatBox"), "text");
 
-	chatCanvas = document.getElementById("chatCanvas");
-	//updateModule.setCanvas(chatCanvas);
+	chatBox = document.getElementById("chatBox")
 	chatBoxName = document.getElementById("chat-box-name");
 	chatBoxText = document.getElementById("chat-box-text");
+	chatButton = document.getElementById("chat-button");
+	chatButton.onclick = function() {
+	if (chatIsVisible) {
+		$("#chatBox").hide("slide", { direction: "right" }, 180);
+		$("#text-entry-fields").hide("slide", { direction: "right"}, 180);
+		chatIsVisible = false;
+	}
+	else {
+		$("#chatBox").show("slide", { direction: "right" }, 180);
+		$("#text-entry-fields").show("slide", { direction: "right"}, 180);
+		chatIsVisible = true;
+	}
+  return false;
+  };
+	$("#chatBox").hide();
+	$("#text-entry-fields").hide();
+	chatIsVisible = false;
 };
 
 function printText() {
-	var newText = chatBoxName.value + ": " + chatBoxText.value
+	var newText = "<b>" + chatBoxName.value + "</b>: " + chatBoxText.value
 	//this will split strings that are too long
 	for(var i = 0; i < newText.length; i+= 96) {
 		if(i + 96 > newText.length) {
-			updateModule.sendText(/*randomID + */newText.substring(i, newText.length));
+			chatUpdateModule.sendText(newText.substring(i, newText.length));
 		} else {
-			updateModule.sendText(newText.substring(i, i+96));
+			chatUpdateModule.sendText(newText.substring(i, i+96));
 		}
 	}
 	chatBoxText.value = '';
 };
 
-function drawText(canvas, text) {
+function displayText(text) {
 	//Just print after you recieve it, so no longer need to figure out who is who via
 	//random number generator
-	textInTextBox.push(text.substring(text.indexOf(chatBoxName.value), text.length));
+	textInTextBox.push(text);
 	if(textInTextBox.length > numberOfLines) {
 		textInTextBox = textInTextBox.splice(1,textInTextBox.length);
 	}
 	
-	clearCanvas(chatCanvas);
+	$("#chatBox").text("");
 	for(var i = 0; i < textInTextBox.length; i++) {
-        drawTextOnCanvas(chatCanvas, textInTextBox[i], 15, 15+i*15);
-    }
+    $("#chatBox").append("<p>" + textInTextBox[i]);
+  }
+  $("#chatBox").scrollTop(this.chatBox.scrollHeight);
 }
