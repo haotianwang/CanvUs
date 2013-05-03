@@ -36,7 +36,6 @@ function initializeChat(canvasID) {//** create new update module **
 
 	//if the name box hasn't been modified before, clear it when user clicks it
 	chatBoxName.onclick = function () {
-		console.log("in here1");
 		if(firstTimeChangeName) {
 			firstTimeChangeName = false;
 			chatBoxName.value = "";
@@ -45,7 +44,6 @@ function initializeChat(canvasID) {//** create new update module **
 
 	//Always clear chat-box-text when user clicks it
 	chatBoxText.onclick = function () {
-		console.log("in here2");
 		if(firstTimeChangeText) {
 			firstTimeChangeText = false;
 			chatBoxText.value = "";		

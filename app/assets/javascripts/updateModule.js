@@ -42,7 +42,7 @@ function UpdateModule() {
     this.userCookie = null;
     this.canvasID = null;
     this.channel = null;
-    this.debug = true;
+    this.debug = false;
 
     // send action config
     this.sendActionsTimeInterval = 100;

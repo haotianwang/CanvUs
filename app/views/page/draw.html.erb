@@ -50,6 +50,25 @@ Hi, welcome to CanvUs v.1.0.0
 <div id="canvasContainer">
     <canvas id="myCanvas" width="1000" height="500">
     </canvas>
+
+    
+    <div id="chatContainer">
+        <a id="chat-button" href="#" class="btn btn-info" type="submit" value="Display Chat">Chat</a>
+        <br><br>
+        <!--input id="chat-button" type="submit" value="Chat"-->
+        <div id="chatBox">
+        <p></p>
+        </div>
+        <br>
+        <form id="text-entry-fields" onsubmit="return false;">
+            <input id="chat-box-name" type="text" name="chatBoxName" value="Name">
+            <br>
+            <input id="chat-box-text" type="text" name="chatBoxText" value="Message">  
+            <br> 
+            <input id="text-submit-button" type="submit" value="Send" onclick="printText();">
+        </form>
+    </div>
+
 </div>
 
 <div id="canvasControl-box">
@@ -127,23 +146,6 @@ Hi, welcome to CanvUs v.1.0.0
         <!--
         <input id="debug-button" type="submit" value="Debug Off">
         -->
-    </form>
-</div>
-
-<div id="chatContainer">
-    <a id="chat-button" href="#" class="btn btn-info" type="submit" value="Display Chat">Chat</a>
-    <br><br>
-    <!--input id="chat-button" type="submit" value="Chat"-->
-    <div id="chatBox">
-    <p></p>
-    </div>
-    <br>
-    <form id="text-entry-fields" onsubmit="return false;">
-        <input id="chat-box-name" type="text" name="chatBoxName" value="Name">
-        <br>
-        <input id="chat-box-text" type="text" name="chatBoxText" value="Message">  
-        <br> 
-        <input id="text-submit-button" type="submit" value="Send" onclick="printText();">
     </form>
 </div>
 
