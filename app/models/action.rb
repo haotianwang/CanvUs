@@ -7,7 +7,6 @@ class Action < ActiveRecord::Base
   @@mutex = Mutex.new
 
   def self.flushActions()
-    time = Time.now
     length = 0
     @@mutex.synchronize do
       length = @@actionsCache.length
@@ -18,8 +17,6 @@ class Action < ActiveRecord::Base
         end
       end
     end
-    timeAfter = Time.now
-    print "it took ", timeAfter-time," to flush ", length, " actions!", "\n"
   end
 
   def self.returnCache()

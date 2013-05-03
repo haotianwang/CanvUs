@@ -29,7 +29,6 @@ class SocketController < WebsocketRails::BaseController
     timestamp = Action.storeAction(action, canvas_id)
     response = {message: action, timestamp: timestamp}
     WebsocketRails[canvas_id.to_s].trigger(:get_action, response.to_json, :namespace => 'socket')
-    print "get_action_handler took ", time-Time.now, "\n"
   end
 
   # Retrieves the most recent canvas state stored in the database as well as any actions that have been done
@@ -51,9 +50,6 @@ class SocketController < WebsocketRails::BaseController
       timestamp = bitmap_record['latest_action_timestamp']
       actions = Action.getActions(canvas_id, timestamp)
       actionsCacheCopy = Array.new(Action.returnCache())
-      puts "sendInitImg: successfully made copy of actionsCache"
-      print "cache length: ", actionsCacheCopy.length, "\n"
-      print "actions length: ", actions.length, "\n"
       actionsCacheCopy.each do |a|
         if a.canvas_id==canvas_id
           if actions != ""
@@ -62,15 +58,12 @@ class SocketController < WebsocketRails::BaseController
           actions = actions + a.action
         end
       end
-      puts "successfully pushed all actions to response message"
     end
     response = {bitmap: bitmap, actions: actions}.to_json
     if !test_message.nil?
       return response
     end
-    puts "successfully formatted response into json"
     send_message :get_init_img, response, :namespace => 'socket'
-    puts "done sending init img"
   end
 
   # Stores an updated bitmap in the database according to the current state of the canvas a client is drawing on.
@@ -94,7 +87,6 @@ class SocketController < WebsocketRails::BaseController
   end
 
   def self.cleanupAll()
-    puts "cleaning up canvases"
     fetchedCleanupList = nil
     @@cleanupListMutex.synchronize do
       fetchedCleanupList = @@cleanupList
@@ -106,7 +98,6 @@ class SocketController < WebsocketRails::BaseController
         BackgroundController.cleanUp(canvas_id, @@cleanupAmount)
         Action.getActions(canvas_id, DateTime.now)
         Bitmap.getBitmap(canvas_id)
-        print "cleaned up canvas ", canvas_id, "\n"
       }
     end
   end
