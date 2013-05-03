@@ -442,6 +442,10 @@ function initialize() {
     updateModule.initialize();
     updateModule.startTimer();
 
+    //set roomIDDiv here....
+    var roomIDDiv = document.getElementById("room-id-div");
+    roomIDDiv.innerHTML = "<font size='15' style=\"font-family:'Comic Sans MS', cursive, sans-serif\"> You're in Room: " + updateModule.canvasID + "</font>";
+
     //Create the "drawCanvas" - the canvas which we draw on, and then copy
     // onto dispCanvas
     var cnvsContainer = dispCanvas.parentNode;
