@@ -6,3 +6,9 @@ scheduler.every("5s") do
     ActiveRecord::Base.connection.close
     ActiveRecord::Base.connection_pool.clear_stale_cached_connections!
 end
+
+scheduler.every("10s") do
+	SocketController.cleanupAll()
+    ActiveRecord::Base.connection.close
+    ActiveRecord::Base.connection_pool.clear_stale_cached_connections!
+end

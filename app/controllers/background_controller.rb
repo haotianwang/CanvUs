@@ -10,9 +10,9 @@ class BackgroundController < ApplicationController
     # deletes old bitmap and actions only if the number of bitmaps we have
     # for that canvasID is more than the number we want to keep (numKeep)
     if (bitmaps.count>numKeep)
-
+      print "deleting ", bitmaps.count-numKeep, " bitmaps\n"
       # delete oldest bitmap
-      Bitmap.deleteBitmap(canvasID)
+      Bitmap.deleteBitmaps(canvasID, bitmaps.count-numKeep)
       # delete actions that happened before the latest action for the oldest bitmap
       Action.deleteActions(canvasID, bitmaps.limit(numKeep).last.latest_action_timestamp)
     end

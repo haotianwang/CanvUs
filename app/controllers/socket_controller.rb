@@ -2,6 +2,11 @@ require 'json'
 
 class SocketController < WebsocketRails::BaseController
 
+  @@cleanupList = Hash.new
+  @@cleanupListMutex = Mutex.new
+  @@performCleanupMutex = Mutex.new
+  @@cleanupAmount = 3
+
   def initialize_session
   end
   
@@ -9,6 +14,7 @@ class SocketController < WebsocketRails::BaseController
   # if they do not yet have any records in the database. Afterwards, broadcasts the action to all connected
   # clients.
   def get_action_handler(test_message = nil)
+    time = Time.now
     if test_message.nil?
       working_message = message
     else
@@ -23,6 +29,7 @@ class SocketController < WebsocketRails::BaseController
     timestamp = Action.storeAction(action, canvas_id)
     response = {message: action, timestamp: timestamp}
     WebsocketRails[canvas_id.to_s].trigger(:get_action, response.to_json, :namespace => 'socket')
+    print "get_action_handler took ", time-Time.now, "\n"
   end
 
   # Retrieves the most recent canvas state stored in the database as well as any actions that have been done
@@ -81,6 +88,28 @@ class SocketController < WebsocketRails::BaseController
     canvas_id = message_json['canvasID']
     Bitmap.storeBitmap(bitmap, timestamp, canvas_id)
     WebsocketRails[canvas_id.to_s].trigger(:sent_bitmap, '', :namespace => 'socket')
-    BackgroundController.cleanUp(canvas_id, 3)
+    @@cleanupListMutex.synchronize do
+      @@cleanupList[canvas_id] = true
+    end
   end
+
+  def self.cleanupAll()
+    puts "cleaning up canvases"
+    fetchedCleanupList = nil
+    @@cleanupListMutex.synchronize do
+      fetchedCleanupList = @@cleanupList
+      @@cleanupList = Hash.new
+    end
+
+    @@performCleanupMutex.synchronize do
+      fetchedCleanupList.each_key { |canvas_id|
+        BackgroundController.cleanUp(canvas_id, @@cleanupAmount)
+        Action.getActions(canvas_id, DateTime.now)
+        Bitmap.getBitmap(canvas_id)
+        print "cleaned up canvas ", canvas_id, "\n"
+      }
+    end
+  end
+
+
 end

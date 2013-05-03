@@ -67,4 +67,9 @@ CanvUs::Application.configure do
 
   # enable websocket-rails
   config.middleware.delete Rack::Lock
+
+  # enable threaded mode
+  config.threadsafe!
+
+  ActiveRecord::Base.logger = Logger.new('/dev/null')
 end

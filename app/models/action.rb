@@ -52,15 +52,18 @@ class Action < ActiveRecord::Base
   def self.deleteActions(canvasID, timestamp)
     start = DateTime.new(2009,06,18)
     time = Time.now
+    length = 0
     @@mutex.synchronize do
       Action.transaction do
         timestamp = (timestamp.to_time - 1.second).to_datetime
-        Action.where(:canvas_id => canvasID, :created_at => start..timestamp).each do |action|
+        actionsToDelete = Action.where(:canvas_id => canvasID, :created_at => start..timestamp)
+        length = actionsToDelete.length
+        actionsToDelete.each do |action|
           action.destroy
         end
       end
     end
     timeAfter = Time.now
-    print "it took ", timeAfter-time," to delete actions!", "\n"
+    print "it took ", timeAfter-time," to delete ", length," actions!", "\n"
   end
 end
