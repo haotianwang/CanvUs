@@ -5,6 +5,7 @@ backButton,
 homeButton,
 backHomeDiv,
 clrButton,
+colorPickerButton,
 mouseDown = false,
 tools = {},
 tool,
@@ -397,6 +398,50 @@ function initialize() {
         };
     };
 
+    //======================== ColorPicker ============================
+    tools.colorpicker = function () {
+        var tool = this;
+
+        this.mousedown = function (event) {
+            pixelData = dispCtx.getImageData(event.relx, event.rely,1,1).data;
+            //the alpha is 0 when it's white, other colors have an alpha = 255
+            // but white is 0,0,0,0 but if you only look at first 3, you get black
+            if(pixelData[3] == 0) { 
+                pixelColor = "#" + ("000000" + "ffffff").slice(-6).toUpperCase();
+                console.log(pixelColor);
+                tool.changeColor(pixelColor); //set color to new color
+                colorSelector.value = ""; //set color of the ColorSelector Box to reflect change
+                colorSelector.style.background = pixelColor; 
+                return;
+            }
+            pixelString = ((pixelData[0] << 16) | (pixelData[1] << 8) | pixelData[2]).toString(16);
+            console.log("pixelstring " + pixelString);
+            pixelColor = "#" + ("000000" + pixelString).slice(-6).toUpperCase();
+            console.log(pixelColor);
+            tool.changeColor(pixelColor); //set color to new color
+            colorSelector.value = ""; //set color of the ColorSelector Box to reflect change
+            colorSelector.style.background = pixelColor;
+        };
+
+        this.mousemove = function (event) {
+            return;
+        };
+
+        this.mouseup = function (event) {
+            return;
+        };
+
+        this.changeColor = function(color) {
+            drawCtx.strokeStyle = color;
+        }
+
+        //don't capture keypresses outside of textbox tool
+        document.onkeydown = function (event) {
+            return;
+        };
+    };
+
+
     dispCanvas = document.getElementById('myCanvas');
     dispCtx = dispCanvas.getContext("2d");
     dispCtx.lineCap = "round"; //set line cap to round
@@ -433,6 +478,7 @@ function initialize() {
     lineThick16 = document.getElementById("thick-16");
     lineThick32 = document.getElementById("thick-32");
     lineThick64 = document.getElementById("thick-64");
+    colorPickerButton = document.getElementById("color-picker-button");
 
     //set the default context to the dispCtx for the updateModule
     updateModule.resetDefaults();
@@ -591,6 +637,13 @@ function initialize() {
         }
     }
 
+    colorPickerButton.onclick = function() {
+        toolSetUp();
+        currentTool = "colorpicker"
+        tool = new tools[currentTool]();
+        console.log("here");
+        return false;
+    }
 
     fillButton.onclick = function() {
         checkEraser();
