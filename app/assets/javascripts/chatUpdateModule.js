@@ -1,18 +1,17 @@
 
-function instantiateChatUpdateModule(canvas, channelName) {
-    chatUpdateModule = new ChatUpdateModule(canvas);
+function instantiateChatUpdateModule(chatBox, channelName) {
+    chatUpdateModule = new ChatUpdateModule(chatBox);
     chatUpdateModule.setChannelName(channelName);
     chatUpdateModule.initialize();
     return chatUpdateModule;
 }
 
-function ChatUpdateModule(canvas) {
+function ChatUpdateModule(chatBox) {
     // general config
     this.socketClass = WebSocketRails;
     this.dispatcher = null;
     this.chatAPI = getChatAPI();
-    this.context = null;
-    this.canvas = canvas||null;
+    this.chatBox = chatBox||null;
     this.userCookie = null;
     this.channel = null;
     this.channelName = null;
@@ -23,43 +22,40 @@ function ChatUpdateModule(canvas) {
         if (this.debug) console.log("socket at " + this.url);
         this.dispatcher = new this.socketClass(this.url);
         this.channel = this.dispatcher.subscribe(this.channelName);
-
         var module = this;
 
         this.channel.bind('socket.get_text', function(data) {module.handleGetText(data)});
-    }
-
-    this.setChannelName = function (name) {
-        this.channelName = name;
-    }
-
-    this.setCanvas = function (canvas) {
-        this.canvas = canvas;
-        if(canvas != null)
-            this.context = canvas.getContext("2d");
     }
 
     this.setSocketClass = function(socketClass) {
         this.socketClass = socketClass;
     }
 
+    this.setChannelName = function (name) {
+        this.channelName = name;
+    }
+
     this.setChatAPI = function (API) {
         this.chatAPI = API;
     }
 
-    this.sendText = function (textString) {
-        this.channel.trigger('socket.get_text', textString);
+    this.setChatBox = function (chatBox) {
+        this.chatBox = chatBox;
+    }
+
+    this.sendText = function (text) {
+        this.channel.trigger('socket.get_text', text);
     }
 
     this.handleGetText = function (data) {
-        this.chatAPI.drawText(this.canvas, data);
+        this.chatAPI.displayText(data);
     };
 }
 
 function getChatAPI() {
     API = {
-        drawText: function(canvas, text) {
-            drawText(canvas, text);
+        displayText: function(text) {
+            displayText(text);
         }
     }
     return API;

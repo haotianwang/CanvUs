@@ -1,3 +1,5 @@
+<%= javascript_include_tag "chatUpdateModule" %>
+<%= javascript_include_tag "chatModule" %>
 <%= javascript_include_tag "updateModule" %>
 <%= javascript_include_tag "uiModule" %>
 <%= javascript_include_tag "drawModule" %>
@@ -5,6 +7,7 @@
 <%= javascript_include_tag "base64" %>
 <%= javascript_include_tag "canvas2Image" %>
 <%= stylesheet_link_tag "draw" %>
+<%= stylesheet_link_tag "chat" %>
 
 <head>
     <!-- Bootstrap -->
@@ -12,15 +15,19 @@
     <link href="bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
     <link rel="stylesheet" href="http://twitter.github.com/bootstrap/assets/css/bootstrap.css">
     <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
     <script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/bootstrap-dropdown.js"></script>
     <script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/bootstrap-button.js"></script>
     
     <!-- <script src="bootstrap/js/bootstrap.min.js"></script> -->
-    <div style="width: 100%; height: 50px; background: #EBA397;"> 
+    <div id="header-div" style="width: 100%; height: 50px; background: #EBA397;"> 
         <div id="back-home-div" style="width: 205px; height: 50px; background: #EBA397; cursor: pointer;">
             <font color="#EBA397">".   ."</font>      
             <img id="home-button" src="Home.png" alt="" style="position:relative;top:6px">
             <img id="back-button" src="CanvusLogo3.jpg" alt="">
+        </div>
+        
+        <div id="room-id-div" style="position:fixed; top:25px; right:10px">
         </div>
     </div>
 
@@ -43,6 +50,19 @@ Hi, welcome to CanvUs v.1.0.0
 <div id="canvasContainer">
     <canvas id="myCanvas" width="1000" height="500">
     </canvas>
+    <div id="chatContainer">
+        <a id="chat-button" href="#" class="btn btn-info" type="submit" value="Display Chat">Chat</a>
+        <div id="chatBox">
+        <p></p>
+        </div>
+        <form id="text-entry-fields" onsubmit="return false;">
+            <input id="chat-box-name" type="text" name="chatBoxName" value="Name">
+            <br>
+            <input id="chat-box-text" type="text" name="chatBoxText" value="Message">  
+            <br> 
+            <input id="text-submit-button" type="submit" value="Send" onclick="printText();">
+        </form>
+    </div>
 </div>
 
 <div id="canvasControl-box">
@@ -70,6 +90,7 @@ Hi, welcome to CanvUs v.1.0.0
                 <a class="btn" id="buggy-line-button" type="submit" value="Buggy Line" href="#"><img src="buggy-line.png" class="icon-buggy-line"></a>
                 <a class="btn" id="buggy-circle-button" type="submit" value="Buggy Circle" href="#"><img src="buggy-circle.png" class="icon-buggy-circle"></a>
                 <a class="btn" id="buggy-rectangle-button" type="submit" value="Buggy Rectangle" href="#"><img src="buggy-rectangle.png" class="icon-buggy-rect"></a>
+                <a class="btn" id="color-picker-button" type="submit" value="Color Picker" href="#"><img src="Eye-Dropper-48.png" class="icon-color-picker"></a>
                 <a class="btn" id="text-button" type="submit"><img src="text-tool.png" class="icon-text"></a>
             </div>
         </div>
@@ -110,7 +131,7 @@ Hi, welcome to CanvUs v.1.0.0
                     <a href="#" class="btn btn-danger" input id="clear-button" type="submit" value="Clear">Clear</a>
                 </div> 
 
-                <div id="load-div" style="border:10px solid #FFFF00;">
+                <div id="load-div" style="border:1px solid #000000;width:400px;">
                     <form action='#' onsubmit="return false;"style="border:10px solid #000000;">
                         <input type='file' id='file-box' />
                         <input type='button' id='done-button' value='Done' />
@@ -126,12 +147,12 @@ Hi, welcome to CanvUs v.1.0.0
 </center>
 <script type="text/javascript">
 initialize();
+initializeChat();
 //ghetto way of doing it
 //updateModule.getInitImg(window.location.search.split("=")[1]);
 paramCanvasID = getURLParameter("canvasId");
 if (paramCanvasID != null) {
     updateModule.setCanvasID(paramCanvasID);
 }
-console.log(paramCanvasID);
 updateModule.getInitImg(paramCanvasID);
 </script>
