@@ -348,8 +348,8 @@ function initialize() {
                 for(var i = 0; i < textInTextBox.length; i++) {
                     drawTextOnCanvas(drawCanvas, textInTextBox[i], uploadedImage.canvX, uploadedImage.canvY+i*15);
                 }
-                console.log(charCode);
-                console.log(textInTextBox);
+                if(debug)console.log(charCode);
+                if(debug)console.log(textInTextBox);
             }
             return false;
         };
@@ -409,16 +409,16 @@ function initialize() {
             // but white is 0,0,0,0 but if you only look at first 3, you get black
             if(pixelData[3] == 0) { 
                 pixelColor = "#" + ("000000" + "ffffff").slice(-6).toUpperCase();
-                console.log(pixelColor);
+                if(debug)console.log(pixelColor);
                 tool.changeColor(pixelColor); //set color to new color
                 colorSelector.value = ""; //set color of the ColorSelector Box to reflect change
                 colorSelector.style.background = pixelColor; 
                 return;
             }
             pixelString = ((pixelData[0] << 16) | (pixelData[1] << 8) | pixelData[2]).toString(16);
-            console.log("pixelstring " + pixelString);
+            if(debug)console.log("pixelstring " + pixelString);
             pixelColor = "#" + ("000000" + pixelString).slice(-6).toUpperCase();
-            console.log(pixelColor);
+            if(debug)console.log(pixelColor);
             tool.changeColor(pixelColor); //set color to new color
             colorSelector.value = ""; //set color of the ColorSelector Box to reflect change
             colorSelector.style.background = pixelColor;
@@ -567,13 +567,18 @@ function initialize() {
             } while (temp = temp.offsetParent);
         }
      
+        //if the browser is firefox...
         //move canvas to the right by canvLeft pixels
-        //shift if left by 8, because something adds a 8 pixel shift
-        drawCanvas.style.left = canvLeft /*- 8*/ + "px";
+        //shift if right by 8 more, because putting the chat box to the left messes with it
+        if(browser == "firefox"){
+            drawCanvas.style.left = canvLeft + 8 + "px";
+        } else { //for all other browsers, just set left to canvLeft
+            drawCanvas.style.left = canvLeft + "px";
+        }
 
         chatContainer = document.getElementById("chatContainer");
-        chatContainer.style.top = "-640px";
-        chatContainer.style.left = "640px";
+        chatContainer.style.top = drawCanvas.style.top;
+        chatContainer.style.left = (parseInt(drawCanvas.style.left.substring(0,drawCanvas.style.left.indexOf('px'))) + parseInt(dispCanvas.width) + 10) + "px";
     }
 
     //set up canvas once
@@ -665,7 +670,6 @@ function initialize() {
         toolSetUp();
         currentTool = "colorpicker"
         tool = new tools[currentTool]();
-        console.log("here");
         return false;
     }
 
@@ -680,7 +684,7 @@ function initialize() {
         }
         fillOn = !fillOn;
         fileButton.checked = true;
-        console.log("fillOn is now: " + fillOn);
+        if(debug)console.log("fillOn is now: " + fillOn);
         return false;
     }
 

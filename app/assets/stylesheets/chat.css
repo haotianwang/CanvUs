@@ -4,7 +4,7 @@ p{
 }
 
 #chatContainer{
-  position: relative;
+  position: absolute;
   height: 550px;
   width: 210px;
   padding: 0px;
