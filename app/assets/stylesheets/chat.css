@@ -1,12 +1,12 @@
 p{
   line-height: 0.25;
-  max-width: 140px;
+  max-width: 160px;
 }
 
 #chatContainer{
   position: relative;
   height: 550px;
-  width: 190px;
+  width: 210px;
   padding: 0px;
   margin: 0px;
   border: 0px;
@@ -14,7 +14,7 @@ p{
 
 #chatBox{
   height: 350px;
-  width: 180px;
+  width: 200px;
   -moz-border-radius: 15px;
   border-radius: 15px;
   background-color: #FFFFFF;

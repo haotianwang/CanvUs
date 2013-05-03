@@ -36,13 +36,11 @@ function printText() {
 	var newText = "<b>" + chatBoxName.value + "</b>: " + chatBoxText.value
 	//this will split strings that are too long
 	if (chatBoxName.value.length > 16) {
-		chatBoxName.value = chatBoxName.value.substring(0, 17);
+		chatBoxName.value = chatBoxName.value.substring(0, 16);
 	}
-
 	chatUpdateModule.sendText("<b>" + chatBoxName.value + "</b>: " + chatBoxText.value.substring(0, 16-chatBoxName.value.length));
-
 	newText = chatBoxText.value.substring(16-chatBoxName.value.length, chatBoxText.value.length);
-
+	
 	for(var i = 0; i < newText.length; i+= 18) {
 		if(i + 18 > newText.length) {
 			chatUpdateModule.sendText(newText.substring(i, newText.length));
@@ -63,7 +61,7 @@ function displayText(text) {
 	
 	$("#chatBox").text("");
 	for(var i = 0; i < textInTextBox.length; i++) {
-    	$("#chatBox").append("<p>" + textInTextBox[i]);
-  	}
-  	$("#chatBox").scrollTop(this.chatBox.scrollHeight);
+   	$("#chatBox").append("<p>" + textInTextBox[i]);
+  }
+  $("#chatBox").scrollTop(this.chatBox.scrollHeight);
 }
