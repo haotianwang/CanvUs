@@ -5,7 +5,10 @@ chatBoxText,
 chatButton,
 chatIsVisible,
 textInTextBox = [''], 
-numberOfLines = 100;
+numberOfLines = 100,
+//these two variables denote whether or not chatBoxName/Text have been modified before
+firstTimeChangeName = true,
+firstTimeChangeText = true;
 
 function initializeChat(canvasID) {//** create new update module **
 	chatUpdateModule = instantiateChatUpdateModule(document.getElementById("chatBox"), "chat" + canvasID);
@@ -15,21 +18,39 @@ function initializeChat(canvasID) {//** create new update module **
 	chatBoxText = document.getElementById("chat-box-text");
 	chatButton = document.getElementById("chat-button");
 	chatButton.onclick = function() {
-	if (chatIsVisible) {
-		$("#chatBox").hide("slide", { direction: "right" }, 180);
-		$("#text-entry-fields").hide("slide", { direction: "right"}, 180);
-		chatIsVisible = false;
-	}
-	else {
-		$("#chatBox").show("slide", { direction: "right" }, 180);
-		$("#text-entry-fields").show("slide", { direction: "right"}, 180);
-		chatIsVisible = true;
-	}
-  return false;
-  };
+		if (chatIsVisible) {
+			$("#chatBox").hide("slide", { direction: "left" }, 180);
+			$("#text-entry-fields").hide("slide", { direction: "left"}, 180);
+			chatIsVisible = false;
+		}
+		else {
+			$("#chatBox").show("slide", { direction: "left" }, 180);
+			$("#text-entry-fields").show("slide", { direction: "left"}, 180);
+			chatIsVisible = true;
+		}
+	  	return false;
+  	};
 	$("#chatBox").hide();
 	$("#text-entry-fields").hide();
 	chatIsVisible = false;
+
+	//if the name box hasn't been modified before, clear it when user clicks it
+	chatBoxName.onclick = function () {
+		console.log("in here1");
+		if(firstTimeChangeName) {
+			firstTimeChangeName = false;
+			chatBoxName.value = "";
+		}
+	}
+
+	//Always clear chat-box-text when user clicks it
+	chatBoxText.onclick = function () {
+		console.log("in here2");
+		if(firstTimeChangeText) {
+			firstTimeChangeText = false;
+			chatBoxText.value = "";		
+		}
+	}
 };
 
 function printText() {
@@ -61,7 +82,7 @@ function displayText(text) {
 	
 	$("#chatBox").text("");
 	for(var i = 0; i < textInTextBox.length; i++) {
-   	$("#chatBox").append("<p>" + textInTextBox[i]);
-  }
-  $("#chatBox").scrollTop(this.chatBox.scrollHeight);
+    	$("#chatBox").append("<p>" + textInTextBox[i]);
+  	}
+  	$("#chatBox").scrollTop(this.chatBox.scrollHeight);
 }
