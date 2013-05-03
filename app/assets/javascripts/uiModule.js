@@ -47,7 +47,7 @@ numLetDict = ['0','1','2','3','4','5','6','7','8','9',
               'k','l','m','n','o','p','q','r','s','t',
               'u','v','w','x','y','z'];
 
-var browser,
+var browser,systemOS,
 //need canvas position for non-FF browsers
 canvTop = 0, //offset for X
 canvLeft = 0; //offset for Y
@@ -544,6 +544,19 @@ function initialize() {
         browser = "unknown browser"
     }
 
+    //detect operating system:
+    if(navigator.platform.indexOf("Lin") != -1) {
+        systemOS = "linux";
+    } else if (navigator.platform.indexOf("Win") != -1) {
+        systemOS = "windows";
+    } else if (navigator.platform.indexOf("Mac") != -1) {
+        systemOS = "mac";
+    } else {
+        systemOS = "other";
+    }
+
+
+
     //hide the upload form
     $('#load-div').hide();
 
@@ -567,10 +580,10 @@ function initialize() {
             } while (temp = temp.offsetParent);
         }
      
-        //if the browser is firefox...
+        //if the browser is firefox and os is linux... (this shift happens in FF + Ubuntu x86 on VirtualBox)
         //move canvas to the right by canvLeft pixels
         //shift if right by 8 more, because putting the chat box to the left messes with it
-        if(browser == "firefox"){
+        if(browser == "firefox" && systemOS == "linux"){
             drawCanvas.style.left = canvLeft + 8 + "px";
         } else { //for all other browsers, just set left to canvLeft
             drawCanvas.style.left = canvLeft + "px";
