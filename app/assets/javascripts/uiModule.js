@@ -53,6 +53,7 @@ canvTop = 0, //offset for X
 canvLeft = 0; //offset for Y
 
 function initialize() {
+    document.body.style.display = "none";
 	/*********************** get a new updateModule *****************/
     updateModule = instantiateUpdateModule(WebSocketRails);
 
@@ -442,6 +443,23 @@ function initialize() {
     };
 
 
+    var strOfCanvases;
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET","canvases",false);
+    xmlhttp.send();
+
+    var strOfCanvases = xmlhttp.responseText.split("\"")[3];
+    var arrOfCanvases = strOfCanvases.split("|");
+
+    var canvas_id = getURLParameter("canvasId");
+    if (canvas_id == null || isNaN(canvas_id) || arrOfCanvases.indexOf(canvas_id)==-1) {
+        window.location.href = "http://" + window.location.host;
+        return;
+    } else {
+        document.body.style.display = "inherit";
+    }
+
+
     dispCanvas = document.getElementById('myCanvas');
     dispCtx = dispCanvas.getContext("2d");
     dispCtx.lineCap = "round"; //set line cap to round
@@ -487,6 +505,8 @@ function initialize() {
     //initialize
     updateModule.initialize();
     updateModule.startTimer();
+
+    //console.log("dont send actions: " + updateModule.dontSendActions);
 
     //set roomIDDiv here....
     var roomIDDiv = document.getElementById("room-id-div");
