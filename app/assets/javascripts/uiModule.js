@@ -3,11 +3,15 @@ dispCanvas, dispCtx,
 drawCanvas, drawCtx,
 backButton,
 homeButton,
+backHomeDiv,
 clrButton,
+colorPickerButton,
 mouseDown = false,
 tools = {},
 tool,
 pencilButton,
+eraserButton,
+eraseOn = false,
 lineButton,
 rectangleButton,
 circleButton,
@@ -74,7 +78,6 @@ function initialize() {
                 drawCtx.lineTo(event.relx, event.rely);
                 drawCtx.stroke();
                 //canvasUpdate();
-                console.log(drawCanvas);
                 clearCanvas(drawCanvas);
                 drawLine(dispCanvas, prevX, prevY, event.relx, event.rely, drawCtx.strokeStyle, drawCtx.lineWidth);
 				// send action to server
@@ -103,7 +106,9 @@ function initialize() {
         };
 
         this.changeColor = function(color) {
-            drawCtx.strokeStyle = color;
+            if(!eraseOn) {
+                drawCtx.strokeStyle = color;
+            }
         };
 
         //don't capture keypresses outside of textbox tool
@@ -393,12 +398,57 @@ function initialize() {
         };
     };
 
+    //======================== ColorPicker ============================
+    tools.colorpicker = function () {
+        var tool = this;
+
+        this.mousedown = function (event) {
+            pixelData = dispCtx.getImageData(event.relx, event.rely,1,1).data;
+            //the alpha is 0 when it's white, other colors have an alpha = 255
+            // but white is 0,0,0,0 but if you only look at first 3, you get black
+            if(pixelData[3] == 0) { 
+                pixelColor = "#" + ("000000" + "ffffff").slice(-6).toUpperCase();
+                console.log(pixelColor);
+                tool.changeColor(pixelColor); //set color to new color
+                colorSelector.value = ""; //set color of the ColorSelector Box to reflect change
+                colorSelector.style.background = pixelColor; 
+                return;
+            }
+            pixelString = ((pixelData[0] << 16) | (pixelData[1] << 8) | pixelData[2]).toString(16);
+            console.log("pixelstring " + pixelString);
+            pixelColor = "#" + ("000000" + pixelString).slice(-6).toUpperCase();
+            console.log(pixelColor);
+            tool.changeColor(pixelColor); //set color to new color
+            colorSelector.value = ""; //set color of the ColorSelector Box to reflect change
+            colorSelector.style.background = pixelColor;
+        };
+
+        this.mousemove = function (event) {
+            return;
+        };
+
+        this.mouseup = function (event) {
+            return;
+        };
+
+        this.changeColor = function(color) {
+            drawCtx.strokeStyle = color;
+        }
+
+        //don't capture keypresses outside of textbox tool
+        document.onkeydown = function (event) {
+            return;
+        };
+    };
+
+
     dispCanvas = document.getElementById('myCanvas');
     dispCtx = dispCanvas.getContext("2d");
     dispCtx.lineCap = "round"; //set line cap to round
     dispCtx.lineJoin = "round"; //set line join to be round (no more jaggies)
-    backButton = document.getElementById('back-button');
-    homeButton = document.getElementById('home-button');
+    //backButton = document.getElementById('back-button');
+    //homeButton = document.getElementById('home-button');
+    backHomeDiv = document.getElementById('back-home-div');
     clrButton = document.getElementById('clear-button');
     fillButton = document.getElementById('fill-button');
     var changeThickValue = document.getElementById('thick-button');
@@ -408,7 +458,8 @@ function initialize() {
     //lineThicknessBox = document.getElementById("line-thickness-box");
     //colorBox = document.getElementById("color-box"); //<- depricated by colorSelector
     colorSelector = document.getElementById("color-selector");
-    pencilButton = document.getElementById("pencil-button")
+    pencilButton = document.getElementById("pencil-button");
+    eraserButton = document.getElementById("eraser-button");
     lineButton = document.getElementById("line-button");
     rectangleButton = document.getElementById("rectangle-button");
     circleButton = document.getElementById("circle-button");
@@ -427,6 +478,7 @@ function initialize() {
     lineThick16 = document.getElementById("thick-16");
     lineThick32 = document.getElementById("thick-32");
     lineThick64 = document.getElementById("thick-64");
+    colorPickerButton = document.getElementById("color-picker-button");
 
     //set the default context to the dispCtx for the updateModule
     updateModule.resetDefaults();
@@ -435,6 +487,10 @@ function initialize() {
     //initialize
     updateModule.initialize();
     updateModule.startTimer();
+
+    //set roomIDDiv here....
+    var roomIDDiv = document.getElementById("room-id-div");
+    roomIDDiv.innerHTML = "<font size='5' style=\"font-family:'Comic Sans MS', cursive, sans-serif\"> You're in Room: " + updateModule.canvasID + "</font>";
 
     //Create the "drawCanvas" - the canvas which we draw on, and then copy
     // onto dispCanvas
@@ -557,13 +613,40 @@ function initialize() {
         return false;
     };
 
+
+    function toolSetUp() {
+        checkMovePic()
+        checkEraser()
+    }
+
     function checkMovePic() {
         if(currentTool == "movepicture"){
             tool.mouseup();
         }
     }
+    
+    function checkEraser() {
+        if(eraseOn) {
+            eraseOn = false;
+             //pop the old context
+            drawCtx.restore();
+            //change the LineThickness back to the old one
+            changeLineThickness(drawCtx.lineWidth);
+            //set the color to the value of colorSelector (in case user changed color while using eraser)
+            drawCtx.strokeStyle = colorSelector.value;   
+        }
+    }
+
+    colorPickerButton.onclick = function() {
+        toolSetUp();
+        currentTool = "colorpicker"
+        tool = new tools[currentTool]();
+        console.log("here");
+        return false;
+    }
 
     fillButton.onclick = function() {
+        checkEraser();
         if(currentTool == "movepicture"){
             checkMovePic(); //set picture
             //revert the tool
@@ -578,14 +661,29 @@ function initialize() {
     }
 
     pencilButton.onclick = function() {
-        checkMovePic();
+        toolSetUp();
         currentTool = "pencil";
         tool = new tools[currentTool]();
         return false;
     };
+    
+    eraserButton.onclick = function() {
+        //only do something if not eraseOn
+        if(!eraseOn) {
+            //ORDER MATTERS!!!!
+            checkMovePic();
+            drawCtx.save();
+            tool.changeColor("#FFFFFF");
+            eraseOn = true;
+            changeLineThickness(32);
+            currentTool = "pencil";
+            tool = new tools[currentTool]();
+        }
+        return false;
+    }
 
     lineButton.onclick = function() {
-        checkMovePic();
+        toolSetUp();
         buggyLine = false;
         currentTool = "line";
         tool = new tools[currentTool]();
@@ -593,7 +691,7 @@ function initialize() {
     };
 
     rectangleButton.onclick = function() {
-        checkMovePic();
+        toolSetUp();
         prevTool = currentTool
         currentTool = "rectangle";
         buggyRectangle = false;
@@ -602,7 +700,7 @@ function initialize() {
     };
 
     circleButton.onclick = function() {
-        checkMovePic();
+        toolSetUp();
         buggyCircle = false;
         currentTool = "circle";
         tool = new tools[currentTool]();
@@ -610,7 +708,7 @@ function initialize() {
     };
 
     buggyLineButton.onclick = function() {
-        checkMovePic();
+        toolSetUp();
         //lets you play with the buggy line
         drawCtx.beginPath();
         buggyLine = true;
@@ -620,7 +718,7 @@ function initialize() {
     }
 
     buggyCircleButton.onclick = function() {
-        checkMovePic();
+        toolSetUp();
         //lets you play with the buggy circle
         drawCtx.beginPath();
         buggyCircle = true;
@@ -630,7 +728,7 @@ function initialize() {
     }
 
     buggyRectangleButton.onclick = function() {
-        checkMovePic();
+        toolSetUp();
         //lets you play with the buggy rectangle
         drawCtx.beginPath();
         buggyRectangle = true;
@@ -640,7 +738,7 @@ function initialize() {
     }
 
     textButton.onclick = function() {
-        checkMovePic();
+        toolSetUp();
         prevTool = currentTool
         currentTool = "textbox";
         tool = new tools[currentTool]();
@@ -673,7 +771,7 @@ function initialize() {
             currentTool = prevTool;
             tool = new tools[currentTool]();
         }
-        console.log("in here" + colorSelector.value)
+        //console.log("in here" + colorSelector.value)
         tool.changeColor(colorSelector.value);
         //return false; //return false on enter (else canvas cleared)
     };
@@ -691,47 +789,39 @@ function initialize() {
     */
 
     lineThick1.onclick = function () {
-        drawCtx.lineWidth = 1;
-        changeThickValue.innerHTML = "       1px    ";
-        $('#thick-button').append("<span class='caret'></span>");
+        changeLineThickness(1);
         return false;
     };
     lineThick2.onclick = function () {
-        drawCtx.lineWidth = 2;
-        changeThickValue.innerHTML = "2px ";
-        $('#thick-button').append("<span class='caret'></span>");
+        changeLineThickness(2);
         return false;
     };
     lineThick4.onclick = function () {
-        drawCtx.lineWidth = 4;
-        changeThickValue.innerHTML = "4px ";
-        $('#thick-button').append("<span class='caret'></span>");
+        changeLineThickness(4);
         return false;
     };
     lineThick8.onclick = function () {
-        drawCtx.lineWidth = 8;
-        changeThickValue.innerHTML = "8px ";
-        $('#thick-button').append("<span class='caret'></span>");
+        changeLineThickness(8);
         return false;
     };
     lineThick16.onclick = function () {
-        drawCtx.lineWidth = 16;
-        changeThickValue.innerHTML = "16px ";
-        $('#thick-button').append("<span class='caret'></span>");
+        changeLineThickness(16);
         return false;
     };
     lineThick32.onclick = function () {
-        drawCtx.lineWidth = 32;
-        changeThickValue.innerHTML = "32px ";
-        $('#thick-button').append("<span class='caret'></span>");
+        changeLineThickness(32);
         return false;
     };
     lineThick64.onclick = function () {
-        drawCtx.lineWidth = 64;
-        changeThickValue.innerHTML = "64px ";
-        $('#thick-button').append("<span class='caret'></span>");
+        changeLineThickness(64);
         return false;
     };
+
+    function changeLineThickness(thickness) {
+        drawCtx.lineWidth = thickness;
+        changeThickValue.innerHTML = thickness + "px "
+        $('#thick-button').append("<span class='caret'></span>");
+    }
 
     dlPngButton.onclick = function(event) {
         Canvas2Image.saveAsPNG(dispCanvas);
@@ -765,7 +855,24 @@ function initialize() {
         return false;
     }
 
+    function checkExtensions(fileName) {
+        var validExtensions = ["jpg", "jpeg", "png", "gif"];
+        if(fileName.lastIndexOf(".") == -1) {
+            return false;
+        }
+        var extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+        if(validExtensions.indexOf(extension) == -1) {
+            return false;
+        }
+        return true;
+    }
+
     doneButton.onclick = function() {
+        if (!checkExtensions(document.getElementById("file-box").value)) {
+            alert("File not supported. Please only upload .jpg, .jpeg, .png, and .gif files.");
+            document.getElementById("file-box").value = "";
+            return;
+        }
         var input, file, fr;
 
         if (typeof window.FileReader !== 'function') {
@@ -775,13 +882,16 @@ function initialize() {
 
         input = document.getElementById('file-box');
         if (!input) {
-            write("Um, couldn't find the imgfile element.");
+            alert("Um, couldn't find the imgfile element.");
+            return;
         }
         else if (!input.files) {
-            write("This browser doesn't seem to support the `files` property of file inputs.");
+            alert("This browser doesn't seem to support the `files` property of file inputs.");
+            return;
         }
         else if (!input.files[0]) {
-            write("Please select a file before clicking 'Load'");
+            alert("Please select a file before clicking 'Load'");
+            return;
         }
         else {
             file = input.files[0];
@@ -818,12 +928,13 @@ function initialize() {
         tool = new tools[currentTool]();
     }
 
+
     function setTool(newTool) {
         currentTool = newTool;
         tool = new tools[currentTool]();
     }
 
-    backButton.onclick = function() {
+    backHomeDiv.onclick = function() {
         //okay room for logic. Should the back button take you back to the original page?
         //or should it take you back to the page the canvus is on? 
         window.location.href = "http://" + window.location.host;

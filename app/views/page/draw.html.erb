@@ -20,19 +20,16 @@
     <script type="text/javascript" src="http://twitter.github.com/bootstrap/assets/js/bootstrap-button.js"></script>
     
     <!-- <script src="bootstrap/js/bootstrap.min.js"></script> -->
-    <div style="width: 100%; height: 50px; background: #EBA397;"> 
-        <!-- added button here -->
-        <!-- <a href="#" class="btn btn-danger" id="back2-button" type="submit" >Back To Main Page</a> -->
-        <font color="#EBA397">".   ."</font>      
-        <img id="back-button" src="CanvusLogo3.jpg" alt="">
-        <!-- <img id="home-button" style="visibility: hidden" src="Home.png" alt=""> -->
-        <img id="home-button" src="Home.png" alt="">
-    </div>
-    <style>
-        img {cursor: hand; cursor: pointer;}
+    <div id="header-div" style="width: 100%; height: 50px; background: #EBA397;"> 
+        <div id="back-home-div" style="width: 205px; height: 50px; background: #EBA397; cursor: pointer;">
+            <font color="#EBA397">".   ."</font>      
+            <img id="home-button" src="Home.png" alt="" style="position:relative;top:6px">
+            <img id="back-button" src="CanvusLogo3.jpg" alt="">
+        </div>
         
-    </style>
-    
+        <div id="room-id-div" style="position:fixed; top:25px; right:10px">
+        </div>
+    </div>
 
 </head>
 
@@ -93,6 +90,7 @@ Hi, welcome to CanvUs v.1.0.0
                 <a class="btn" id="buggy-line-button" type="submit" value="Buggy Line" href="#"><img src="buggy-line.png" class="icon-buggy-line"></a>
                 <a class="btn" id="buggy-circle-button" type="submit" value="Buggy Circle" href="#"><img src="buggy-circle.png" class="icon-buggy-circle"></a>
                 <a class="btn" id="buggy-rectangle-button" type="submit" value="Buggy Rectangle" href="#"><img src="buggy-rectangle.png" class="icon-buggy-rect"></a>
+                <a class="btn" id="color-picker-button" type="submit" value="Color Picker" href="#"><img src="Eye-Dropper-48.png" class="icon-color-picker"></a>
                 <a class="btn" id="text-button" type="submit"><img src="text-tool.png" class="icon-text"></a>
             </div>
         </div>
@@ -133,7 +131,7 @@ Hi, welcome to CanvUs v.1.0.0
                     <a href="#" class="btn btn-danger" input id="clear-button" type="submit" value="Clear">Clear</a>
                 </div> 
 
-                <div id="load-div" style="border:10px solid #FFFF00;">
+                <div id="load-div" style="border:1px solid #000000;width:400px;">
                     <form action='#' onsubmit="return false;"style="border:10px solid #000000;">
                         <input type='file' id='file-box' />
                         <input type='button' id='done-button' value='Done' />

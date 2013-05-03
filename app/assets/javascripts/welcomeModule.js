@@ -109,6 +109,10 @@ function initialize() {
 		newCanv.style.cssText = "width:500px;height:250px;border:1px solid #000000";
 		canvasLinksDiv.appendChild(newCanv);
 
+		//prevent some aliasing issues on the main(canvus) page
+		newCanv.getContext("2d").lineCap = "round"; //set line cap to round
+    	newCanv.getContext("2d").lineJoin = "round";
+
 		//set canvas and context of updateModule then initialize
 		//updateModule.setContext(newCanv.getContext("2d"));
 		updateModule.setCanvas(newCanv);

@@ -28,6 +28,7 @@ class SocketController < WebsocketRails::BaseController
   # Retrieves the most recent canvas state stored in the database as well as any actions that have been done
   # since that canvas state was stored to send to a newly connected client.
   def send_init_img(test_message = nil)
+    puts "sending init img"
     if test_message.nil?
       working_message = message
     else
@@ -42,12 +43,27 @@ class SocketController < WebsocketRails::BaseController
       bitmap = bitmap_record['bitmap']
       timestamp = bitmap_record['latest_action_timestamp']
       actions = Action.getActions(canvas_id, timestamp)
+      actionsCacheCopy = Array.new(Action.returnCache())
+      puts "sendInitImg: successfully made copy of actionsCache"
+      print "cache length: ", actionsCacheCopy.length, "\n"
+      print "actions length: ", actions.length, "\n"
+      actionsCacheCopy.each do |a|
+        if a.canvas_id==canvas_id
+          if actions != ""
+            actions = actions + ", "
+          end
+          actions = actions + a.action
+        end
+      end
+      puts "successfully pushed all actions to response message"
     end
     response = {bitmap: bitmap, actions: actions}.to_json
     if !test_message.nil?
       return response
     end
+    puts "successfully formatted response into json"
     send_message :get_init_img, response, :namespace => 'socket'
+    puts "done sending init img"
   end
 
   # Stores an updated bitmap in the database according to the current state of the canvas a client is drawing on.
