@@ -4,7 +4,7 @@ chatBoxName,
 chatBoxText,
 chatButton,
 chatIsVisible,
-textInTextBox = [''], 
+textInChatBox = [''], 
 numberOfLines = 100,
 //these two variables denote whether or not chatBoxName/Text have been modified before
 firstTimeChangeName = true,
@@ -73,14 +73,14 @@ function printText() {
 function displayText(text) {
 	//Just print after you recieve it, so no longer need to figure out who is who via
 	//random number generator
-	textInTextBox.push(text);
-	if(textInTextBox.length > numberOfLines) {
-		textInTextBox = textInTextBox.splice(1,textInTextBox.length);
+	textInChatBox.push(text);
+	if(textInChatBox.length > numberOfLines) {
+		textInChatBox = textInChatBox.splice(1,textInChatBox.length);
 	}
 	
 	$("#chatBox").text("");
-	for(var i = 0; i < textInTextBox.length; i++) {
-    	$("#chatBox").append("<p>" + textInTextBox[i]);
+	for(var i = 0; i < textInChatBox.length; i++) {
+    	$("#chatBox").append("<p>" + textInChatBox[i]);
   	}
   	$("#chatBox").scrollTop(this.chatBox.scrollHeight);
 }

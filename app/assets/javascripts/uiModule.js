@@ -594,9 +594,6 @@ function initialize() {
         chatContainer.style.left = (parseInt(drawCanvas.style.left.substring(0,drawCanvas.style.left.indexOf('px'))) + parseInt(dispCanvas.width) + 10) + "px";
     }
 
-    //set up canvas once
-    windowResize();
-
     //Activate default tool:
     tool = new tools[currentTool]();
 
@@ -981,6 +978,9 @@ function initialize() {
         window.location.href = "http://" + window.location.host;
     }
 
+    //resize at the very end (maybe that'll fix problem)
+    //set up canvas once
+    windowResize();
     
 }
 
