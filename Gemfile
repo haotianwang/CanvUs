@@ -32,7 +32,7 @@ group :assets do
 end
 
 gem 'jquery-rails'
-gem 'websocket-rails', '0.4.2'
+gem 'websocket-rails', '0.4.6'
 
 #rufus-scheduler is for running periodic tasks
 gem 'rufus-scheduler'
